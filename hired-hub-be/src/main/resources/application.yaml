@@ -1,0 +1,32 @@
+server:
+  port: 8888
+#  servlet:
+#    context-path: /identity
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: FindJob
+  datasource:
+    url: jdbc:mysql://localhost:3308/find_job?createDatabaseIfNotExist=true
+    username: root
+    password: root
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  secret: Hay0Nhac1Nho2Ban3Than4Rang5Sap6Chuyen7Nha8Roi
+  expiration: 7777
+  refreshable: 100000
+
+#path:
+#  url:
