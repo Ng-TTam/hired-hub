@@ -1,21 +1,18 @@
-import './App.css';
-// import Loader from '../components/Loader/Loader';
-// import DownloadButton from '../components/DownloadButton/DownLoadButton';
-import LoginForm from '../components/LoginForm';
-// import NotificationBadge from '../components/NotificationBadge/NotificationBadge';
+import './App.scss';
+import { BrowserRouter as Router } from 'react-router-dom';
+import CMSRoutes from '../routes/CMSRoutes';
+import BussinessRoutes from '../routes/BussinessRoutes';
 
 function App() {
   return (
-    <div className="App">
-      <header className="">
-        {/* <Loader/>
-        <DownloadButton/> */}
-      </header>
-      <body className='App-body'>
-        <LoginForm/>
-        {/* <NotificationBadge unreadCount={2}/> */}
-      </body>
-    </div>
+    <Router>
+
+      {/* Route of CMS for */}
+      <CMSRoutes />
+
+      {/* Route of  */}
+      <BussinessRoutes />
+    </Router>
   );
 }
 
