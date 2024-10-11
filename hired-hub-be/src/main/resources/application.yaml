@@ -7,9 +7,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   application:
-    name: FindJob
+    name: HiredHub
   datasource:
-    url: jdbc:mysql://localhost:3308/find_job?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3308/hired_hub?createDatabaseIfNotExist=true
     username: root
     password: root
   jpa:
@@ -25,8 +25,8 @@ spring:
 
 jwt:
   secret: Hay0Nhac1Nho2Ban3Than4Rang5Sap6Chuyen7Nha8Roi
-  expiration: 7777
-  refreshable: 100000
+  expiration: 30
+  refreshable: 3
 
 #path:
 #  url:

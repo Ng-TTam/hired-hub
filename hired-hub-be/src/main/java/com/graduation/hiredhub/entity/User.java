@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.entity;
 
+import com.graduation.hiredhub.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +22,7 @@ public class User {
     String nameAccount;
 
     @Column(unique = true)
-    String nameLogin;
+    String username;
     String password;
 
     String email;
@@ -30,8 +31,6 @@ public class User {
     String address;
 
     String gender;
-    int rewardPoint;
-    
-    @ManyToMany(fetch = FetchType.LAZY)
-    Set<Role> roles;
+
+    Role role;
 }

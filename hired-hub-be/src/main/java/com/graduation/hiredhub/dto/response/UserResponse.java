@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.dto.response;
 
+import com.graduation.hiredhub.enums.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 public class UserResponse {
     int id;
     String nameAccount;
-    String nameLogin;
+    String username;
     String email;
     String number;
     LocalDate birth;
@@ -23,5 +24,5 @@ public class UserResponse {
     String gender;
     int rewardPoint;
 
-    Set<RoleResponse> roles;
+    Role role;
 }

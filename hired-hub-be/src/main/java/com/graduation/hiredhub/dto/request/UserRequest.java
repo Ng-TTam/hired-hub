@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class UserRequest {
     private String nameAccount;
-    private String nameLogin;
+    private String username;
     private String email;
     private String number;
     private LocalDate birth;

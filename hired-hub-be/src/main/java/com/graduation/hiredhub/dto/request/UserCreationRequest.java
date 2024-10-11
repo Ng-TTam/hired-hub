@@ -17,7 +17,7 @@ public class UserCreationRequest {
     String nameAccount;
 
     @NotBlank(message = "BLANK_USER")
-    String nameLogin;
+    String username;
 
     @NotBlank(message = "BLANK_PASSWORD")
     @Size(min = 8, message = "INVALID_PASSWORD")

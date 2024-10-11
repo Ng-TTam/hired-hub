@@ -1,18 +1,16 @@
 package com.graduation.hiredhub.service.Imp;
 
-import com.graduation.hiredhub.dto.response.AuthenticationResponse;
-import com.graduation.hiredhub.dto.response.TokenResponse;
-import com.graduation.hiredhub.dto.response.VerifyTokenResponse;
 import com.graduation.hiredhub.dto.request.AuthenticationRequest;
 import com.graduation.hiredhub.dto.request.LogoutRequest;
 import com.graduation.hiredhub.dto.request.RefreshRequest;
 import com.graduation.hiredhub.dto.request.VerifyTokenRequest;
+import com.graduation.hiredhub.dto.response.AuthenticationResponse;
+import com.graduation.hiredhub.dto.response.TokenResponse;
+import com.graduation.hiredhub.dto.response.VerifyTokenResponse;
 import com.graduation.hiredhub.entity.User;
-import com.graduation.hiredhub.entity.ValidToken;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.repository.UserRepository;
-import com.graduation.hiredhub.repository.ValidTokenRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -21,16 +19,15 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 @Service
@@ -38,9 +35,10 @@ import java.util.UUID;
 public class AuthenticationService {
     @Autowired
     UserRepository userRepository;
-
     @Autowired
-    ValidTokenRepository validTokenRepository;
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -52,9 +50,8 @@ public class AuthenticationService {
     private int jwtRefreshable;
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest){
-        User user = userRepository.findByNameLogin(authenticationRequest.getNameLogin())
+        User user = userRepository.findByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(7);
 
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
         if(!authenticated)
@@ -63,13 +60,10 @@ public class AuthenticationService {
         String token = generateToken(user);
         String refreshToken = UUID.randomUUID().toString();
 
-        ValidToken validToken = ValidToken.builder()
-                .token(token)
-                .refreshToken(refreshToken)
-                .expiryTimeRefresh(new Date(Instant.now()
-                        .plus(jwtRefreshable, ChronoUnit.SECONDS).toEpochMilli()))
-                .build();
-        validTokenRepository.save(validToken);
+        stringRedisTemplate.opsForValue().set(token, String.valueOf(user.getId()));
+        stringRedisTemplate.expire(token, Duration.ofMinutes(jwtExpiration));
+        stringRedisTemplate.opsForValue().set(refreshToken, String.valueOf(user.getId()));
+        stringRedisTemplate.expire(refreshToken, Duration.ofDays(jwtRefreshable));
 
         return AuthenticationResponse.builder()
                 .token(token)
@@ -81,11 +75,11 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getNameLogin())
+                .subject(user.getUsername())
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now()
                         .plus(jwtExpiration, ChronoUnit.SECONDS).toEpochMilli()))
-                .claim("scope", buildScope(user))
+                .claim("scope", user.getRole())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -114,24 +108,18 @@ public class AuthenticationService {
     }
 
     public TokenResponse refreshToken(RefreshRequest refreshRequest) throws ParseException, JOSEException {
-        ValidToken validToken = validTokenRepository.findByRefreshToken(refreshRequest.getRefreshToken());
+        String userId = stringRedisTemplate.opsForValue().get(refreshRequest.getRefreshToken());
 
-        if(new Date().after(validToken.getExpiryTimeRefresh())){
-            validTokenRepository.delete(validToken);//delete refresh token over expiry time
+        if(userId == null){
             throw new RuntimeException("Please login again");
         }
 
-        var signedJWT = verifyToken(validToken.getToken(), true);
-
-        var nameLogin = signedJWT.getJWTClaimsSet().getSubject();
-        var user = userRepository.findByNameLogin(nameLogin)
+        var user = userRepository.findById(Integer.parseInt(userId))
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
-        var token = generateToken(user);
+        String token = generateToken(user);
 
-        validToken.setToken(token);
-        validToken.setExpiryTimeRefresh(new Date(Instant.now()
-                .plus(jwtRefreshable, ChronoUnit.SECONDS).toEpochMilli()));
-        validTokenRepository.save(validToken);
+        stringRedisTemplate.opsForValue().set(token, userId);
+        stringRedisTemplate.expire(token, Duration.ofMinutes(jwtExpiration));
 
         return TokenResponse.builder().token(token).build();
     }
@@ -154,28 +142,12 @@ public class AuthenticationService {
         return signedJWT;
     }
 
+    //need update
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
         try {
-            var signToken = verifyToken(request.getToken(), true);
-
-            ValidToken validToken = validTokenRepository.findByToken(request.getToken());
-            validTokenRepository.delete(validToken);
+            stringRedisTemplate.delete(request.getToken());
         } catch (RuntimeException e){
             log.info("Token already expired");
         }
-    }
-
-    private String buildScope(User user){
-        StringJoiner stringJoiner = new StringJoiner(" ");
-
-        if (!CollectionUtils.isEmpty(user.getRoles())) //add role and permission
-            user.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getName());
-                if (!CollectionUtils.isEmpty(role.getPermissions()))
-                    role.getPermissions()
-                            .forEach(permission -> stringJoiner.add(permission.getName()));
-            });
-
-        return stringJoiner.toString();
     }
 }

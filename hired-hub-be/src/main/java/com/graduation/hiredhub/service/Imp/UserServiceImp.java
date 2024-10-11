@@ -1,29 +1,25 @@
 package com.graduation.hiredhub.service.Imp;
 
-import com.graduation.hiredhub.constrant.PredefinedRole;
 import com.graduation.hiredhub.dto.request.UserChangeInfoRequest;
 import com.graduation.hiredhub.dto.request.UserChangePassRequest;
 import com.graduation.hiredhub.dto.request.UserCreationRequest;
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.UserResponse;
-import com.graduation.hiredhub.entity.Role;
 import com.graduation.hiredhub.entity.User;
+import com.graduation.hiredhub.enums.Role;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.UserMapper;
-import com.graduation.hiredhub.repository.RoleRepository;
 import com.graduation.hiredhub.repository.UserRepository;
 import com.graduation.hiredhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -33,19 +29,14 @@ public class UserServiceImp implements UserService {
     @Autowired
     UserMapper userMapper;
     @Autowired
-    RoleRepository roleRepository;
-
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(7);
+    PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public UserResponse registerUser(UserCreationRequest userCreationRequest){
         User user = userMapper.toUser(userCreationRequest);
         user.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
-
-        HashSet<Role> roles = new HashSet<>();
-        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
-        user.setRoles(roles);
+        user.setRole(Role.JOB_SEEKER);
 
         try {
             user = userRepository.save(user);
@@ -117,6 +108,6 @@ public class UserServiceImp implements UserService {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
 
-        return userRepository.findByNameLogin(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 }
