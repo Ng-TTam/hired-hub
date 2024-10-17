@@ -49,7 +49,6 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-//    @PreAuthorize("hasAuthority('CHANGE_PASS')")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public UserResponse changePassUser(UserChangePassRequest userChangePassRequest) {
         User user = getUserInContext();
@@ -87,7 +86,6 @@ public class UserServiceImp implements UserService {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public void changeRewardPointUser(UserRequest userDTOCurrent, UserRequest userDTONew) {
         User user = getUserInContext();
-        user.setRewardPoint(userDTONew.getRewardPoint());//using for exchange discount
         userRepository.save(user);
     }
 

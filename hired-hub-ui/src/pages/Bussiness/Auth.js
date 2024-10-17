@@ -8,7 +8,7 @@ const Auth = () => {
     <>
     <img src={background}/>
       <div className='container'>
-        <LoginForm />
+        <LoginForm loginType={"Sign in"}/>
       </div>
     </>
   );
