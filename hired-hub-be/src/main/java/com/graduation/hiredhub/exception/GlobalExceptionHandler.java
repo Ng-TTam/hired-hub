@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = RuntimeException.class)
-    ResponseEntity<String> handlingRuntimeException(RuntimeException e){
+    ResponseEntity<String> handlingRuntimeException(RuntimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse> handlingRuntimeException(MethodArgumentNotValidException e){
+    ResponseEntity<ApiResponse> handlingRuntimeException(MethodArgumentNotValidException e) {
         ErrorCode errorCode = ErrorCode.valueOf(e.getFieldError().getDefaultMessage());
         ApiResponse apiResponse = new ApiResponse();
 

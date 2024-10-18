@@ -23,14 +23,13 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableGlobalAuthentication
 public class SecurityConfiguration {
+    private final String[] PUBLIC_POST_ENDPOINTS = {"/users", "/users/info",
+            "/auth/login", "/auth/verify", "/auth/refresh-token"};
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private final String[] PUBLIC_POST_ENDPOINTS = {"/users","/users/info",
-            "/auth/login","/auth/verify","/auth/refresh-token"};
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
                         .permitAll()
@@ -46,7 +45,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter(){
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
@@ -70,8 +69,8 @@ public class SecurityConfiguration {
 //    }
 
     @Bean
-    JwtDecoder jwtDecoder(){
-        SecretKeySpec secretKeySpec = new SecretKeySpec(jwtSecret.getBytes(),"HS256");
+    JwtDecoder jwtDecoder() {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(jwtSecret.getBytes(), "HS256");
         return NimbusJwtDecoder
                 .withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS256)
@@ -79,8 +78,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(7);
     }
 }
-
