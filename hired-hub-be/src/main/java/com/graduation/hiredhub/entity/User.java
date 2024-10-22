@@ -1,36 +1,53 @@
 package com.graduation.hiredhub.entity;
 
-import com.graduation.hiredhub.enums.Role;
+import com.graduation.hiredhub.entity.enumeration.Gender;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
-import java.util.Set;
+import java.time.Instant;
+import java.util.List;
 
 @Entity
-@Data
-@Table(name = "user")
-@Builder
+@Getter
+@Setter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    String nameAccount;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 40)
+    private String id;
 
-    @Column(unique = true)
-    String username;
-    String password;
+    @Column(name = "first_name", length = 20, nullable = false)
+    private String firstName;
 
-    String email;
-    String number;
-    LocalDate birth;
-    String address;
+    @Column(name = "last_name", length = 20, nullable = false)
+    private String lastName;
 
-    String gender;
+    @Column(nullable = false)
+    private Instant dob;
 
-    Role role;
+    @Column(length = 50, nullable = false)
+    private String address;
+
+    @Column(name = "phone_number", length = 13, nullable = false)
+    private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Gender gender;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
 }

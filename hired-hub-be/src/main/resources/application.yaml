@@ -1,7 +1,7 @@
 server:
   port: 8888
-#  servlet:
-#    context-path: /identity
+  servlet:
+    context-path: /api/v1
 
 spring:
   main:
@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3308/hired_hub?createDatabaseIfNotExist=true
     username: root
-    password: root
+    password: 12345
   jpa:
     generate-ddl: true
     hibernate:
@@ -24,7 +24,7 @@ spring:
       max-request-size: 10MB
 
 jwt:
-  secret: Hay0Nhac1Nho2Ban3Than4Rang5Sap6Chuyen7Nha8Roi
+  secret: 94b8901a1660a7c61ca10349a17b5b99d6535590f440afdb7d17045cc43f776c624826766ff013eb6de391cf784c5e6a20da31453c0c46d4cb05376c55f29b59
   expiration: 30
   refreshable: 3
 

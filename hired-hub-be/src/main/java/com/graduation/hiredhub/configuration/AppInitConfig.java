@@ -1,44 +1,80 @@
 package com.graduation.hiredhub.configuration;
 
-import com.graduation.hiredhub.entity.User;
-import com.graduation.hiredhub.enums.Role;
-import com.graduation.hiredhub.repository.UserRepository;
+import com.graduation.hiredhub.entity.Account;
+import com.graduation.hiredhub.entity.JobSeeker;
+import com.graduation.hiredhub.entity.enumeration.Gender;
+import com.graduation.hiredhub.entity.enumeration.Role;
+import com.graduation.hiredhub.entity.enumeration.Status;
+import com.graduation.hiredhub.repository.AccountRepository;
+import com.graduation.hiredhub.repository.JobSeekerRepository;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.Instant;
 
 
 @Configuration
 public class AppInitConfig {
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
     @NonFinal
     static String ADMIN_USER_LOGIN = "admin";
     @NonFinal
     static String ADMIN_PASSWORD = "admin";
 
-    @Bean
-    @ConditionalOnProperty(
-            prefix = "spring",
-            value = "datasource.driverClassName",
-            havingValue = "com.mysql.cj.jdbc.Driver")
-    ApplicationRunner applicationRunner(UserRepository userRepository){
-        return args -> {
-            if(userRepository.findByUsername(ADMIN_USER_LOGIN).isEmpty()){
+    private static final String JOB_SEEKER_EMAIL = "job_seeker";
+    private static final String JOB_SEEKER_PASSWORD = "job_seeker";
 
-                User user = User.builder()
-                        .username(ADMIN_USER_LOGIN)
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Bean
+//    @ConditionalOnProperty(
+//            prefix = "spring",
+//            value = "datasource.driverClassName",
+//            havingValue = "com.mysql.cj.jdbc.Driver")
+    ApplicationRunner applicationRunner(AccountRepository accountRepository,
+                                        JobSeekerRepository jobSeekerRepository) {
+        return args -> {
+            if (accountRepository.findByEmail(ADMIN_USER_LOGIN).isEmpty()) {
+
+                Account account = Account.builder()
+                        .email(ADMIN_USER_LOGIN)
                         .password(passwordEncoder.encode(ADMIN_PASSWORD))
                         .role(Role.ADMIN)
+                        .status(Status.ACTIVATE)
+                        .createdAt(Instant.now())
+                        .updatedAt(Instant.now())
                         .build();
 
-                userRepository.save(user);
+                accountRepository.save(account);
+            }
+
+            if (accountRepository.findByEmail(JOB_SEEKER_EMAIL).isEmpty()) {
+                Account account = Account.builder()
+                        .email(JOB_SEEKER_EMAIL)
+                        .password(passwordEncoder.encode(JOB_SEEKER_PASSWORD))
+                        .role(Role.JOB_SEEKER)
+                        .status(Status.ACTIVATE)
+                        .createdAt(Instant.now())
+                        .updatedAt(Instant.now())
+                        .build();
+
+                accountRepository.save(account);
+
+                JobSeeker jobSeeker = JobSeeker.builder()
+                        .account(account)
+                        .firstName("Văn Quềnh")
+                        .lastName("Chu")
+                        .dob(Instant.now())
+                        .address("Giếng Chùa")
+                        .gender(Gender.MALE)
+                        .phoneNumber("Unknown")
+                        .build();
+
+                jobSeekerRepository.save(jobSeeker);
             }
         };
     }
