@@ -23,10 +23,11 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableGlobalAuthentication
 public class SecurityConfiguration {
-    private final String[] PUBLIC_POST_ENDPOINTS = {"/users", "/users/info",
-            "/auth/login", "/auth/verify", "/auth/refresh-token"};
+    private static final String[] PUBLIC_POST_ENDPOINTS = {"/users", "/users/info",
+            "/auth/**", "/account/sign-up", "/account/send-reset-otp", "/verify-reset-otp"};
+
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    protected String jwtSecret;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -25,27 +25,25 @@ public class User {
     @Column(length = 40)
     private String id;
 
-    @Column(name = "first_name", length = 20, nullable = false)
+    @Column(name = "first_name", length = 20)
     private String firstName;
 
-    @Column(name = "last_name", length = 20, nullable = false)
+    @Column(name = "last_name", length = 20)
     private String lastName;
 
-    @Column(nullable = false)
-    private Instant dob;
+    private LocalDate dob;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50)
     private String address;
 
-    @Column(name = "phone_number", length = 13, nullable = false)
+    @Column(name = "phone_number", length = 13)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Gender gender;
 
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "account_id")
     private Account account;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

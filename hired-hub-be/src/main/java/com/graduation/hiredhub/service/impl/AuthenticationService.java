@@ -16,6 +16,10 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -31,57 +35,47 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
+    AccountRepository accountRepository;
+    PasswordEncoder passwordEncoder;
+    StringRedisTemplate stringRedisTemplate;
 
-    private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final StringRedisTemplate stringRedisTemplate;
-
+    @NonFinal
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    protected String jwtSecret;
 
+    @NonFinal
     @Value("${jwt.expiration}")
-    private int jwtExpiration;
+    protected int jwtExpiration;
 
+    @NonFinal
     @Value("${jwt.refreshable}")
-    private int jwtRefreshable;
+    protected int jwtRefreshable;
 
-    public AuthenticationService(AccountRepository accountRepository, PasswordEncoder passwordEncoder, StringRedisTemplate stringRedisTemplate) {
-        this.accountRepository = accountRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.stringRedisTemplate = stringRedisTemplate;
-    }
+    static final String PRE_TOKEN = "TOKEN_";
+    static final String PRE_REFRESH_TOKEN = "REFRESH_TOKEN_";
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        Account account = accountRepository.findByEmail(authenticationRequest.getUsername())
+        Account account = accountRepository.findByEmail(authenticationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), account.getPassword());
         if (!authenticated)
             throw new AppException(ErrorCode.UNAUTHENTICATED);
 
-        String token = generateToken(account);
-        String refreshToken = UUID.randomUUID().toString();
-
-        stringRedisTemplate.opsForValue().set(token, String.valueOf(account.getId()));
-        stringRedisTemplate.expire(token, Duration.ofMinutes(jwtExpiration));
-        stringRedisTemplate.opsForValue().set(refreshToken, String.valueOf(account.getId()));
-        stringRedisTemplate.expire(refreshToken, Duration.ofDays(jwtRefreshable));
-
-        return AuthenticationResponse.builder()
-                .token(token)
-                .refreshToken(refreshToken)
-                .build();
+        return createTokenBase(account);
     }
 
-    private String generateToken(Account account) {
+    public String generateToken(Account account) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(account.getEmail())
+                .subject(account.getId())
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now()
-                        .plus(jwtExpiration, ChronoUnit.SECONDS).toEpochMilli()))
+                        .plus(jwtExpiration, ChronoUnit.MINUTES).toEpochMilli()))
                 .claim("scope", account.getRole())
                 .build();
 
@@ -93,7 +87,7 @@ public class AuthenticationService {
             jwsObject.sign(new MACSigner(jwtSecret.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
-            throw new RuntimeException(e);
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
     }
 
@@ -110,11 +104,11 @@ public class AuthenticationService {
         return VerifyTokenResponse.builder().valid(isValid).build();
     }
 
-    public TokenResponse refreshToken(RefreshRequest refreshRequest) throws ParseException, JOSEException {
-        String accountId = stringRedisTemplate.opsForValue().get(refreshRequest.getRefreshToken());
+    public TokenResponse refreshToken(RefreshRequest refreshRequest) {
+        String accountId = stringRedisTemplate.opsForValue().get(PRE_REFRESH_TOKEN + refreshRequest.getRefreshToken());
 
         if (accountId == null) {
-            throw new RuntimeException("Please login again");
+            throw new AppException(ErrorCode.TOKEN_EXPIRED);
         }
 
         var user = accountRepository.findById(accountId)
@@ -152,5 +146,21 @@ public class AuthenticationService {
         } catch (RuntimeException e) {
             log.info("Token already expired");
         }
+    }
+
+    //create success token and refresh token for account to sign in and sign up
+    public AuthenticationResponse createTokenBase(Account account){
+        String token = generateToken(account);
+        String refreshToken = UUID.randomUUID().toString();
+
+        stringRedisTemplate.opsForValue().set(PRE_TOKEN + token, String.valueOf(account.getId()));
+        stringRedisTemplate.expire(PRE_TOKEN + token, Duration.ofMinutes(jwtExpiration));
+        stringRedisTemplate.opsForValue().set(PRE_REFRESH_TOKEN + refreshToken, String.valueOf(account.getId()));
+        stringRedisTemplate.expire(PRE_REFRESH_TOKEN + refreshToken, Duration.ofDays(jwtRefreshable));
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

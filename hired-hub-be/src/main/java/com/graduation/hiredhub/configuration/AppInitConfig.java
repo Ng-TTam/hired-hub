@@ -15,12 +15,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
-
+import java.time.LocalDate;
 
 @Configuration
 public class AppInitConfig {
     @NonFinal
-    static String ADMIN_USER_LOGIN = "admin";
+    static String ADMIN_EMAIL_LOGIN = "admin@email.com";
     @NonFinal
     static String ADMIN_PASSWORD = "admin";
 
@@ -38,15 +38,13 @@ public class AppInitConfig {
     ApplicationRunner applicationRunner(AccountRepository accountRepository,
                                         JobSeekerRepository jobSeekerRepository) {
         return args -> {
-            if (accountRepository.findByEmail(ADMIN_USER_LOGIN).isEmpty()) {
+            if (accountRepository.findByEmail(ADMIN_EMAIL_LOGIN).isEmpty()) {
 
                 Account account = Account.builder()
-                        .email(ADMIN_USER_LOGIN)
+                        .email(ADMIN_EMAIL_LOGIN)
                         .password(passwordEncoder.encode(ADMIN_PASSWORD))
                         .role(Role.ADMIN)
                         .status(Status.ACTIVATE)
-                        .createdAt(Instant.now())
-                        .updatedAt(Instant.now())
                         .build();
 
                 accountRepository.save(account);
@@ -68,7 +66,7 @@ public class AppInitConfig {
                         .account(account)
                         .firstName("Văn Quềnh")
                         .lastName("Chu")
-                        .dob(Instant.now())
+                        .dob(LocalDate.now())
                         .address("Giếng Chùa")
                         .gender(Gender.MALE)
                         .phoneNumber("Unknown")

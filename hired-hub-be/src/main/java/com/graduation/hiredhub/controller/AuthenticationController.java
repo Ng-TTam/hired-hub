@@ -10,7 +10,10 @@ import com.graduation.hiredhub.dto.response.TokenResponse;
 import com.graduation.hiredhub.dto.response.VerifyTokenResponse;
 import com.graduation.hiredhub.service.impl.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,14 +24,15 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
-    @Autowired
     AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
+    ApiResponse<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
         return ApiResponse.<AuthenticationResponse>builder()
-                .result(authenticationService.authenticate(authenticationRequest))
+                .data(authenticationService.authenticate(authenticationRequest))
                 .build();
     }
 
@@ -36,15 +40,14 @@ public class AuthenticationController {
     ApiResponse<VerifyTokenResponse> verify(@RequestBody VerifyTokenRequest verifyTokenRequest)
             throws JOSEException, ParseException {
         return ApiResponse.<VerifyTokenResponse>builder()
-                .result(authenticationService.verify(verifyTokenRequest))
+                .data(authenticationService.verify(verifyTokenRequest))
                 .build();
     }
 
     @PostMapping("/refresh-token")
-    ApiResponse<TokenResponse> refreshToken(@RequestBody RefreshRequest refreshRequest)
-            throws JOSEException, ParseException {
+    ApiResponse<TokenResponse> refreshToken(@RequestBody RefreshRequest refreshRequest){
         return ApiResponse.<TokenResponse>builder()
-                .result(authenticationService.refreshToken(refreshRequest))
+                .data(authenticationService.refreshToken(refreshRequest))
                 .build();
     }
 
