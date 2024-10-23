@@ -3,7 +3,7 @@ package com.graduation.hiredhub.controller;
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.UserResponse;
-import com.graduation.hiredhub.service.impl.UserService;
+import com.graduation.hiredhub.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

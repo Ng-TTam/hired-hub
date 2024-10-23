@@ -1,4 +1,4 @@
-package com.graduation.hiredhub.service.impl;
+package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;

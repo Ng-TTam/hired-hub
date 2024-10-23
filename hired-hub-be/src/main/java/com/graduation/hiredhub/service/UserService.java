@@ -1,4 +1,4 @@
-package com.graduation.hiredhub.service.impl;
+package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.UserResponse;

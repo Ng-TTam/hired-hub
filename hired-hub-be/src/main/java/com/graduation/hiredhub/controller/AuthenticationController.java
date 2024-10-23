@@ -8,7 +8,7 @@ import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
 import com.graduation.hiredhub.dto.response.TokenResponse;
 import com.graduation.hiredhub.dto.response.VerifyTokenResponse;
-import com.graduation.hiredhub.service.impl.AuthenticationService;
+import com.graduation.hiredhub.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;

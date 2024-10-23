@@ -1,4 +1,4 @@
-package com.graduation.hiredhub.service.impl;
+package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
