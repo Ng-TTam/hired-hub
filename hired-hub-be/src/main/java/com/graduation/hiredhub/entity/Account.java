@@ -4,6 +4,7 @@ import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,31 +18,32 @@ import java.time.Instant;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "account")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    String id;
 
     @Column(length = 50, unique = true, nullable = false)
-    private String email;
+    String email;
 
     @Column(length = 64, nullable = false)
-    private String password;
+    String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    Role role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    Status status;
 
     @CreatedDate
     @Column(name = "created_at")
-    private Instant createdAt;
+    Instant createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    Instant updatedAt;
 }

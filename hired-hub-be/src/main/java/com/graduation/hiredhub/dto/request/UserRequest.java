@@ -1,10 +1,7 @@
 package com.graduation.hiredhub.dto.request;
 
 import com.graduation.hiredhub.entity.enumeration.Gender;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,7 +34,6 @@ public class UserRequest {
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,13}$", message = "INVALID_PHONE_NUMBER")
     String phoneNumber;
 
-    @NotBlank(message = "BLANK_GENDER")
-    @Pattern(regexp = "^(MALE|FEMALE|OTHER)$", message = "INVALID_GENDER")
+    @NotNull(message = "BLANK_GENDER")
     Gender gender;
 }

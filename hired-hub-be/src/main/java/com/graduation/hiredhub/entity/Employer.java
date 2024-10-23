@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -11,11 +12,12 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "employer")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Employer extends User {
     @Column(length = 20)
-    private String position;
+    String position;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
-    private Company company;
+    Company company;
 }

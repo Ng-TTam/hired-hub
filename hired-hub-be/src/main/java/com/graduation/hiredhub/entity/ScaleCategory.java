@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Getter
@@ -9,18 +10,19 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "scale_category")
 public class ScaleCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(length = 20, nullable = false)
-    private String name;
+    String name;
 
     @Column(name = "min_employee")
-    private Integer minEmployee;
+    Integer minEmployee;
 
     @Column(name = "max_employee")
-    private Integer maxEmployee;
+    Integer maxEmployee;
 }

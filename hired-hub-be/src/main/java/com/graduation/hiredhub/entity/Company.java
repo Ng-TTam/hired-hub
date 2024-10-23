@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,42 +16,43 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "company")
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 40)
-    private String id;
+    String id;
 
     @Column(length = 25, nullable = false)
-    private String name;
+    String name;
 
     @Column(name = "tax_code", length = 20, nullable = false)
-    private String taxCode;
+    String taxCode;
 
-    private Instant establishYear;
+    Instant establishYear;
 
-    private String logo;
+    String logo;
 
     @Column(length = 50, nullable = false)
-    private String address;
+    String address;
 
-    private String coverImage;
+    String coverImage;
 
-    private String description;
+    String description;
 
     @CreatedDate
     @Column(name = "created_at")
-    private Instant createdAt;
+    Instant createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    Instant updatedAt;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    Boolean isActive;
 
     @OneToOne
     @JoinColumn(name = "scale_category_id")
-    private ScaleCategory scaleCategory;
+    ScaleCategory scaleCategory;
 }

@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 
@@ -11,20 +12,21 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "saved_post")
 public class SavedPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(name = "saved_at")
-    private Instant savedAt;
+    Instant savedAt;
 
     @ManyToOne
     @JoinColumn(name = "job_seeker_id", nullable = false)
-    private JobSeeker jobSeeker;
+    JobSeeker jobSeeker;
 
     @ManyToOne
     @JoinColumn(name = "posting_id", nullable = false)
-    private Posting posting;
+    Posting posting;
 }

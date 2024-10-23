@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Getter
@@ -10,15 +11,16 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "district")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @Column(length = 50, nullable = false)
-    private String name;
+    String name;
 
     @ManyToOne
     @JoinColumn(name = "province_id", nullable = false)
-    private Province province;
+    Province province;
 }

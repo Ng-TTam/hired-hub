@@ -3,6 +3,7 @@ package com.graduation.hiredhub.entity;
 import com.graduation.hiredhub.entity.enumeration.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -11,27 +12,28 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "notification")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 40)
-    private String id;
+    String id;
 
     @Column(length = 100, nullable = false)
-    private String title;
+    String title;
 
-    private String content;
+    String content;
 
     @Column(name = "is_read", nullable = false)
-    private Boolean isRead;
+    Boolean isRead;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private NotificationType type;
+    NotificationType type;
 
-    private String referenceId;
+    String referenceId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    User user;
 }

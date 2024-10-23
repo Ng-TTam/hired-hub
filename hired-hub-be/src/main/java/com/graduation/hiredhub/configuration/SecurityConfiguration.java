@@ -23,8 +23,8 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableGlobalAuthentication
 public class SecurityConfiguration {
-    private static final String[] PUBLIC_POST_ENDPOINTS = {"/users", "/users/info",
-            "/auth/**", "/account/sign-up", "/account/send-reset-otp", "/verify-reset-otp"};
+    private static final String[] PUBLIC_POST_ENDPOINTS = {
+            "/auth/**", "/account/sign-up", "/account/send-reset-otp", "/account/verify-reset-otp", "/account/forgot-password"};
 
     @Value("${jwt.secret}")
     protected String jwtSecret;

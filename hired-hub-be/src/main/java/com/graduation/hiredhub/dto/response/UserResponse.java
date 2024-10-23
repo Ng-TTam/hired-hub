@@ -22,4 +22,5 @@ public class UserResponse {
     String address;
     String phoneNumber;
     Gender gender;
+    String avatar;
 }

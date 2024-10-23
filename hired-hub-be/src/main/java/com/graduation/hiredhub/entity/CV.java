@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
@@ -9,27 +10,28 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "cv")
 public class CV {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 40)
-    private String id;
+    String id;
 
-    private String description;
-
-    @Column(nullable = false)
-    private String experience;
+    String description;
 
     @Column(nullable = false)
-    private String education;
+    String experience;
 
     @Column(nullable = false)
-    private String skill;
+    String education;
 
-    private String others;
+    @Column(nullable = false)
+    String skill;
+
+    String others;
 
     @ManyToOne
     @JoinColumn(name = "job_seeker_id", nullable = false)
-    private JobSeeker jobSeeker;
+    JobSeeker jobSeeker;
 }

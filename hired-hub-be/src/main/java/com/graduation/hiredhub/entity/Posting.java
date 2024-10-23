@@ -4,6 +4,7 @@ import com.graduation.hiredhub.entity.enumeration.CurrencyUnit;
 import com.graduation.hiredhub.entity.enumeration.JobType;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,55 +19,56 @@ import java.util.List;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "posting")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Posting {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 40)
-    private String id;
+    String id;
 
     @Column(length = 100, nullable = false)
-    private String title;
+    String title;
 
     @Column(nullable = false)
-    private Integer experienceYear;
+    Integer experienceYear;
 
-    private String gender;
+    String gender;
 
     @Column(name = "number_of_position", nullable = false)
-    private Integer numberOfPosition;
+    Integer numberOfPosition;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "job_type", nullable = false)
-    private JobType jobType;
+    JobType jobType;
 
     @CreatedDate
     @Column(name = "created_at")
-    private Instant createdAt;
+    Instant createdAt;
 
     @Column(name = "expired_at")
-    private Instant expiredAt;
+    Instant expiredAt;
 
     @OneToMany(mappedBy = "posting", cascade = CascadeType.ALL)
-    private List<Application> applications;
+    List<Application> applications;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "job_description_id", nullable = false)
-    private JobDescription jobDescription;
+    JobDescription jobDescription;
 
     @ManyToOne
     @JoinColumn(name = "main_job_id", nullable = false)
-    private JobCategory mainJob;
+    JobCategory mainJob;
 
     @ManyToMany
-    private List<JobCategory> subJobs;
+    List<JobCategory> subJobs;
 
     @ManyToOne
     @JoinColumn(name = "position_id", nullable = false)
-    private PositionCategory position;
+    PositionCategory position;
 
-    private CurrencyUnit currencyUnit;
+    CurrencyUnit currencyUnit;
 
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)
-    private Employer employer;
+    Employer employer;
 }

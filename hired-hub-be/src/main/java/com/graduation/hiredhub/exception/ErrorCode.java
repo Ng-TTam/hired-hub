@@ -14,7 +14,6 @@ public enum ErrorCode {
     INVALID_PASSWORD("INVALID_003", "Password must be at least 8 characters", HttpStatus.BAD_REQUEST),
     INVALID_PHONE_NUMBER("INVALID_004", "Phone number must be between 7 and 13 number", HttpStatus.BAD_REQUEST),
     INVALID_EMAIL("INVALID_005", "Email number is invalid", HttpStatus.BAD_REQUEST),
-    INVALID_GENDER("INVALID_006", "Gender must be one of the following: male, female, other", HttpStatus.BAD_REQUEST),
     INVALID_OTP("INVALID_007", "Otp is invalid", HttpStatus.BAD_REQUEST),
 
     BLANK_EMAIL("BLANK_001", "Email is required", HttpStatus.BAD_REQUEST),
@@ -26,7 +25,7 @@ public enum ErrorCode {
     BLANK_PASSWORD("BLANK_007", "Password is required", HttpStatus.BAD_REQUEST),
 
     WRONG_CURRENT_PASS("WRONG_PASS", "Current password is wrong", HttpStatus.BAD_REQUEST),
-    DOB_FUTURE("DOB", "Date of birth must be in the past", HttpStatus.BAD_REQUEST),
+    DOB_FUTURE("DOB_FUTURE", "Date of birth must be in the past", HttpStatus.BAD_REQUEST),
 
     USER_NOT_EXISTED("EXISTED_001", "User not existed", HttpStatus.NOT_FOUND),
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),

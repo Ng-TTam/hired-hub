@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -13,10 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "job_seeker")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JobSeeker extends User {
     @OneToMany(mappedBy = "jobSeeker")
-    private List<CV> cvs;
+    List<CV> cvs;
 
     @OneToMany(mappedBy = "jobSeeker", cascade = CascadeType.ALL)
-    private List<SavedPost> savedPosts;
+    List<SavedPost> savedPosts;
 }

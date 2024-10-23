@@ -2,6 +2,7 @@ package com.graduation.hiredhub.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -12,20 +13,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "job_description")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JobDescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(nullable = false)
-    private String description;
+    String description;
 
     @Column(nullable = false)
-    private String requirement;
+    String requirement;
 
     @Column(nullable = false)
-    private String benefit;
+    String benefit;
 
     @OneToMany(mappedBy = "jobDescription", cascade = CascadeType.ALL)
-    private List<WorkAddress> workAddress;
+    List<WorkAddress> workAddress;
 }
