@@ -68,6 +68,10 @@ public class Posting {
 
     CurrencyUnit currencyUnit;
 
+    Integer minimumSalary;
+
+    Integer maximumSalary;
+
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)
     Employer employer;
