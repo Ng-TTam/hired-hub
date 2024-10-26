@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     UserService userService;
 
-    @PostMapping("/update")
+    @PutMapping
     ApiResponse<UserResponse> updateProfile(@RequestBody @Valid UserRequest userCreationRequest){
         return ApiResponse.<UserResponse>builder()
                 .data(userService.updateUserProfile(userCreationRequest))

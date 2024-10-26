@@ -2,6 +2,7 @@ package com.graduation.hiredhub.mapper;
 
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.UserResponse;
+import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.JobSeeker;
 import com.graduation.hiredhub.entity.User;
 import org.mapstruct.Mapper;
@@ -15,6 +16,8 @@ public interface UserMapper {
     UserResponse toUserResponse(User user);
 
     JobSeeker toJobSeeker(UserRequest userCreationRequest);
+
+    Employer toEmployer(UserRequest userRequest);
 
     void updateUser(@MappingTarget User user, UserRequest userCreationRequest);
 }

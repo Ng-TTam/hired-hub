@@ -49,31 +49,6 @@ public class AppInitConfig {
 
                 accountRepository.save(account);
             }
-
-            if (accountRepository.findByEmail(JOB_SEEKER_EMAIL).isEmpty()) {
-                Account account = Account.builder()
-                        .email(JOB_SEEKER_EMAIL)
-                        .password(passwordEncoder.encode(JOB_SEEKER_PASSWORD))
-                        .role(Role.JOB_SEEKER)
-                        .status(Status.ACTIVATE)
-                        .createdAt(Instant.now())
-                        .updatedAt(Instant.now())
-                        .build();
-
-                accountRepository.save(account);
-
-                JobSeeker jobSeeker = JobSeeker.builder()
-                        .account(account)
-                        .firstName("Văn Quềnh")
-                        .lastName("Chu")
-                        .dob(LocalDate.now())
-                        .address("Giếng Chùa")
-                        .gender(Gender.MALE)
-                        .phoneNumber("Unknown")
-                        .build();
-
-                jobSeekerRepository.save(jobSeeker);
-            }
         };
     }
 }

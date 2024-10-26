@@ -1,9 +1,11 @@
 package com.graduation.hiredhub.service;
 
+import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
 import com.graduation.hiredhub.entity.Account;
+import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.JobSeeker;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
@@ -11,6 +13,7 @@ import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.UserMapper;
 import com.graduation.hiredhub.repository.AccountRepository;
+import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.JobSeekerRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,7 @@ import java.util.UUID;
 public class AccountService {
     AccountRepository accountRepository;
     JobSeekerRepository jobSeekerRepository;
+    EmployerRepository employerRepository;
     PasswordEncoder passwordEncoder;
     StringRedisTemplate stringRedisTemplate;
     OtpService otpService;
@@ -69,8 +73,36 @@ public class AccountService {
 
         return authenticationService.createTokenBase(account);
     }
+
+    @Transactional
+    public AuthenticationResponse employerSignUp(EmployerAccountCreationRequest employerAccountCreationRequest){
+        if(accountRepository.existsByEmail(employerAccountCreationRequest.getAccount().getEmail()))
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+
+        Account account = Account.builder()
+                .email(employerAccountCreationRequest.getAccount().getEmail())
+                .password(passwordEncoder.encode(employerAccountCreationRequest.getAccount().getPassword()))
+                .role(Role.EMPLOYER)
+                .status(Status.PENDING)
+                .build();
+
+        try {
+            accountRepository.save(account);
+
+            Employer employer = userMapper.toEmployer(employerAccountCreationRequest.getUser());
+            employer.setPosition(employerAccountCreationRequest.getPosition());
+            employer.setAccount(account);
+            employerRepository.save(employer);
+        } catch (DataIntegrityViolationException e){
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
+        }
+
+        otpService.send(SIGNUP_OTP, employerAccountCreationRequest.getAccount().getEmail());
+
+        return authenticationService.createTokenBase(account);
+    }
     
-    @PreAuthorize("hasRole('JOB_SEEKER')")
+    @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public void resendOtpSignUp(){
         otpService.send(SIGNUP_OTP, getAccountInContext().getEmail());
     }
@@ -100,7 +132,7 @@ public class AccountService {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('JOB_SEEKER')")
+    @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public String verifyOtp(String otp){
         Account account = getAccountInContext();
 
@@ -138,7 +170,7 @@ public class AccountService {
         return true;
     }
     
-    private Account getAccountInContext(){
+    public Account getAccountInContext(){
         var context = SecurityContextHolder.getContext();
         var accountId = context.getAuthentication().getName();
 
