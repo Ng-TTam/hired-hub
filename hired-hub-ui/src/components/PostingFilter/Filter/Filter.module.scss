@@ -1,0 +1,142 @@
+.wrapper {
+    --search-border-radius: 6px;
+
+    background-color: #19734e;
+    padding: 16px 46px;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.search-container {
+    display: flex;
+    height: 46px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.group-search {
+    background-color: var(--white-color);
+    height: 100%;
+    width: 564px;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    border-radius: var(--search-border-radius);
+    padding: 14px;
+    position: relative;
+
+    .search-text {
+        color: #263a4d;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 8px;
+        background-color: transparent;
+        text-align: left;
+        flex: 1;
+    }
+
+    .search-text:not(:placeholder-shown) ~ .clear-btn {
+        cursor: pointer;
+        display: block;
+    }
+}
+
+.search-icon,
+.clear-btn {
+    background-color: transparent;
+    color: #7f878f;
+    font-size: 16px;
+}
+
+.clear-btn {
+    position: absolute;
+    right: 240px;
+    display: none;
+    width: 24px;
+    height: 24px;
+
+    &:hover {
+        background: #f2f4f5;
+        border-radius: 40px;
+    }
+}
+
+.search-location {
+    &::before {
+        background: linear-gradient(0deg, #fff, #dadada 50.45%, #fff);
+        content: '';
+        height: 100%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        position: absolute;
+        width: 1px;
+    }
+}
+
+.search-btn {
+    background-color: #00c056;
+    padding-left: 48px;
+    padding-right: 48px;
+
+    &:hover {
+        background-color: #00b14f;
+    }
+}
+
+.search-extra-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.location-filter {
+    display: flex;
+    flex-direction: row;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    color: var(--white-color);
+}
+
+.list-location {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.label-location {
+    margin-right: 8px;
+}
+
+.location-item {
+    padding: 4px 8px;
+    border-radius: 100px;
+    box-shadow: 0 1px 4px 0 rgba(1, 18, 34, 0.04);
+    background-color: var(--white-color);
+    color: #263a4d;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #00c056;
+        color: var(--white-color);
+    }
+
+    &:active {
+        background-color: #00c056;
+        color: var(--white-color);
+    }
+}
+
+.location-item.active {
+    background-color: #00c056;
+    color: var(--white-color);
+}

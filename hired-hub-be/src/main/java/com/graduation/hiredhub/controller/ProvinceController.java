@@ -1,6 +1,6 @@
 package com.graduation.hiredhub.controller;
 
-import com.graduation.hiredhub.dto.reqResp.ProvinceDTO;
+import com.graduation.hiredhub.dto.reqResp.ProvinceDetailDTO;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.entity.Province;
 import com.graduation.hiredhub.service.ProvinceService;
@@ -26,8 +26,8 @@ public class ProvinceController {
      * @return the {@link ApiResponse} with list of {@link Province} in data
      */
     @GetMapping
-    public ApiResponse<List<ProvinceDTO>> getAllProvinces() {
-        return ApiResponse.<List<ProvinceDTO>>builder()
+    public ApiResponse<List<ProvinceDetailDTO>> getAllProvinces() {
+        return ApiResponse.<List<ProvinceDetailDTO>>builder()
                 .data(provinceService.findAll())
                 .build();
     }

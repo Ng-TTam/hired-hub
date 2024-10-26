@@ -1,6 +1,5 @@
 package com.graduation.hiredhub.dto.reqResp;
 
-import com.graduation.hiredhub.entity.WorkAddress;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

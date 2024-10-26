@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.service;
 
+import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingRequest;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
@@ -11,11 +12,14 @@ import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.PostingMapper;
 import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.PostingRepository;
+import com.graduation.hiredhub.repository.specification.PostingSpecifications;
+import com.graduation.hiredhub.service.util.PageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -80,8 +84,39 @@ public class PostingService {
     }
 
 
-    private Employer getEmployerByAccount(){
+    private Employer getEmployerByAccount() {
         return employerRepository.findByAccountId(accountService.getAccountInContext().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
+    }
+
+    public PageResponse<PostingDetailResponse> filter(PostingFilterCriteria criteria, Pageable pageable) {
+        Specification<Posting> spec = Specification.where(null);
+
+        if (criteria.getSearchValue() != null) {
+            spec = spec.and(PostingSpecifications.withSearchText(criteria.getSearchValue()));
+        }
+        if (criteria.getProvinceId() != null) {
+            spec = spec.and(PostingSpecifications.hasProvince(criteria.getProvinceId()));
+        }
+        if (criteria.getDistrictId() != null) {
+            spec = spec.and(PostingSpecifications.hasDistrict(criteria.getDistrictId()));
+        }
+        if (criteria.getMinSalary() != null || criteria.getMaxSalary() != null) {
+            spec = spec.and(PostingSpecifications.hasSalaryInRange(criteria.getMinSalary(), criteria.getMaxSalary()));
+        }
+        if (criteria.getJobCategoryId() != null) {
+            spec = spec.and(PostingSpecifications.hasJobCategory(criteria.getJobCategoryId()));
+        }
+        if (criteria.getJobType() != null) {
+            spec = spec.and(PostingSpecifications.hasJobType(criteria.getJobType()));
+        }
+        if (criteria.getPositionId() != null) {
+            spec = spec.and(PostingSpecifications.hasPositionCategory(criteria.getPositionId()));
+        }
+        if (criteria.getExperienceRequire() != null) {
+            spec = spec.and(PostingSpecifications.hasExperienceRequire(criteria.getExperienceRequire()));
+        }
+
+        return PageUtils.toPageResponse(postingRepository.findAll(spec, pageable).map(postingMapper::toPostingDetailResponse));
     }
 }
