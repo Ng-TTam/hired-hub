@@ -40,7 +40,7 @@ public class PostingService {
         return postingMapper.toPostingDetailResponse(posting);
     }
 
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest){
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
@@ -70,16 +70,14 @@ public class PostingService {
                 .build();
     }
 
-    @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
-    public PostingDetailResponse getPostingDetailForEmployer(String postingId){
+    @PreAuthorize("permitAll()")
+    public PostingDetailResponse getPostingDetail(String postingId){
 
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
 
         return postingMapper.toPostingDetailResponse(posting);
     }
-
-
 
 
     private Employer getEmployerByAccount(){

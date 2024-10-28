@@ -36,8 +36,8 @@ public class PostingController {
                 .build();
     }
 
-    @GetMapping
-    ApiResponse<PageResponse<PostingResponse>> getPostings(
+    @GetMapping("/self")
+    ApiResponse<PageResponse<PostingResponse>> getPostingsByEmployer(
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         return ApiResponse.<PageResponse<PostingResponse>>builder()
@@ -48,7 +48,7 @@ public class PostingController {
     @GetMapping("/{postingId}")
     ApiResponse<PostingDetailResponse> getPosting(@PathVariable String postingId) {
         return ApiResponse.<PostingDetailResponse>builder()
-                .data(postingService.getPostingDetailForEmployer(postingId))
+                .data(postingService.getPostingDetail(postingId))
                 .build();
     }
 

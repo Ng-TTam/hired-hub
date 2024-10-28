@@ -1,6 +1,5 @@
 package com.graduation.hiredhub.dto.response;
 
-import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.reqResp.JobCategoryDTO;
 import com.graduation.hiredhub.dto.reqResp.JobDescriptionDTO;
 import com.graduation.hiredhub.dto.reqResp.PositionCategoryDTO;
@@ -30,7 +29,6 @@ public class PostingDetailResponse {
     JobType jobType;
     Instant createdAt;
     Instant expiredAt;
-//    List<ApplicationDTO> applications;
     JobDescriptionDTO jobDescription;
     JobCategoryDTO mainJob;
     List<JobCategoryDTO> subJobs;
@@ -38,5 +36,4 @@ public class PostingDetailResponse {
     CurrencyUnit currencyUnit;
     Integer minimumSalary;
     Integer maximumSalary;
-    EmployerResponse employer;
 }
