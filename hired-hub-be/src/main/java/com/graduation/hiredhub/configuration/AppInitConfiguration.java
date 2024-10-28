@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AppInitConfig {
+public class AppInitConfiguration {
     @NonFinal
     static String ADMIN_EMAIL_LOGIN = "admin@email.com";
     @NonFinal

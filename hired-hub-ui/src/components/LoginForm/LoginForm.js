@@ -15,7 +15,7 @@ const LoginForm = (props) => {
     return (
         <div className="container">
             <form className="form" onSubmit={handleSubmit}>
-                <h1>{props.loginType}</h1>
+                <h1 className="label-text">{props.loginType}</h1>
                 <div className="flex-column">
                     <label>Email </label>
                 </div>
