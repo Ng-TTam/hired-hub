@@ -2,6 +2,7 @@ package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.dto.request.PostingRequest;
 import com.graduation.hiredhub.dto.response.PageResponse;
+import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
 import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.Posting;
@@ -28,7 +29,7 @@ public class PostingService {
     AccountService accountService;
 
     @PreAuthorize("hasRole('EMPLOYER')")
-    public PostingResponse createPosting(PostingRequest postingRequest){
+    public PostingDetailResponse createPosting(PostingRequest postingRequest){
         Posting posting = postingMapper.toPosting(postingRequest);
         posting.setEmployer(getEmployerByAccount());
         try{
@@ -36,24 +37,28 @@ public class PostingService {
         }catch (Exception e){
             throw  new AppException(ErrorCode.INTERNAL_ERROR);
         }
-        return postingMapper.toPostingResponse(posting);
+        return postingMapper.toPostingDetailResponse(posting);
     }
 
     @PreAuthorize("hasRole('EMPLOYER')")
-    public PostingResponse updatePosting(PostingRequest postingRequest){
-        Posting posting = postingRepository.findByEmployer(getEmployerByAccount()).orElseThrow(
+    public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest){
+        Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
+
+        if( !getEmployerByAccount().getId().equals(posting.getEmployer().getId()))
+            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+
         postingMapper.updatePosting(posting, postingRequest);
         try{
             postingRepository.save(posting);
         }catch (Exception e){
             throw  new AppException(ErrorCode.INTERNAL_ERROR);
         }
-        return postingMapper.toPostingResponse(posting);
+        return postingMapper.toPostingDetailResponse(posting);
     }
 
     @PreAuthorize("hasRole('EMPLOYER')")
-    public PageResponse<PostingResponse> getPostings(int page, int size){
+    public PageResponse<PostingResponse> getPostingsByEmployer(int page, int size){
         Pageable pageable = PageRequest.of(page - 1,size);
         var pageData = postingRepository.findByEmployer(getEmployerByAccount(), pageable);
         return PageResponse.<PostingResponse>builder()
@@ -64,6 +69,18 @@ public class PostingService {
                 .data(pageData.getContent().stream().map(postingMapper::toPostingResponse).toList())
                 .build();
     }
+
+    @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
+    public PostingDetailResponse getPostingDetailForEmployer(String postingId){
+
+        Posting posting = postingRepository.findById(postingId).orElseThrow(
+                () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
+
+        return postingMapper.toPostingDetailResponse(posting);
+    }
+
+
+
 
     private Employer getEmployerByAccount(){
         return employerRepository.findByAccountId(accountService.getAccountInContext().getId())

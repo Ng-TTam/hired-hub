@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION("UNCATEGORIZED", "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
-    UNAUTHENTICATED("AUTH", "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHENTICATED("AUTH_001", "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED_ACCESS("AUTH_002","Access to this endpoint is not allowed.", HttpStatus.UNAUTHORIZED),
 
     INVALID_KEY("INVALID_001","Uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_NAME("INVALID_002", "Name must be less than 100 characters", HttpStatus.BAD_REQUEST),
@@ -43,6 +44,7 @@ public enum ErrorCode {
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),
     KEY_NOT_EXISTED("EXISTED_003", "Key token is not existed", HttpStatus.NOT_FOUND),
     POSTING_NOT_EXISTED("EXISTED_004", "Posting is not existed", HttpStatus.NOT_FOUND),
+    APPLICATION_NOT_EXISTED("EXISTED_005", "Application is not existed", HttpStatus.NOT_FOUND),
 
     EMAIL_EXISTED("EXISTED_004", "Email is existed", HttpStatus.BAD_REQUEST),
     

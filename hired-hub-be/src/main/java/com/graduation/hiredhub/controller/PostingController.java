@@ -1,11 +1,13 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.request.PostingRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
+import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
+import com.graduation.hiredhub.service.ApplicationService;
 import com.graduation.hiredhub.service.PostingService;
-import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,28 +20,62 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostingController {
     PostingService postingService;
+    ApplicationService applicationService;
 
     @PostMapping
-    ApiResponse<PostingResponse> createPosting(@RequestBody @Valid PostingRequest postingRequest){
-        return ApiResponse.<PostingResponse>builder()
+    ApiResponse<PostingDetailResponse> createPosting(@RequestBody @Valid PostingRequest postingRequest) {
+        return ApiResponse.<PostingDetailResponse>builder()
                 .data(postingService.createPosting(postingRequest))
                 .build();
     }
 
-    @PutMapping
-    ApiResponse<PostingResponse> updatePosting(@RequestBody @Valid PostingRequest postingRequest){
-        return ApiResponse.<PostingResponse>builder()
-                .data(postingService.createPosting(postingRequest))
+    @PutMapping("/{postingId}")
+    ApiResponse<PostingDetailResponse> updatePosting(@PathVariable String postingId, @RequestBody @Valid PostingRequest postingRequest) {
+        return ApiResponse.<PostingDetailResponse>builder()
+                .data(postingService.updatePosting(postingId, postingRequest))
                 .build();
     }
 
     @GetMapping
     ApiResponse<PageResponse<PostingResponse>> getPostings(
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page){
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         return ApiResponse.<PageResponse<PostingResponse>>builder()
-                .data(postingService.getPostings(size, page))
+                .data(postingService.getPostingsByEmployer(page, size))
                 .build();
     }
 
+    @GetMapping("/{postingId}")
+    ApiResponse<PostingDetailResponse> getPosting(@PathVariable String postingId) {
+        return ApiResponse.<PostingDetailResponse>builder()
+                .data(postingService.getPostingDetailForEmployer(postingId))
+                .build();
+    }
+
+    @GetMapping("/{postingId}/applications")
+    ApiResponse<PageResponse<ApplicationDTO>> getApplicationsByPosting(
+            @PathVariable String postingId,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+        return ApiResponse.<PageResponse<ApplicationDTO>>builder()
+                .data(applicationService.getApplications(postingId, page, size))
+                .build();
+    }
+
+    @GetMapping("/{postingId}/applications/{applicationId}")
+    ApiResponse<ApplicationDTO> getApplicationByPosting(@PathVariable String postingId,
+                                                        @PathVariable Integer applicationId) {
+        return ApiResponse.<ApplicationDTO>builder()
+                .data(applicationService.getApplication(postingId, applicationId))
+                .build();
+    }
+
+    @PutMapping("/{postingId}/applications/{applicationId}")
+    ApiResponse<ApplicationDTO> responseApplicationInPosting(@PathVariable String postingId,
+                                                             @PathVariable Integer applicationId,
+                                                             @RequestBody @Valid ApplicationDTO applicationDTO) {
+        return ApiResponse.<ApplicationDTO>builder()
+                .data(applicationService.updateApplication(postingId, applicationId, applicationDTO))
+                .build();
+    }
 }
