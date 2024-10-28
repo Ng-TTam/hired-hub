@@ -1,6 +1,8 @@
 package com.graduation.hiredhub.entity;
 
 import com.graduation.hiredhub.entity.enumeration.CurrencyUnit;
+import com.graduation.hiredhub.entity.enumeration.ExperienceRequire;
+import com.graduation.hiredhub.entity.enumeration.Gender;
 import com.graduation.hiredhub.entity.enumeration.JobType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,9 +32,11 @@ public class Posting {
     String title;
 
     @Column(nullable = false)
-    Integer experienceYear;
+    @Enumerated(EnumType.STRING)
+    ExperienceRequire experienceRequire;
 
-    String gender;
+    @Enumerated(EnumType.STRING)
+    Gender genderRequire;
 
     @Column(name = "number_of_position", nullable = false)
     Integer numberOfPosition;

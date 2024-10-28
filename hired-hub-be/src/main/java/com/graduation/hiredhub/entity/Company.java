@@ -52,7 +52,7 @@ public class Company {
     @Column(name = "is_active", nullable = false)
     Boolean isActive;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "scale_category_id")
     ScaleCategory scaleCategory;
 }

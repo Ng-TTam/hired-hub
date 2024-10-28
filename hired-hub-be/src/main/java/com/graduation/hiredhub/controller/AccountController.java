@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.request.UserRequest;
@@ -74,6 +75,13 @@ public class AccountController {
                                        @RequestParam String key){
         return ApiResponse.<Boolean>builder()
                 .data(accountService.resetPassword(authResetPassRequest, key))
+                .build();
+    }
+
+    @PostMapping("/employer/sign-up")
+    ApiResponse<AuthenticationResponse> businessSignUp(@RequestBody @Valid EmployerAccountCreationRequest employerAccountCreationRequest){
+        return ApiResponse.<AuthenticationResponse>builder()
+                .data(accountService.employerSignUp(employerAccountCreationRequest))
                 .build();
     }
 }
