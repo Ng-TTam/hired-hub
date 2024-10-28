@@ -138,7 +138,7 @@ public class AccountService {
         return true;
     }
     
-    private Account getAccountInContext(){
+    public Account getAccountInContext(){
         var context = SecurityContextHolder.getContext();
         var accountId = context.getAuthentication().getName();
 
