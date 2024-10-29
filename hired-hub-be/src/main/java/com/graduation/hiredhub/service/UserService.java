@@ -27,6 +27,14 @@ public class UserService {
 
     static final String FOLDER_UPLOAD_AVATAR = "avatars";
 
+
+    /**
+     * Update profile of user is verified (status = "ACTIVATE")
+     *
+     * @param userRequest
+     * @param avatar
+     * @return profile user
+     */
     @Transactional
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public UserResponse updateUserProfile(UserRequest userRequest, MultipartFile avatar){

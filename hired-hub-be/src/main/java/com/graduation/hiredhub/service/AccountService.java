@@ -138,6 +138,8 @@ public class AccountService {
     }
 
     /**
+     * Send key and store key after verify otp
+     * Key store in cache by form: TOKEN_RESET_PASS_token: accountId
      *
      * @param authResetPassRequest
      * @param otp
@@ -160,6 +162,12 @@ public class AccountService {
         }
     }
 
+    /**
+     * Authenticate before using verify otp if otp invalid, must resend otp
+     *
+     * @param otp
+     * @return message: "Your account verified successfully."
+     */
     @Transactional
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public String verifyOtp(String otp){
@@ -180,6 +188,13 @@ public class AccountService {
         return "Your account verified successfully.";
     }
 
+    /**
+     * Reset password of account in db, can not authenticate
+     *
+     * @param authChangePassRequest
+     * @param key
+     * @return boolean
+     */
     @Transactional
     public boolean resetPassword(AuthResetPassRequest authChangePassRequest, String key){
         String accountId = stringRedisTemplate.opsForValue().get(PRE_RESET_PASS + key);
@@ -198,7 +213,12 @@ public class AccountService {
         }
         return true;
     }
-    
+
+    /**
+     * Get account store in token -> subject token: accountId
+     *
+     * @return account in context
+     */
     public Account getAccountInContext(){
         var context = SecurityContextHolder.getContext();
         var accountId = context.getAuthentication().getName();

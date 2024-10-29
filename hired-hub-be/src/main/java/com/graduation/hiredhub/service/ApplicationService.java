@@ -22,6 +22,15 @@ public class ApplicationService {
     ApplicationRepository applicationRepository;
     ApplicationMapper applicationMapper;
 
+    /**
+     * Get applications in posting of employer
+     * Only employer posting can be seen applications in post
+     *
+     * @param postingId
+     * @param page
+     * @param size
+     * @return
+     */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public PageResponse<ApplicationDTO> getApplications(String postingId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1,size);
@@ -35,6 +44,14 @@ public class ApplicationService {
                 .build();
     }
 
+    /**
+     * Get application detail in posting of employer
+     * Only employer posting can be seen application detail in post
+     *
+     * @param postingId
+     * @param applicationId
+     * @return applications
+     */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public ApplicationDTO getApplication(String postingId, Integer applicationId) {
         Application application = applicationRepository.findById(applicationId).orElseThrow(
@@ -47,6 +64,15 @@ public class ApplicationService {
         return applicationMapper.toApplicationDTO(application);
     }
 
+    /**
+     * Update application -> review and comment for cv of user
+     * Only employer posting can be review and cmt applications in post
+     *
+     * @param postingId
+     * @param applicationId
+     * @param applicationDTO
+     * @return application is reviewed
+     */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public ApplicationDTO updateApplication(String postingId, Integer applicationId, ApplicationDTO applicationDTO) {
         Application application = applicationRepository.findById(applicationId).orElseThrow(

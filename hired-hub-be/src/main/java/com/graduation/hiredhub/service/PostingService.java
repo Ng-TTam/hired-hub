@@ -28,6 +28,11 @@ public class PostingService {
     PostingMapper postingMapper;
     AccountService accountService;
 
+    /**
+     *
+     * @param postingRequest
+     * @return posting
+     */
     @PreAuthorize("hasRole('EMPLOYER')")
     public PostingDetailResponse createPosting(PostingRequest postingRequest){
         Posting posting = postingMapper.toPosting(postingRequest);
@@ -40,6 +45,13 @@ public class PostingService {
         return postingMapper.toPostingDetailResponse(posting);
     }
 
+    /**
+     * Only employer posting can be update post
+     *
+     * @param postingId
+     * @param postingRequest
+     * @return posting
+     */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest){
         Posting posting = postingRepository.findById(postingId).orElseThrow(
@@ -57,6 +69,13 @@ public class PostingService {
         return postingMapper.toPostingDetailResponse(posting);
     }
 
+    /**
+     * Get postings employer post
+     *
+     * @param page
+     * @param size
+     * @return
+     */
     @PreAuthorize("hasRole('EMPLOYER')")
     public PageResponse<PostingResponse> getPostingsByEmployer(int page, int size){
         Pageable pageable = PageRequest.of(page - 1,size);
@@ -70,6 +89,12 @@ public class PostingService {
                 .build();
     }
 
+    /**
+     * All user can be get post detail
+     *
+     * @param postingId
+     * @return posting
+     */
     @PreAuthorize("permitAll()")
     public PostingDetailResponse getPostingDetail(String postingId){
 
