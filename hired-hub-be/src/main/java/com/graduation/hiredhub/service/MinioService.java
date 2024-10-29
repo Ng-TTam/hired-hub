@@ -2,10 +2,8 @@ package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
-import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
-import io.minio.http.Method;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +24,10 @@ public class MinioService {
     @NonFinal
     @Value("${minio.bucket-name}")
     protected String bucketName;
+
+    @NonFinal
+    @Value("${minio.url}")
+    protected String minioUrl;
 
     /**
      * Upload file to Minio server
@@ -44,15 +45,7 @@ public class MinioService {
                     .stream(inputStream, file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
-
-            return minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .method(Method.GET)
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .expiry(1, TimeUnit.DAYS)
-                            .build()
-            );
+            return minioUrl + "/" + bucketName + "/" + fileName;
         }catch (Exception e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }

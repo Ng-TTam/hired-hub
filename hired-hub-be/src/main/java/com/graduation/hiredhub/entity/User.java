@@ -43,7 +43,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     Gender gender;
 
-    @Column(length = 500)
     String avatar;
 
     @OneToOne(cascade = CascadeType.MERGE)

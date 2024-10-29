@@ -25,7 +25,7 @@ public class UserService {
     UserMapper userMapper;
     MinioService minioService;
 
-    static final String FOLDER_UPLOAD_AVATAR = "Avatars";
+    static final String FOLDER_UPLOAD_AVATAR = "avatars";
 
     @Transactional
     @PreAuthorize("hasRole('JOB_SEEKER')")
