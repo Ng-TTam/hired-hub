@@ -57,6 +57,12 @@ public class AuthenticationService {
     static final String PRE_TOKEN = "TOKEN_";
     static final String PRE_REFRESH_TOKEN = "REFRESH_TOKEN_";
 
+    /**
+     * authenticate account
+     *
+     * @param authenticationRequest
+     * @return access token and refresh
+     */
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         Account account = accountRepository.findByEmail(authenticationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -68,6 +74,12 @@ public class AuthenticationService {
         return createTokenBase(account);
     }
 
+    /**
+     * gen token for account
+     *
+     * @param account
+     * @return
+     */
     public String generateToken(Account account) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
@@ -104,6 +116,12 @@ public class AuthenticationService {
         return VerifyTokenResponse.builder().valid(isValid).build();
     }
 
+    /**
+     * Gen access token to refresh token
+     *
+     * @param refreshRequest
+     * @return access token
+     */
     public TokenResponse refreshToken(RefreshRequest refreshRequest) {
         String accountId = stringRedisTemplate.opsForValue().get(PRE_REFRESH_TOKEN + refreshRequest.getRefreshToken());
 
@@ -148,7 +166,12 @@ public class AuthenticationService {
         }
     }
 
-    //create success token and refresh token for account to sign in and sign up
+    /**
+     * create access token and refresh token for account to sign in and sign up
+     *
+     * @param account
+     * @return access token and refresh
+     */
     public AuthenticationResponse createTokenBase(Account account){
         String token = generateToken(account);
         String refreshToken = UUID.randomUUID().toString();

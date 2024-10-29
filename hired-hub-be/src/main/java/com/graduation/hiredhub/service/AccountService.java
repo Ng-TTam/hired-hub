@@ -47,6 +47,13 @@ public class AccountService {
     private static final String PRE_RESET_PASS = "TOKEN_RESET_PASS_";
     private static final int TTL_TOKEN_RESET_CACHE = 5;
 
+    /**
+     * Sign up for job_seeker
+     * Create account, jobSeeker and send otp -> gen token
+     *
+     * @param userAccountCreationRequest
+     * @return access token and refresh token
+     */
     @Transactional
     public AuthenticationResponse signUp(UserAccountCreationRequest userAccountCreationRequest){
         if(accountRepository.existsByEmail(userAccountCreationRequest.getAccount().getEmail()))
@@ -74,6 +81,14 @@ public class AccountService {
         return authenticationService.createTokenBase(account);
     }
 
+
+    /**
+     * Sign up for employer
+     * create account, employer and send otp -> gen token
+     *
+     * @param employerAccountCreationRequest
+     * @return access token and refresh token
+     */
     @Transactional
     public AuthenticationResponse employerSignUp(EmployerAccountCreationRequest employerAccountCreationRequest){
         if(accountRepository.existsByEmail(employerAccountCreationRequest.getAccount().getEmail()))
@@ -101,12 +116,20 @@ public class AccountService {
 
         return authenticationService.createTokenBase(account);
     }
-    
+
+    /**
+     * Resend otp when otp expire, otp invalid
+     * Can resend otp if created account
+     */
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public void resendOtpSignUp(){
         otpService.send(SIGNUP_OTP, getAccountInContext().getEmail());
     }
 
+    /**
+     * Send otp to reset password
+     * @param authResetPassRequest
+     */
     public void otpResetPassword(AuthResetPassRequest authResetPassRequest){
         var account = accountRepository.findByEmail(authResetPassRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
@@ -114,6 +137,12 @@ public class AccountService {
         otpService.send(RESET_OTP, account.getEmail());
     }
 
+    /**
+     *
+     * @param authResetPassRequest
+     * @param otp
+     * @return
+     */
     public String verifyOtpResetPassword(AuthResetPassRequest authResetPassRequest, String otp){
         if(!otpService.verify(RESET_OTP, authResetPassRequest.getEmail(), otp))
             throw new AppException(ErrorCode.INVALID_OTP);
