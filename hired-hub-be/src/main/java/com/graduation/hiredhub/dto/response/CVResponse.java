@@ -23,6 +23,6 @@ public class CVResponse {
 
     String others;
 
-    JobSeeker jobSeeker;
+    // JobSeeker jobSeeker;
 
 }
