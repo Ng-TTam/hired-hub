@@ -42,7 +42,8 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     Gender gender;
-    
+
+    @Column(length = 500)
     String avatar;
 
     @OneToOne(cascade = CascadeType.MERGE)

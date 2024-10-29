@@ -1,5 +1,7 @@
 package com.graduation.hiredhub.service;
 
+import com.graduation.hiredhub.exception.AppException;
+import com.graduation.hiredhub.exception.ErrorCode;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -26,9 +28,15 @@ public class MinioService {
     @Value("${minio.bucket-name}")
     protected String bucketName;
 
-    public String uploadFile(MultipartFile file, String folder) throws Exception {
-        String fileName = folder + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
-        // Upload file
+    /**
+     * Upload file to Minio server
+     *
+     * @param file
+     * @param folder
+     * @return url of file already upload
+     */
+    public String uploadFile(MultipartFile file, String folder) {
+        String fileName = folder + "/" + UUID.randomUUID();
         try (InputStream inputStream = file.getInputStream()) {
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
@@ -36,15 +44,17 @@ public class MinioService {
                     .stream(inputStream, file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
-        }
 
-        return minioClient.getPresignedObjectUrl(
-                GetPresignedObjectUrlArgs.builder()
-                        .method(Method.GET)
-                        .bucket(bucketName)
-                        .object(fileName)
-                        .expiry(1, TimeUnit.DAYS)
-                        .build()
-        );
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(bucketName)
+                            .object(fileName)
+                            .expiry(1, TimeUnit.DAYS)
+                            .build()
+            );
+        }catch (Exception e) {
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
+        }
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -22,15 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    MinioService minioService;
+
+    static final String FOLDER_UPLOAD_AVATAR = "Avatars";
 
     @Transactional
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public UserResponse updateUserProfile(UserRequest userCreationRequest){
+    public UserResponse updateUserProfile(UserRequest userRequest, MultipartFile avatar){
         User user = getUserInContext();
-        userMapper.updateUser(user, userCreationRequest);
-
         if(user.getAccount().getStatus() == Status.PENDING)
             throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFY);
+
+        userMapper.updateUser(user, userRequest);
+        user.setAvatar(minioService.uploadFile(avatar, FOLDER_UPLOAD_AVATAR));
 
         try {
             userRepository.save(user);

@@ -1,19 +1,27 @@
 package com.graduation.hiredhub.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
 import com.graduation.hiredhub.dto.response.UserResponse;
+import com.graduation.hiredhub.exception.AppException;
+import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.service.AccountService;
 import com.graduation.hiredhub.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
+@Slf4j
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
@@ -21,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     AccountService accountService;
     UserService userService;
+    ObjectMapper mapper;
 
     //3 endpoint below to sign up function
     @PostMapping("/sign-up")
@@ -38,10 +47,18 @@ public class AccountController {
     }
 
     @PostMapping("/update-profile")
-    ApiResponse<UserResponse> updateProfile(@RequestParam UserRequest userCreationRequest){
-        return ApiResponse.<UserResponse>builder()
-                .data(userService.updateUserProfile(userCreationRequest))
-                .build();
+    ApiResponse<UserResponse> updateProfile(@RequestPart("user") String userUpdateJson,
+                                            @RequestPart("avatar") MultipartFile avatar){
+        try {
+            UserRequest userRequest = mapper.readValue(userUpdateJson, UserRequest.class);
+
+            return ApiResponse.<UserResponse>builder()
+                    .data(userService.updateUserProfile(userRequest, avatar))
+                    .build();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
+        }
     }
 
     @GetMapping("/resend-otp")
