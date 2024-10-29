@@ -22,7 +22,4 @@ public class CVResponse {
     String skill;
 
     String others;
-
-    JobSeeker jobSeeker;
-
 }

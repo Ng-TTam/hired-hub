@@ -30,14 +30,20 @@ public enum ErrorCode {
     USER_NOT_EXISTED("EXISTED_001", "User not existed", HttpStatus.NOT_FOUND),
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),
     KEY_NOT_EXISTED("EXISTED_003", "Key token is not existed", HttpStatus.NOT_FOUND),
+    CV_NOT_EXISTED("EXISTED_101","CV is not exist", HttpStatus.NOT_FOUND),
+    
+    CV_NOT_FOUND("NOT_FOUND", "CV not found", HttpStatus.NOT_FOUND),
 
     EMAIL_EXISTED("EXISTED_004", "Email is existed", HttpStatus.BAD_REQUEST),
     
+
     ERROR_SEND_OTP("ERROR","Somethings wrong when send otp", HttpStatus.BAD_REQUEST),
     INTERNAL_ERROR("INTERNAL_ERROR", "Server have some error", HttpStatus.INTERNAL_SERVER_ERROR),
 
     TOKEN_EXPIRED("LOG_OUT", "Your session is expired. Please login again!!!", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_VERIFY("NOT_VERIFY", "Your account is not verified", HttpStatus.BAD_REQUEST),
+
+    
     ;
 
     private final String code;

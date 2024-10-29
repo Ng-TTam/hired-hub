@@ -13,7 +13,4 @@ public interface JobSeekerRepository extends JpaRepository<JobSeeker, String> {
 
     Optional<JobSeeker> findByAccountId(String accountId);
 
-    // List<CV> findCVByJobSeeker(JobSeeker jobSeeker);
-
-    // Optional<CV> findByJobSeeker(JobSeeker jobSeeker);
 }

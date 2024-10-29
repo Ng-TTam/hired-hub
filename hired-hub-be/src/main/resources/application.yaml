@@ -10,8 +10,8 @@ spring:
     name: HiredHub
   datasource:
     url: jdbc:mysql://localhost:3308/hired_hub?createDatabaseIfNotExist=true
-    username: hiredhub
-    password: hiredhub
+    username: root
+    password: root
   jpa:
     generate-ddl: true
     hibernate:
