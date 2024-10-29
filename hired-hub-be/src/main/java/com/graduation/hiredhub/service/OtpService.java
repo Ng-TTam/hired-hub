@@ -24,6 +24,13 @@ public class OtpService {
 
     private static final int OTP_TTL_MIN = 5;
 
+    /**
+     * Send otp when sign up or reset pass
+     * type: SIGN_UP, RESET_PASS
+     *
+     * @param type
+     * @param email
+     */
     public void send(String type, String email){
         try {
             String key = "OTP_" + type + "_" + email;
@@ -39,6 +46,14 @@ public class OtpService {
         }
     }
 
+    /**
+     * Verify otp in server
+     *
+     * @param type
+     * @param email
+     * @param otp
+     * @return
+     */
     public boolean verify(String type, String email, String otp){
         String key = "OTP_" + type+ "_" + email;
         String otpStored = stringRedisTemplate.opsForValue().get(key);
@@ -51,6 +66,10 @@ public class OtpService {
         return false;
     }
 
+    /**
+     * Gen random otp
+     * @return otp
+     */
     private String generateOtp(){
         StringBuilder otp = new StringBuilder(OTP_LENGTH);
         for (int i = 0; i < OTP_LENGTH; i++) {

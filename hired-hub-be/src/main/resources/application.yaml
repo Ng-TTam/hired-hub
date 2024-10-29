@@ -46,6 +46,12 @@ minio:
   bucket-name: hired-hub
 
 
+minio:
+  url: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: hired-hub
+
 jwt:
   secret: 94b8901a1660a7c61ca10349a17b5b99d6535590f440afdb7d17045cc43f776c624826766ff013eb6de391cf784c5e6a20da31453c0c46d4cb05376c55f29b59
   expiration: 30
