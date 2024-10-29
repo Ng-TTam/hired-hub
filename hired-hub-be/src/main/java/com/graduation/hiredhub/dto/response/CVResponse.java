@@ -22,4 +22,6 @@ public class CVResponse {
     String skill;
 
     String others;
+
+    String jobSeekerId;
 }
