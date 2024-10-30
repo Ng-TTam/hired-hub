@@ -17,6 +17,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -42,7 +45,9 @@ public class CVService {
     public CVResponse updateCV(String cvid, CVRequest cvRequest){
         CV cv = cVRepository.findById(cvid)
             .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
-        
+        if (!cv.getJobSeeker().getAccount().getId().equals(getJobSeekerByAccount().getAccount().getId())){
+            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
         cvMapper.updateCV(cv, cvRequest);
         cv.setJobSeeker(getJobSeekerByAccount());
         try {
@@ -57,6 +62,9 @@ public class CVService {
     public  CVResponse deleteCV(String cvid){
         CV cv = cVRepository.findById((cvid))
                 .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
+        if (!cv.getJobSeeker().getAccount().getId().equals(getJobSeekerByAccount().getAccount().getId())){
+            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
         try {
             cVRepository.delete(cv);
         }catch (Exception e){
@@ -65,11 +73,17 @@ public class CVService {
         return cvMapper.toCVResponse(cv);
     }
 
+    @PreAuthorize("hasRole('JOB_SEEKER')")
+    public List<CVResponse> getAllCVs() {
+        List<CV> cvList = cVRepository.findByJobSeeker(getJobSeekerByAccount());
+        return cvList.stream()
+                .map(cvMapper::toCVResponse)
+                .collect(Collectors.toList());
+    }
+
     JobSeeker getJobSeekerByAccount(){
         return jobSeekerRepository.findByAccountId(accountService.getAccountInContext().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));   
     }
 
-
-    
 }

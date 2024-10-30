@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION("UNCATEGORIZED", "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATED("AUTH", "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED_ACCESS("UNCATEGORIZED", "Uncategorized access",HttpStatus.UNAUTHORIZED),
 
     INVALID_KEY("INVALID_001","Uncategorized error", HttpStatus.BAD_REQUEST),
     INVALID_NAME("INVALID_002", "Name must be less than 100 characters", HttpStatus.BAD_REQUEST),

@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/cv")
@@ -45,6 +47,15 @@ public class CVController {
         return ApiResponse.<CVResponse>builder()
                 .data(deletedCV)
                 .message("CV deleted successfully")
+                .build();
+    }
+
+    @GetMapping("/all")
+    public ApiResponse<List<CVResponse>> getAllCVs() {
+        List<CVResponse> cvs = cvService.getAllCVs();
+        return ApiResponse.<List<CVResponse>>builder()
+                .data(cvs)
+                .message("Successfully retrieved all CVs")
                 .build();
     }
 }
