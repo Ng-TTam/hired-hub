@@ -53,6 +53,18 @@ public class CVService {
         return cvMapper.toCVResponse(cv);
     }
 
+    @PreAuthorize("@CVSecurity.isCVOwner(#cvid, authentication.name)")
+    public  CVResponse deleteCV(String cvid){
+        CV cv = cVRepository.findById((cvid))
+                .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
+        try {
+            cVRepository.delete(cv);
+        }catch (Exception e){
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
+        }
+        return cvMapper.toCVResponse(cv);
+    }
+
     JobSeeker getJobSeekerByAccount(){
         return jobSeekerRepository.findByAccountId(accountService.getAccountInContext().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));   

@@ -1,7 +1,6 @@
 package com.graduation.hiredhub.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.graduation.hiredhub.dto.request.CVRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
@@ -12,12 +11,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -45,5 +38,13 @@ public class CVController {
                 .data(updatedCV)
                 .build();
     }
-    
+
+    @DeleteMapping("/{cvId}")
+    ApiResponse<CVResponse> deleteCV(@PathVariable String cvId) {
+        CVResponse deletedCV = cvService.deleteCV(cvId);
+        return ApiResponse.<CVResponse>builder()
+                .data(deletedCV)
+                .message("CV deleted successfully")
+                .build();
+    }
 }
