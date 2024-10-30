@@ -45,7 +45,7 @@ public class CVService {
     public CVResponse updateCV(String cvid, CVRequest cvRequest){
         CV cv = cVRepository.findById(cvid)
             .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
-        if (!cv.getJobSeeker().getAccount().getId().equals(getJobSeekerByAccount().getAccount().getId())){
+        if (!cv.getJobSeeker().getId().equals(getJobSeekerByAccount().getId())){
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
         cvMapper.updateCV(cv, cvRequest);
@@ -62,7 +62,7 @@ public class CVService {
     public  CVResponse deleteCV(String cvid){
         CV cv = cVRepository.findById((cvid))
                 .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
-        if (!cv.getJobSeeker().getAccount().getId().equals(getJobSeekerByAccount().getAccount().getId())){
+        if (!cv.getJobSeeker().getId().equals(getJobSeekerByAccount().getId())){
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
         try {
