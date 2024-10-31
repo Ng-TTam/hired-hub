@@ -4,6 +4,7 @@ import com.graduation.hiredhub.entity.enumeration.Gender;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -35,4 +36,6 @@ public class UserRequest {
 
     @NotNull(message = "BLANK_GENDER")
     Gender gender;
+
+    MultipartFile avatar;
 }

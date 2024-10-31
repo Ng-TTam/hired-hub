@@ -11,12 +11,13 @@ import com.graduation.hiredhub.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -32,22 +33,24 @@ public class UserService {
      * Update profile of user is verified (status = "ACTIVATE")
      *
      * @param userRequest
-     * @param avatar
      * @return profile user
      */
     @Transactional
-    @PreAuthorize("hasRole('JOB_SEEKER')")
-    public UserResponse updateUserProfile(UserRequest userRequest, MultipartFile avatar){
+    @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
+    public UserResponse updateUserProfile(UserRequest userRequest){
         User user = getUserInContext();
         if(user.getAccount().getStatus() == Status.PENDING)
             throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFY);
 
         userMapper.updateUser(user, userRequest);
-        user.setAvatar(minioService.uploadFile(avatar, FOLDER_UPLOAD_AVATAR));
+
+        if( userRequest.getAvatar() != null)
+            user.setAvatar(minioService.uploadFile(userRequest.getAvatar(), FOLDER_UPLOAD_AVATAR));
 
         try {
             userRepository.save(user);
         }  catch (Exception e) {
+            log.error(e.getMessage());
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
         return userMapper.toUserResponse(user);

@@ -1,6 +1,5 @@
 package com.graduation.hiredhub.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.UserResponse;
@@ -22,20 +21,12 @@ import java.io.IOException;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
     UserService userService;
-    ObjectMapper mapper;
 
     @PostMapping("/update-profile")
-    ApiResponse<UserResponse> updateProfile(@RequestPart("user") @Valid String userUpdateJson,
-                                            @RequestPart("avatar") MultipartFile avatar){
-        try {
-            UserRequest userRequest = mapper.readValue(userUpdateJson, UserRequest.class);
-
-            return ApiResponse.<UserResponse>builder()
-                    .data(userService.updateUserProfile(userRequest, avatar))
+    ApiResponse<UserResponse> updateProfile(@ModelAttribute @Valid UserRequest userRequest) {
+        return ApiResponse.<UserResponse>builder()
+                    .data(userService.updateUserProfile(userRequest))
                     .build();
-        } catch (IOException e) {
-            throw new AppException(ErrorCode.INTERNAL_ERROR);
-        }
     }
 
     @GetMapping
