@@ -1,0 +1,111 @@
+.wrapper {
+    width: 40vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 20px;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.logo {
+    width: 74px;
+    height: auto;
+    object-fit: cover;
+}
+
+.header__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #212f3f;
+}
+
+.company-name {
+    font-size: 16px;
+    font-weight: 300;
+    color: #7f878f;
+}
+
+.header-content__salary {
+    color: #00b14f;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.sumary {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.sumary-item {
+    display: flex;
+    gap: 4px;
+    background-color: #f4f5f5;
+    border-radius: var(--border-radius);
+    font-size: 12px;
+    font-weight: 400;
+    padding: 8px;
+}
+
+.jd-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.jd-item__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #212f3f;
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 12px;
+    &::before {
+        content: '';
+        background-color: #00b14f;
+        border-radius: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+    }
+}
+
+.jd-item__content {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    padding-top: 16px;
+    gap: 16px;
+}
+
+.btn-apply {
+    flex: 1;
+}
+
+.btn-detail {
+    flex: 3;
+}
