@@ -1,0 +1,10 @@
+.wrapper {
+    background: #fff;
+    border: none;
+    border-radius: 6px !important;
+    box-shadow: 0 1px 16px rgba(0, 0, 0, 0.06);
+    z-index: 2;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}

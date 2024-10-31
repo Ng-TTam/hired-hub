@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './NotificationBadge.scss';
-import bell from '../assets/icons/bell.svg';
+import bell from '../../assets/icons/bell.svg';
 
 const NotificationBadge = ({ unreadCount }) => {
   return (

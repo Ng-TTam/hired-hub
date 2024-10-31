@@ -1,6 +1,7 @@
 package com.graduation.hiredhub.controller;
 
 import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
+import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -76,6 +78,21 @@ public class PostingController {
                                                              @RequestBody @Valid ApplicationDTO applicationDTO) {
         return ApiResponse.<ApplicationDTO>builder()
                 .data(applicationService.updateApplication(postingId, applicationId, applicationDTO))
+                .build();
+    }
+
+    /**
+     * {@code GET /posting} get a page of Posting
+     *
+     * @param criteria the filter information
+     * @param pageable the pagination information
+     * @return {@link PageResponse} with list of {@link PostingDetailResponse} in data and status {@code 200 (OK)}
+     */
+    @GetMapping
+    public ApiResponse<PageResponse<PostingDetailResponse>> filter(PostingFilterCriteria criteria, Pageable pageable) {
+        PageResponse<PostingDetailResponse> page = postingService.filter(criteria, pageable);
+        return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
+                .data(page)
                 .build();
     }
 }

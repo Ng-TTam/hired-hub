@@ -36,4 +36,5 @@ public class PostingDetailResponse {
     CurrencyUnit currencyUnit;
     Integer minimumSalary;
     Integer maximumSalary;
+    CompanyResponse company;
 }

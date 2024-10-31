@@ -1,6 +1,6 @@
 package com.graduation.hiredhub.service;
 
-import com.graduation.hiredhub.dto.reqResp.ProvinceDTO;
+import com.graduation.hiredhub.dto.reqResp.ProvinceDetailDTO;
 import com.graduation.hiredhub.mapper.ProvinceMapper;
 import com.graduation.hiredhub.repository.ProvinceRepository;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ public class ProvinceService {
     ProvinceRepository provinceRepository;
     ProvinceMapper provinceMapper;
 
-    public List<ProvinceDTO> findAll() {
-        return provinceRepository.findAll().stream().map(provinceMapper::toProvinceDTO).toList();
+    public List<ProvinceDetailDTO> findAll() {
+        return provinceRepository.findAll().stream().map(provinceMapper::toProvinceDetailDTO).toList();
     }
 }
