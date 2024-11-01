@@ -2,17 +2,17 @@ package com.graduation.hiredhub.dto.request;
 
 import com.graduation.hiredhub.entity.enumeration.Gender;
 import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
     @NotBlank(message = "BLANK_FIRST_NAME")
@@ -36,4 +36,6 @@ public class UserRequest {
 
     @NotNull(message = "BLANK_GENDER")
     Gender gender;
+
+    MultipartFile avatar;
 }

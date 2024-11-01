@@ -1,7 +1,6 @@
 package com.graduation.hiredhub.dto.response;
 
-import com.graduation.hiredhub.entity.JobSeeker;
-
+import com.graduation.hiredhub.dto.reqResp.JobSeekerDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,15 +12,11 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CVResponse {
+    String id;
     String description;
-
     String experience;
-
     String education;
-
     String skill;
-
     String others;
-
-    String jobSeekerId;
+    JobSeekerDTO jobSeekerDTO;
 }

@@ -1,9 +1,11 @@
 package com.graduation.hiredhub.service;
 
+import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
 import com.graduation.hiredhub.entity.Account;
+import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.JobSeeker;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
@@ -11,6 +13,7 @@ import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.UserMapper;
 import com.graduation.hiredhub.repository.AccountRepository;
+import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.JobSeekerRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,7 @@ import java.util.UUID;
 public class AccountService {
     AccountRepository accountRepository;
     JobSeekerRepository jobSeekerRepository;
+    EmployerRepository employerRepository;
     PasswordEncoder passwordEncoder;
     StringRedisTemplate stringRedisTemplate;
     OtpService otpService;
@@ -43,6 +47,13 @@ public class AccountService {
     private static final String PRE_RESET_PASS = "TOKEN_RESET_PASS_";
     private static final int TTL_TOKEN_RESET_CACHE = 5;
 
+    /**
+     * Sign up for job_seeker
+     * Create account, jobSeeker and send otp -> gen token
+     *
+     * @param userAccountCreationRequest
+     * @return access token and refresh token
+     */
     @Transactional
     public AuthenticationResponse signUp(UserAccountCreationRequest userAccountCreationRequest){
         if(accountRepository.existsByEmail(userAccountCreationRequest.getAccount().getEmail()))
@@ -69,12 +80,56 @@ public class AccountService {
 
         return authenticationService.createTokenBase(account);
     }
-    
-    @PreAuthorize("hasRole('JOB_SEEKER')")
+
+
+    /**
+     * Sign up for employer
+     * create account, employer and send otp -> gen token
+     *
+     * @param employerAccountCreationRequest
+     * @return access token and refresh token
+     */
+    @Transactional
+    public AuthenticationResponse employerSignUp(EmployerAccountCreationRequest employerAccountCreationRequest){
+        if(accountRepository.existsByEmail(employerAccountCreationRequest.getAccount().getEmail()))
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+
+        Account account = Account.builder()
+                .email(employerAccountCreationRequest.getAccount().getEmail())
+                .password(passwordEncoder.encode(employerAccountCreationRequest.getAccount().getPassword()))
+                .role(Role.EMPLOYER)
+                .status(Status.PENDING)
+                .build();
+
+        try {
+            accountRepository.save(account);
+
+            Employer employer = userMapper.toEmployer(employerAccountCreationRequest.getUser());
+            employer.setPosition(employerAccountCreationRequest.getPosition());
+            employer.setAccount(account);
+            employerRepository.save(employer);
+        } catch (DataIntegrityViolationException e){
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
+        }
+
+        otpService.send(SIGNUP_OTP, employerAccountCreationRequest.getAccount().getEmail());
+
+        return authenticationService.createTokenBase(account);
+    }
+
+    /**
+     * Resend otp when otp expire, otp invalid
+     * Can resend otp if created account
+     */
+    @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public void resendOtpSignUp(){
         otpService.send(SIGNUP_OTP, getAccountInContext().getEmail());
     }
 
+    /**
+     * Send otp to reset password
+     * @param authResetPassRequest
+     */
     public void otpResetPassword(AuthResetPassRequest authResetPassRequest){
         var account = accountRepository.findByEmail(authResetPassRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
@@ -82,6 +137,14 @@ public class AccountService {
         otpService.send(RESET_OTP, account.getEmail());
     }
 
+    /**
+     * Send key and store key after verify otp
+     * Key store in cache by form: TOKEN_RESET_PASS_token: accountId
+     *
+     * @param authResetPassRequest
+     * @param otp
+     * @return
+     */
     public String verifyOtpResetPassword(AuthResetPassRequest authResetPassRequest, String otp){
         if(!otpService.verify(RESET_OTP, authResetPassRequest.getEmail(), otp))
             throw new AppException(ErrorCode.INVALID_OTP);
@@ -99,8 +162,14 @@ public class AccountService {
         }
     }
 
+    /**
+     * Authenticate before using verify otp if otp invalid, must resend otp
+     *
+     * @param otp
+     * @return message: "Your account verified successfully."
+     */
     @Transactional
-    @PreAuthorize("hasRole('JOB_SEEKER')")
+    @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public String verifyOtp(String otp){
         Account account = getAccountInContext();
 
@@ -119,6 +188,13 @@ public class AccountService {
         return "Your account verified successfully.";
     }
 
+    /**
+     * Reset password of account in db, can not authenticate
+     *
+     * @param authChangePassRequest
+     * @param key
+     * @return boolean
+     */
     @Transactional
     public boolean resetPassword(AuthResetPassRequest authChangePassRequest, String key){
         String accountId = stringRedisTemplate.opsForValue().get(PRE_RESET_PASS + key);
@@ -137,7 +213,12 @@ public class AccountService {
         }
         return true;
     }
-    
+
+    /**
+     * Get account store in token -> subject token: accountId
+     *
+     * @return account in context
+     */
     public Account getAccountInContext(){
         var context = SecurityContextHolder.getContext();
         var accountId = context.getAuthentication().getName();

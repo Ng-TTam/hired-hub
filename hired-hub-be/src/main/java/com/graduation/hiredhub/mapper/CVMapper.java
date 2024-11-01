@@ -11,8 +11,8 @@ import com.graduation.hiredhub.entity.CV;
 @Mapper(componentModel = "spring")
 public interface CVMapper {
     CV toCV(CVRequest cvRequest);
-    
-    @Mapping(source = "jobSeeker.id", target = "jobSeekerId")
+
+    @Mapping(source = "jobSeeker", target = "jobSeekerDTO")
     CVResponse toCVResponse(CV cv);
     
     void updateCV(@MappingTarget CV cv, CVRequest cvRequest);

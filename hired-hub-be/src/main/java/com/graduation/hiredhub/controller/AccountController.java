@@ -1,13 +1,11 @@
 package com.graduation.hiredhub.controller;
 
-import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
-import com.graduation.hiredhub.dto.request.UserRequest;
+import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
+import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
-import com.graduation.hiredhub.dto.response.UserResponse;
 import com.graduation.hiredhub.service.AccountService;
-import com.graduation.hiredhub.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountController {
     AccountService accountService;
-    UserService userService;
 
     //3 endpoint below to sign up function
     @PostMapping("/sign-up")
@@ -34,13 +31,6 @@ public class AccountController {
     ApiResponse<String> verifyOtp(@RequestParam String otp){
         return ApiResponse.<String>builder()
                 .data(accountService.verifyOtp(otp))
-                .build();
-    }
-
-    @PostMapping("/update-profile")
-    ApiResponse<UserResponse> updateProfile(@RequestParam UserRequest userCreationRequest){
-        return ApiResponse.<UserResponse>builder()
-                .data(userService.updateUserProfile(userCreationRequest))
                 .build();
     }
 
@@ -74,6 +64,13 @@ public class AccountController {
                                        @RequestParam String key){
         return ApiResponse.<Boolean>builder()
                 .data(accountService.resetPassword(authResetPassRequest, key))
+                .build();
+    }
+
+    @PostMapping("/employer/sign-up")
+    ApiResponse<AuthenticationResponse> businessSignUp(@RequestBody @Valid EmployerAccountCreationRequest employerAccountCreationRequest){
+        return ApiResponse.<AuthenticationResponse>builder()
+                .data(accountService.employerSignUp(employerAccountCreationRequest))
                 .build();
     }
 }

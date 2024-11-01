@@ -32,5 +32,4 @@ public class CVRequest {
     String others;
 
     JobSeeker jobSeeker;
-
 }

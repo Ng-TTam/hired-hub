@@ -1,0 +1,33 @@
+.button {
+    display: flex;
+    color: #263a4d;
+    font-size: 14px;
+    font-weight: 500;
+    width: 200px;
+
+    span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+    }
+}
+
+.content {
+    padding: 16px 16px 24px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter {
+    border-radius: 1px;
+    outline: solid;
+    outline-color: rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    margin-bottom: 24px;
+}
+
+.list-item {
+    max-height: 200px;
+    overflow-y: auto;
+}

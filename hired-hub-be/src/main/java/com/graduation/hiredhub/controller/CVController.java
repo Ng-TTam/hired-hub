@@ -1,5 +1,7 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.response.ApplicationResponse;
+import com.graduation.hiredhub.service.ApplicationService;
 import org.springframework.web.bind.annotation.*;
 
 import com.graduation.hiredhub.dto.request.CVRequest;
@@ -21,6 +23,7 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CVController {
     CVService cvService;
+    ApplicationService applicationService;
 
     @PostMapping
     ApiResponse<CVResponse> createCV(@RequestBody @Valid CVRequest cvRequest){
@@ -50,7 +53,25 @@ public class CVController {
                 .build();
     }
 
-    @GetMapping("/all")
+    @GetMapping("/{cvId}")
+    ApiResponse<CVResponse>getCV(@PathVariable String cvId){
+        CVResponse cv = cvService.getCV(cvId);
+        return ApiResponse.<CVResponse>builder()
+                .data(cv)
+                .message("Successfully")
+                .build();
+    }
+
+    @GetMapping("/{cvId}/applications")
+    ApiResponse<List<ApplicationResponse>> getApplications(@PathVariable String cvId){
+        List<ApplicationResponse> applications = applicationService.getApplicationByCVId(cvId);
+        return ApiResponse.<List<ApplicationResponse>>builder()
+                .data(applications)
+                .message("Successfully")
+                .build();
+    }
+
+    @GetMapping
     public ApiResponse<List<CVResponse>> getAllCVs() {
         List<CVResponse> cvs = cvService.getAllCVs();
         return ApiResponse.<List<CVResponse>>builder()

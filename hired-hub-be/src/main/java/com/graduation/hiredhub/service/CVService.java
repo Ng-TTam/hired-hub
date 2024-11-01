@@ -42,6 +42,16 @@ public class CVService {
     }
 
     @PreAuthorize("@CVSecurity.isCVOwner(#cvid, authentication.name)")
+    public CVResponse getCV(String cvid){
+        CV cv = cVRepository.findById(cvid)
+                .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
+        if (!cv.getJobSeeker().getId().equals(getJobSeekerByAccount().getId())){
+            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+        return cvMapper.toCVResponse(cv);
+    }
+
+    @PreAuthorize("@CVSecurity.isCVOwner(#cvid, authentication.name)")
     public CVResponse updateCV(String cvid, CVRequest cvRequest){
         CV cv = cVRepository.findById(cvid)
             .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));

@@ -9,5 +9,4 @@ import com.graduation.hiredhub.entity.JobSeeker;
 
 public interface CVRepository extends JpaRepository<CV, String> {
     List<CV> findByJobSeeker(JobSeeker jobSeeker);
-
 }

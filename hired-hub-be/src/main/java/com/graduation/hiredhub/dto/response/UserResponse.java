@@ -1,18 +1,17 @@
 package com.graduation.hiredhub.dto.response;
 
 import com.graduation.hiredhub.entity.enumeration.Gender;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
     String id;
