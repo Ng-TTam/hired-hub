@@ -15,6 +15,7 @@
     "@tippyjs/react": "^4.2.6",
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
     "find-job-ui": "file:",
     "hired-hub-ui": "file:",
     "react": "^18.3.1",

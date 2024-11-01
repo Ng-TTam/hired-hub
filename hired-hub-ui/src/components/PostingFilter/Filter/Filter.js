@@ -62,7 +62,7 @@ function Filter() {
         dispatch(fetchProvinces());
         dispatch(fetchPostions());
         dispatch(fetchJobCategories());
-        dispatch(fetchPostings({ pageable: { page: 0, size: 10 } }));
+        dispatch(fetchPostings({ pageable: { page: 0, size: 12 } }));
     }, [dispatch]);
 
     useEffect(() => {
@@ -103,7 +103,7 @@ function Filter() {
             jobType: selectedJobType?.id !== 'DEFAULT' ? selectedJobType.id : null,
         };
 
-        dispatch(fetchPostings({ criteria, pageable: { page: 0, size: 10 } }));
+        dispatch(fetchPostings({ criteria, pageable: { page: 0, size: 12 } }));
     };
 
     return (

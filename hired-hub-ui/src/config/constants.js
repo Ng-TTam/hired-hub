@@ -10,8 +10,13 @@ export const ExperienceRequire = Object.freeze({
 
 export const JobTypes = Object.freeze({
     FULL_TIME: { id: 'FULL_TIME', name: 'Toàn thời gian' },
-    PART_TIME: { id: 'PASS_TIME', name: 'Bán thời gian' },
+    PASS_TIME: { id: 'PASS_TIME', name: 'Bán thời gian' },
     INTERN: { id: 'INTERN', name: 'Thực tập sinh' },
+});
+
+export const GenderRequire = Object.freeze({
+    MALE: { id: 'MALE', name: 'Nam' },
+    FEMALE: { id: 'FEMALE', name: 'Nữ' },
 });
 
 const constants = {
