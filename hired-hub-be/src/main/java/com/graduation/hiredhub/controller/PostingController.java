@@ -51,7 +51,7 @@ public class PostingController {
                 .build();
     }
 
-    @PostMapping("/{postingId}/application/{cvId}")
+    @PostMapping("/{postingId}/jobSeeker/application/{cvId}")
     ApiResponse<ApplicationResponse> createApplication(@PathVariable String postingId,
                                                        @PathVariable String cvId){
         return ApiResponse.<ApplicationResponse>builder()
@@ -60,11 +60,20 @@ public class PostingController {
                 .build();
     }
 
-    @DeleteMapping("/{postingId}/application/{cvId}")
-    ApiResponse<ApplicationResponse> deleteApplication(@PathVariable String postingId,
-                                                       @PathVariable String cvId){
+    @GetMapping("/{postingId}/jobSeeker/applications/{applicationId}")
+    ApiResponse<ApplicationResponse> getApplicationJobSeeker(@PathVariable String postingId,
+                                                             @PathVariable Integer applicationId){
         return ApiResponse.<ApplicationResponse>builder()
-                .data(applicationService.deleteApplication(postingId, cvId))
+                .data(applicationService.getApplicationByJobSeeker(postingId,applicationId))
+                .message("Successfully")
+                .build();
+    }
+
+    @DeleteMapping("/{postingId}/jobSeeker/application/{applicationId}")
+    ApiResponse<ApplicationResponse> deleteApplication(@PathVariable String postingId,
+                                                       @PathVariable Integer applicationId){
+        return ApiResponse.<ApplicationResponse>builder()
+                .data(applicationService.deleteApplication(postingId, applicationId))
                 .message("Successfully")
                 .build();
     }
@@ -75,7 +84,7 @@ public class PostingController {
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         return ApiResponse.<PageResponse<ApplicationDTO>>builder()
-                .data(applicationService.getApplications(postingId, page, size))
+                .data(applicationService.getApplicationsByEmployer(postingId, page, size))
                 .build();
     }
 
@@ -83,7 +92,7 @@ public class PostingController {
     ApiResponse<ApplicationDTO> getApplicationByPosting(@PathVariable String postingId,
                                                         @PathVariable Integer applicationId) {
         return ApiResponse.<ApplicationDTO>builder()
-                .data(applicationService.getApplication(postingId, applicationId))
+                .data(applicationService.getApplicationByEmployer(postingId, applicationId))
                 .build();
     }
 

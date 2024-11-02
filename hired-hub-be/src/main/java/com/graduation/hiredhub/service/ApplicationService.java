@@ -5,6 +5,7 @@ import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.entity.Application;
 import com.graduation.hiredhub.entity.CV;
+import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.Posting;
 import com.graduation.hiredhub.entity.enumeration.ApplicationStatus;
 import com.graduation.hiredhub.exception.AppException;
@@ -12,6 +13,7 @@ import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.ApplicationMapper;
 import com.graduation.hiredhub.repository.ApplicationRepository;
 import com.graduation.hiredhub.repository.CVRepository;
+import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.PostingRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,16 +67,14 @@ public class ApplicationService {
     }
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public ApplicationResponse deleteApplication(String postingId, String cvId){
-        Posting posting = postingRepository.findById(postingId)
-                .orElseThrow(() -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
-        CV cv = cvRepository.findById(cvId)
-                .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
-        if (!cv.getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
+    public ApplicationResponse deleteApplication(String postingId, Integer applicationId){
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED));
+        if(!application.getPosting().getId().equals(postingId))
+            throw new AppException(ErrorCode.APPLICATION_NOT_EXISTED);
+        if (!application.getCv().getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
-        Application application = applicationRepository.findByPostingAndCv(posting, cv)
-                .orElseThrow(() -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED));
         try {
             applicationRepository.delete(application);
         }catch (Exception e){
@@ -105,7 +106,7 @@ public class ApplicationService {
      * @return
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
-    public PageResponse<ApplicationDTO> getApplications(String postingId, int page, int size) {
+    public PageResponse<ApplicationDTO> getApplicationsByEmployer(String postingId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1,size);
         var pageData = applicationRepository.findByPostingId(postingId, pageable);
         return PageResponse.<ApplicationDTO>builder()
@@ -117,6 +118,18 @@ public class ApplicationService {
                 .build();
     }
 
+    @PreAuthorize("hasRole('JOB_SEEKER')")
+    public List<ApplicationResponse> getApplicationsByJobSeeker(){
+        List<CV> cvs = cvRepository.findByJobSeeker(cvService.getJobSeekerByAccount());
+        List<Application> applications = new ArrayList<Application>();
+        for (CV cv: cvs){
+            applications.addAll(applicationRepository.findByCv(cv));
+        }
+        return applications.stream()
+                .map(applicationMapper::toApplicationResponse)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Get application detail in posting of employer
      * Only employer posting can be seen application detail in post
@@ -126,15 +139,27 @@ public class ApplicationService {
      * @return applications
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
-    public ApplicationDTO getApplication(String postingId, Integer applicationId) {
+    public ApplicationDTO getApplicationByEmployer(String postingId, Integer applicationId) {
         Application application = applicationRepository.findById(applicationId).orElseThrow(
                 () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
         );
-
         if(!application.getPosting().getId().equals(postingId))
             throw new AppException(ErrorCode.APPLICATION_NOT_EXISTED);
 
         return applicationMapper.toApplicationDTO(application);
+    }
+
+    @PreAuthorize("hasRole('JOB_SEEKER')")
+    public ApplicationResponse getApplicationByJobSeeker(String postingId, Integer applicationId) {
+        Application application = applicationRepository.findById(applicationId).orElseThrow(
+                () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
+        );
+        if(!application.getPosting().getId().equals(postingId))
+            throw new AppException(ErrorCode.APPLICATION_NOT_EXISTED);
+        if (!application.getCv().getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
+            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+        return applicationMapper.toApplicationResponse(application);
     }
 
     /**
