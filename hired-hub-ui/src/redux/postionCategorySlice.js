@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios from '../config/axios';
 
-const apiUrl = 'http://localhost:8888/api/v1/position-category';
+const apiUrl = 'position-category';
 
 export const fetchPostions = createAsyncThunk('postionCategories/fetchPostions', async () => {
     const response = await axios.get(apiUrl);

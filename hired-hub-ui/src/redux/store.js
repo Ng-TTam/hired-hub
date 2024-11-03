@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import provinceReducer from './provinceSlice';
-import positionCategoryReducer from './postionCategorySlice';
-import jobCategoryReducer from './jobCategorySlice';
-import postingReducer from './postingSlice';
 import authenticationReducer from './authenticationSlice';
+import jobCategoryReducer from './jobCategorySlice';
+import notificationReducer from './notificationSlice';
+import postingReducer from './postingSlice';
+import positionCategoryReducer from './postionCategorySlice';
+import provinceReducer from './provinceSlice';
 import userReducer from './userSlice';
 
 const store = configureStore({
@@ -14,6 +15,7 @@ const store = configureStore({
         positionCategories: positionCategoryReducer,
         jobCategories: jobCategoryReducer,
         postings: postingReducer,
+        notifications: notificationReducer,
     },
 });
 

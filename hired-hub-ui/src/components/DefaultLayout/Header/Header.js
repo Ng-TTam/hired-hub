@@ -2,15 +2,16 @@ import { faArrowRightFromBracket, faLock, faPenToSquare } from '@fortawesome/fre
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
-import React from 'react';
+import { default as React } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import images from '../../../assets/images';
 import AccountIcon from '../../AccountIcon';
 import Button from '../../Button';
-import styles from './Header.module.scss';
 import Menu from '../../Menu';
+import NotificationBadge from '../../NotificationBadge';
 import { Wrapper as PopperWrapper } from '../../Popper';
+import styles from './Header.module.scss';
 
 const cx = classNames.bind(styles);
 
@@ -42,29 +43,34 @@ function Header() {
                 <div className={cx('nav-bar')}>
                     <ul className={cx('nav-list')}>
                         <li className={cx('nav-list__item')}>
-                            <NavLink to={'/'}>Việc làm</NavLink>
+                            <NavLink className={(nav) => cx({ active: nav.isActive })} to={'/'}>
+                                Việc làm
+                            </NavLink>
                         </li>
                         <li className={cx('nav-list__item')}>
-                            <a>Hồ sơ & CV</a>
+                            <a href="http://google.com">Hồ sơ & CV</a>
                         </li>
                     </ul>
                     {isLogin ? (
-                        <div>
-                            <HeadlessTippy
-                                interactive
-                                placement="bottom-end"
-                                render={(attrs) => (
-                                    <div tabIndex="-1" {...attrs}>
-                                        <PopperWrapper>
-                                            <Menu items={MENU_ITEMS} />
-                                        </PopperWrapper>
+                        <div className={cx('actions')}>
+                            <NotificationBadge className={cx('notification-icon')} />
+                            <div>
+                                <HeadlessTippy
+                                    interactive
+                                    placement="bottom-end"
+                                    render={(attrs) => (
+                                        <div tabIndex="-1" {...attrs}>
+                                            <PopperWrapper>
+                                                <Menu items={MENU_ITEMS} />
+                                            </PopperWrapper>
+                                        </div>
+                                    )}
+                                >
+                                    <div>
+                                        <AccountIcon />
                                     </div>
-                                )}
-                            >
-                                <div>
-                                    <AccountIcon />
-                                </div>
-                            </HeadlessTippy>
+                                </HeadlessTippy>
+                            </div>
                         </div>
                     ) : (
                         <div className={cx('actions')}>

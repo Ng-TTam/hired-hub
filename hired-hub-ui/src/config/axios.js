@@ -5,6 +5,9 @@ export const baseURL = 'http://localhost:8888/api/v1/';
 const instance = axios.create({
     baseURL: baseURL,
     timeout: 10000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 let isRefreshing = false;

@@ -1,9 +1,8 @@
+import classNames from 'classnames/bind';
 import { useSelector } from 'react-redux';
 import PostingCard from '../PostingCard';
 import Filter from './Filter';
 import styles from './PostingFilter.module.scss';
-import classNames from 'classnames/bind';
-import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 

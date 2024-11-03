@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios from '../config/axios';
 
-const apiUrl = 'http://localhost:8888/api/v1/province';
+const apiUrl = 'province';
 
 export const fetchProvinces = createAsyncThunk('provinces/fetchProvinces', async () => {
     const response = await axios.get(apiUrl);
