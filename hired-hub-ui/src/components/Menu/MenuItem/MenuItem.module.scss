@@ -1,0 +1,17 @@
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #212f3f;
+
+    &:hover {
+        color: var(--primary-color);
+    }
+}
+
+.active {
+    color: var(--primary-color);
+}

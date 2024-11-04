@@ -1,0 +1,27 @@
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 99px;
+    background-color: #fafafa;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 99px;
+    object-fit: contain;
+}
+
+.icon {
+    font-size: 12px;
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+    color: var(--primary-color);
+}
+
+.icon.rotate {
+    transform: rotateX(180deg);
+}

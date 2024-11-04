@@ -1,20 +1,19 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Auth from '../pages/Home/Auth';
-import Home from '../pages/Home/Home';
+import { Route, Routes } from 'react-router-dom';
 import DefaultLayout from '../components/DefaultLayout';
 import PostingFilter from '../components/PostingFilter';
-import ProfileCV from '../components/ProfileCV/ProfileCV';
+import Auth from '../pages/Home/Auth';
+import Logout from '../components/Logout';
 
-const HomeRoutes = () => {
+const GuessRoutes = () => {
     return (
         <Routes>
             {/* <Route path="/" element={<Home />} /> */}
             <Route path="/" exact element={<DefaultLayout children={<PostingFilter />} />} />
             <Route path="/login" element={<Auth />} />
-            <Route path="/hoso&cv" exact element={<DefaultLayout children={<ProfileCV/>} />} />
+            <Route path="/logout" element={<Logout />} />
         </Routes>
     );
 };
 
-export default HomeRoutes;
+export default GuessRoutes;
