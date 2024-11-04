@@ -1,3 +1,6 @@
+import { format, parseISO } from 'date-fns';
+import { vi } from 'date-fns/locale';
+
 export const convertSalary = (minSalary, maxSalary) => {
     if (minSalary == null && maxSalary == null) {
         return 'Thỏa thuận';
@@ -93,4 +96,14 @@ export const getRemainingTime = (expiredAt) => {
     }
 
     return { remainingTime: remainingTime / 1000, message };
+};
+
+export const formatDate = (dateString) => {
+    const date = parseISO(dateString);
+    return format(date, 'dd/MM/yyyy', { locale: vi });
+};
+
+export const formatDateTime = (dateTimeString) => {
+    const date = parseISO(dateTimeString);
+    return format(date, 'dd/MM/yyyy HH:mm', { locale: vi });
 };

@@ -7,6 +7,7 @@ import Image from '../Image';
 import images from '../../assets/images';
 import { Wrapper as PopperWrapper } from '../Popper';
 import { convertSalary, convertWorkAddressSumary, convertWorkAddress } from '../../utils';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -32,7 +33,9 @@ function PostingCard({ posting }) {
                             </div>
                         )}
                     >
-                        <a className={cx('title')}>{posting.title}</a>
+                        <Link className={cx('title')} to={`posting/${posting.id}`}>
+                            {posting.title}
+                        </Link>
                     </HeadlessTippy>
                 </div>
                 <Tippy content={posting.company.name} placement="bottom">

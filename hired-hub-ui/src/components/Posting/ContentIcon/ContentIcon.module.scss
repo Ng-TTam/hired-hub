@@ -1,0 +1,36 @@
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon {
+    background: linear-gradient(11deg, #00bf5d, #00907c);
+    border-radius: 30px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--white-color);
+    font-size: 16px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.title {
+    color: #263a4d;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.content {
+    color: #212f3f;
+    font-size: 14px;
+    font-weight: 600;
+}
