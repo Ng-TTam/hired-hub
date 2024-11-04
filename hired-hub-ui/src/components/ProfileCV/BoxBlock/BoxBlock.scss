@@ -1,0 +1,82 @@
+.box-block {
+    // Các thuộc tính cho .box-block
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: -1px 1px 6px rgba(0, 0, 0, .05);
+    margin-bottom: 16px;
+    margin-top: 16px;
+    padding: 24px 24px 8px;
+    .boxheader {
+        // Các thuộc tính cho .boxheader
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        .title {
+            // Các thuộc tính cho .title
+            color: #000;
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 24px;
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+
+            &.btn-add-cv {
+                background: #00b14f;
+                border-radius: 32px;
+                color: #fff;
+                line-height: 1;
+                padding: 11px 16px;
+            }
+
+            &.btn-primary-hover {
+                font-weight: 700;
+                padding: 10px 20px;
+            }
+        }
+
+        .modalfade {
+            // Các thuộc tính cho modal
+        }
+    }
+
+    .box-conten {
+        // Các thuộc tính cho .box-conten
+            
+        &.box-no-cv {
+            // Các thuộc tính cho box-no-cv
+            text-align: center;
+            img {
+                // Các thuộc tính cho img
+                vertical-align: middle;
+                border: 0;
+            }
+
+            p {
+                // Các thuộc tính cho thẻ p
+                margin-top: 20px;
+            }
+        }
+    }
+}

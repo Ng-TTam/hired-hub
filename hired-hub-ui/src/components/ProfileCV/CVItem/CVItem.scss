@@ -1,0 +1,69 @@
+// CVItem.scss
+
+.box-bg {
+    background-color: #f9f9f9; // Màu nền cho box
+    border: 1px solid #ddd; // Đường viền box
+    border-radius: 8px; // Bo tròn góc
+    padding: 16px; // Padding cho box
+    margin-bottom: 16px; // Khoảng cách giữa các box
+
+    .box-info {
+        display: flex; // Sử dụng flex để căn chỉnh nội dung
+        justify-content: space-between; // Căn giữa nội dung
+        align-items: center; // Căn chỉnh theo chiều dọc
+    }
+
+    .Description-cv {
+        font-size: 1.2rem; // Kích thước chữ cho tiêu đề CV
+        color: #333; // Màu chữ
+        margin: 0; // Loại bỏ margin mặc định
+        position: relative; // Để sử dụng absolute cho icon
+
+        a {
+            text-decoration: none; // Bỏ gạch chân
+            color: inherit; // Sử dụng màu chữ của parent
+        }
+
+        .edit {
+            margin-left: 8px; // Khoảng cách giữa tiêu đề và icon chỉnh sửa
+            color: #007bff; // Màu cho icon chỉnh sửa
+
+            &:hover {
+                color: #0056b3; // Thay đổi màu khi hover
+            }
+        }
+    }
+
+    .action {
+        list-style: none; // Bỏ danh sách kiểu
+        padding: 0; // Bỏ padding
+        display: flex; // Sử dụng flex để căn chỉnh
+        gap: 10px; // Khoảng cách giữa các nút
+
+        li {
+            a {
+                display: inline-block; // Hiển thị nút như block để dễ dàng hover
+                padding: 6px 12px; // Padding cho nút
+                border: 1px solid transparent; // Đường viền mặc định
+                border-radius: 4px; // Bo tròn góc nút
+                color: #fff; // Màu chữ nút
+                background-color: #28a745; // Màu nền cho nút
+                text-decoration: none; // Bỏ gạch chân
+                transition: background-color 0.3s, border-color 0.3s; // Hiệu ứng chuyển màu
+
+                &:hover {
+                    background-color: #218838; // Màu nền khi hover
+                    border-color: #1e7e34; // Đường viền khi hover
+                }
+
+                &.btn-download-cv {
+                    background-color: #007bff; // Màu nền cho nút tải xuống
+
+                    &:hover {
+                        background-color: #0056b3; // Màu nền khi hover
+                    }
+                }
+            }
+        }
+    }
+}

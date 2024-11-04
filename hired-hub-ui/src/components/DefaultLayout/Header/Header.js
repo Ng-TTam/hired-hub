@@ -14,7 +14,7 @@ function Header() {
                 <div className={cx('nav-bar')}>
                     <ul className={cx('nav-list')}>
                         <li className={cx('nav-list__item')}><a href="google.com">Việc làm</a></li>
-                        <li className={cx('nav-list__item')}><a>Hồ sơ & CV</a></li>
+                        <li className={cx('nav-list__item')}><a href="localhost:3000/hoso&cv">Hồ sơ & CV</a></li>
                     </ul>
                     <div className={cx('actions')}>
                         <Button to='login' outline>Đăng nhập</Button>
