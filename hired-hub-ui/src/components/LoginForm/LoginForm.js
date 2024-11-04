@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import gLogo from '../../assets/images/google.png';
-import { loginThunk } from '../../redux/authenticationSlice';
+import { loginThunk, reset } from '../../redux/authenticationSlice';
 import './LoginForm.scss';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { error, success } = useSelector((state) => state.authentication);
+    const { isLogin, error, success } = useSelector((state) => state.authentication);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        if (success && !error) navigate('/');
-    }, [error, success, navigate]);
+        if (isLogin && success && !error) navigate('/');
+    }, [isLogin, error, success, navigate]);
 
     const handleSubmit = (e) => {
         e.preventDefault();

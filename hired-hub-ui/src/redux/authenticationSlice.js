@@ -30,7 +30,7 @@ export const authenticationSlice = createSlice({
         error: null,
     },
     reducers: {
-        logout(state, action) {
+        logout(state) {
             state.isLogin = false;
             localStorage.clear();
         },
@@ -60,6 +60,7 @@ export const authenticationSlice = createSlice({
             .addCase(logoutThunk.fulfilled, (state, action) => {
                 localStorage.clear();
                 state.isLogin = false;
+                state.success = false;
             });
     },
 });
