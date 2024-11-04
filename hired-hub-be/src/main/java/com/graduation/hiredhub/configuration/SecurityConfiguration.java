@@ -17,8 +17,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -34,6 +34,9 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.cors((httpSecurityCorsConfigurer ->
+                httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource())));
+
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
                         .permitAll()
@@ -63,18 +66,18 @@ public class SecurityConfiguration {
         return jwtAuthenticationConverter;
     }
 
-//    @Bean
-//    public CorsFilter corsFilter(){
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//
-//        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-//        corsConfiguration.addAllowedMethod("*");
-//        corsConfiguration.addAllowedHeader("*");
-//
-//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-//        return new CorsFilter(urlBasedCorsConfigurationSource);
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+
+        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedHeader("*");
+
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return urlBasedCorsConfigurationSource;
+    }
 
     @Bean
     JwtDecoder jwtDecoder() {
