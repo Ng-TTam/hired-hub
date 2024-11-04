@@ -1,27 +1,17 @@
 import React from "react";
-// import "./BoxBlock.scss";
-import CVItem from '../CVItem/CVItem'; // Import CVItem nếu bạn muốn sử dụng nó
-import CVList from "../CVList/CVList";
+import CVList from "../CVList/CVList"; // Đảm bảo đường dẫn đúng
+import './BoxBlock.scss'
 
-function BoxBlock({ titleBox, action, noCvImage, cvList }) {
+function BoxBlock({ titleBox}) {
     return (
-        <div id="cv-list" className="box-block">
+        <div id="cv-list" className="box-block-addcv">
             <div className="boxheader">
                 <h1 className="title">{titleBox}</h1>
-                <a href="#" className="btn btn-add-cv btn-primary-hover">
-                    {action}
-                </a>
+                <a href='./tao-cv' className="btn btn-add-cv btn-primary-hover ">Tạo mới</a>
             </div>
-            {CVList && CVList.length > 0 ? ( // Kiểm tra xem danh sách CV có tồn tại không
-                <CVList/>
-            ) : (
-                <div className="box-conten box-no-cv">
-                    <img src={noCvImage} alt="no-cv" />
-                    <p>Bạn chưa tạo CV nào</p>
-                </div>
-            )}
+            <CVList />
         </div>
     );
 }
 
-export default BoxBlock; // Xuất với tên đúng
+export default BoxBlock;

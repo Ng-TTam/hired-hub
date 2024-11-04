@@ -13,11 +13,11 @@ function PostingFilter() {
     return (
         <div className={cx('wrapper')}>
             <Filter />
-            <div className={cx('content')}>
+            {/* <div className={cx('content')}>
                 {postings.map((posting) => (
                     <PostingCard key={posting.id} posting={posting} />
                 ))}
-            </div>
+            </div> */}
         </div>
     );
 }

@@ -1,16 +1,18 @@
 import React from "react";
 import BoxBlock from "./BoxBlock/BoxBlock";
-import image from "../../assets/images/index";
-import CVList from "./CVList/CVList";
+import './ProfileCV.scss'
+import ProfileJobSeeker from "./ProfileJobSeeker/ProfileJobSeeker";
 
 function ProfileCV() {
     return(
-        <BoxBlock
-            titleBox={"CV đã tạo"}
-            action={"Tạo mới"}
-            noCvImage = {image.noCVImage}
-            cvList={CVList}
-        />
+        <div className="profile-cv-container">
+            <div className="box-block">
+                <BoxBlock className="addboxblock" titleBox={"CV đã tạo"} />
+            </div>
+            <div className="profileStyle">
+                <ProfileJobSeeker />
+            </div>
+        </div>
     );
 }
 

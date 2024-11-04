@@ -1,8 +1,11 @@
 import React from 'react';
-import { Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import ProfileCV from '../components/ProfileCV/ProfileCV'
 
 const JobSeekerRoutes = () => {
-    return <Routes></Routes>;
+    return <Routes>
+        
+    </Routes>;
 };
 
 export default JobSeekerRoutes;

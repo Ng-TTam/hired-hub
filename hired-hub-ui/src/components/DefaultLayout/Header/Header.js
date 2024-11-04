@@ -45,7 +45,7 @@ function Header() {
                             <NavLink to={'/'}>Việc làm</NavLink>
                         </li>
                         <li className={cx('nav-list__item')}>
-                            <a>Hồ sơ & CV</a>
+                            <NavLink to={'/hoso&cv'}>Hồ sơ & CV</NavLink>
                         </li>
                     </ul>
                     {isLogin ? (

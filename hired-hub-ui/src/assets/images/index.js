@@ -4,6 +4,7 @@ const images = {
     logoDefault: require('./logo_default.png'),
     noImage: require('./no-image.png'),
     noCVImage : require('./no-cv.png'),
+    avatarDefault: require('./avatar-default.png'),
 };
 
 export default images;

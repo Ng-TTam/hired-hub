@@ -1,0 +1,32 @@
+.cv-review{
+    color: #222;
+    font: 125%/1.4 Inter,sans-serif;
+    font-size: 14px!important;
+    font-family: var(--font-family-primary);
+    line-height: var(--line-height-primary);
+    box-sizing: inherit;
+    height: 100%;
+    .left{
+        color: #222;
+        font: 125%/1.4 Inter,sans-serif;
+        font-size: 14px!important;
+        font-family: var(--font-family-primary);
+        line-height: var(--line-height-primary);
+        box-sizing: inherit;
+        min-width: 0;
+        width: 20%;
+        padding-left: 30px;
+    }
+    .right{
+        color: #222;
+        font: 125%/1.4 Inter,sans-serif;
+        font-size: 14px!important;
+        font-family: var(--font-family-primary);
+        line-height: var(--line-height-primary);
+        box-sizing: inherit;
+        min-width: 0;
+        padding-left: 15px;
+        padding-right: 30px;
+        width: 80%;
+    }
+}

@@ -1,82 +1,61 @@
-.box-block {
-    // Các thuộc tính cho .box-block
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: -1px 1px 6px rgba(0, 0, 0, .05);
-    margin-bottom: 16px;
-    margin-top: 16px;
-    padding: 24px 24px 8px;
+.box-block-addcv {
     .boxheader {
-        // Các thuộc tính cho .boxheader
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #333;
+        -webkit-font-smoothing: antialiased!important;
+        font-family: Inter,sans-serif;
+        -webkit-box-sizing: border-box;
+        margin: 0;
+        padding: 0;
         align-items: center;
         display: flex;
-        justify-content: space-between;
+        justify-content: space-between; /* Giữ khoảng cách giữa tiêu đề và nút */
         margin-bottom: 12px;
+    
         .title {
-            // Các thuộc tính cho .title
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-font-smoothing: antialiased!important;
+            -webkit-box-sizing: border-box;
+            padding: 0;
+            font-family: inherit;
             color: #000;
             font-size: 19px;
             font-weight: 700;
             line-height: 24px;
             margin: 0;
+            flex-grow: 1; /* Giúp tiêu đề chiếm không gian còn lại */
+            width: 80%;
         }
-
+    
         .btn {
-            display: inline-block;
-            padding: 6px 12px;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-font-smoothing: antialiased!important;
+            margin: 0;
+            text-decoration: none;
             margin-bottom: 0;
             font-size: 14px;
-            font-weight: 400;
-            line-height: 1.42857143;
             text-align: center;
-            white-space: nowrap;
-            vertical-align: middle;
-            -ms-touch-action: manipulation;
             touch-action: manipulation;
             cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
-            background-image: none;
             border: 1px solid transparent;
-            border-radius: 4px;
-
-            &.btn-add-cv {
-                background: #00b14f;
-                border-radius: 32px;
-                color: #fff;
-                line-height: 1;
-                padding: 11px 16px;
-            }
-
-            &.btn-primary-hover {
-                font-weight: 700;
-                padding: 10px 20px;
-            }
+            outline: none!important;
+            font-weight: 700;
+            background: #00b14f;
+            border-radius: 32px;
+            color: #fff;
+            line-height: 1;
+            padding: 8px 12px; /* Thay đổi padding để nút có kích thước phù hợp hơn */
+            /* Bạn có thể điều chỉnh padding tùy thuộc vào độ lớn mong muốn */
+            min-width: 80px; /* Đặt độ rộng tối thiểu cho nút để đảm bảo có kích thước phù hợp */
+            text-align: center; /* Đảm bảo văn bản trong nút được căn giữa */
+            width: 20%;
         }
-
-        .modalfade {
-            // Các thuộc tính cho modal
-        }
-    }
-
-    .box-conten {
-        // Các thuộc tính cho .box-conten
-            
-        &.box-no-cv {
-            // Các thuộc tính cho box-no-cv
-            text-align: center;
-            img {
-                // Các thuộc tính cho img
-                vertical-align: middle;
-                border: 0;
-            }
-
-            p {
-                // Các thuộc tính cho thẻ p
-                margin-top: 20px;
-            }
-        }
-    }
+    }    
 }
+

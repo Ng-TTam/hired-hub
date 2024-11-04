@@ -1,50 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import CVItem from '../CVItem/CVItem'
+import React, { useEffect } from 'react';
+import CVItem from '../CVItem/CVItem';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCVs } from '../../../redux/cvSlice';
+import images from '../../../assets/images'
+import './CVList.scss'
 
 const CVList = () => {
-    const [cvs, setCvs] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const { list: cvList, loading, error } = useSelector(state => state.cv);
 
     useEffect(() => {
-        const fetchCVs = async () => {
-            try {
-                const response = await fetch('localhost:8888/api/v1/cv');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setCvs(data.data); // Giả sử dữ liệu được trả về nằm trong trường "data"
-            } catch (error) {
-                setError(error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        dispatch(fetchCVs());
+    }, [dispatch]);
 
-        fetchCVs();
-    }, []);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error.message}</div>;
-    }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div className="cv-list">
-            {CVList.map((cvs) => (
-                <CVItem 
-                    key={cvs.id} // Sử dụng id của CV làm khóa duy nhất
-                    cvId={cvs.id} 
-                    cvDescription={cvs.description} 
-                    cvLink={"localhost3000:cv/view/"+cvs.id}
-                    editLink={"localhost3000:cv/edit/"+cvs.idd} // Nếu có
-                />
-            ))}
-        </div>
+        // cvList.length > 0 ? (
+        //     <div className="cv-list">
+        //         {cvList.map(cv => (
+        //             <CVItem 
+        //                 cvId={cv.id} 
+        //                 cvDescription={cv.description} 
+        //             />
+        //         ))}
+        //     </div>
+        // ) : (
+            <div className="box-conten box-no-cv">
+                <img className='no-cv' src={images.noCVImage} alt='no-cv'/>
+                <p>Bạn chưa tạo CV nào</p>
+                
+            </div>
+        // )
     );
 };
 

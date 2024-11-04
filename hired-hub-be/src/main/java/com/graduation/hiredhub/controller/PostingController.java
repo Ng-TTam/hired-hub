@@ -51,60 +51,6 @@ public class PostingController {
                 .build();
     }
 
-    @PostMapping("/{postingId}/jobSeeker/application/{cvId}")
-    ApiResponse<ApplicationResponse> createApplication(@PathVariable String postingId,
-                                                       @PathVariable String cvId){
-        return ApiResponse.<ApplicationResponse>builder()
-                .data(applicationService.createApplication(postingId, cvId))
-                .message("Successfully")
-                .build();
-    }
-
-    @GetMapping("/{postingId}/jobSeeker/applications/{applicationId}")
-    ApiResponse<ApplicationResponse> getApplicationJobSeeker(@PathVariable String postingId,
-                                                             @PathVariable Integer applicationId){
-        return ApiResponse.<ApplicationResponse>builder()
-                .data(applicationService.getApplicationByJobSeeker(postingId,applicationId))
-                .message("Successfully")
-                .build();
-    }
-
-    @DeleteMapping("/{postingId}/jobSeeker/application/{applicationId}")
-    ApiResponse<ApplicationResponse> deleteApplication(@PathVariable String postingId,
-                                                       @PathVariable Integer applicationId){
-        return ApiResponse.<ApplicationResponse>builder()
-                .data(applicationService.deleteApplication(postingId, applicationId))
-                .message("Successfully")
-                .build();
-    }
-
-    @GetMapping("/{postingId}/applications")
-    ApiResponse<PageResponse<ApplicationDTO>> getApplicationsByPosting(
-            @PathVariable String postingId,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
-        return ApiResponse.<PageResponse<ApplicationDTO>>builder()
-                .data(applicationService.getApplicationsByEmployer(postingId, page, size))
-                .build();
-    }
-
-    @GetMapping("/{postingId}/applications/{applicationId}")
-    ApiResponse<ApplicationDTO> getApplicationByPosting(@PathVariable String postingId,
-                                                        @PathVariable Integer applicationId) {
-        return ApiResponse.<ApplicationDTO>builder()
-                .data(applicationService.getApplicationByEmployer(postingId, applicationId))
-                .build();
-    }
-
-    @PutMapping("/{postingId}/applications/{applicationId}")
-    ApiResponse<ApplicationDTO> responseApplicationInPosting(@PathVariable String postingId,
-                                                             @PathVariable Integer applicationId,
-                                                             @RequestBody @Valid ApplicationDTO applicationDTO) {
-        return ApiResponse.<ApplicationDTO>builder()
-                .data(applicationService.updateApplication(postingId, applicationId, applicationDTO))
-                .build();
-    }
-
     /**
      * {@code GET /posting} get a page of Posting
      *

@@ -1,40 +1,49 @@
-import React from "react";
-import CVItem from "./CVItem"; // Nhập component CVItem
+import React from "react"; 
 // import "./BoxBlock.scss";
 
-function BoxBlock({ titleBox, action, noCvImage, cvList, onDelete }) {
+function CVItem({cvId, titleBox}) {
     return (
-        <div id="cv-list" className="box-block">
-            <div className="boxheader">
-                <h1 className="title">{titleBox}</h1>
-                <a href="#" className="btn btn-add-cv btn-primary-hover">
-                    {action}
-                </a>
-                <div id="createCVModel" tabIndex="-1" role="dialog" className="modalfade">
-                    {/* Nội dung modal sẽ được thêm vào đây */}
+        <div class="col-md-6 col-12 pr-12">
+            <div class="box-cv">
+                <img 
+                    src="https://snapshot.topcv.vn/cv-online/WgJfBwkFWwwBAlBXDg8OAwZUB14CBlIHB1ZRBw736e/1730704437.webp" 
+                    data-src="https://snapshot.topcv.vn/cv-online/WgJfBwkFWwwBAlBXDg8OAwZUB14CBlIHB1ZRBw736e/1730704437.webp" 
+                    onerror="onErrorImage(this)" 
+                    class="img-responsive entered loaded" 
+                    data-ll-status="loaded"
+                />
+                <div class="box-bg">
+                    <div class="box-info">
+                        <h4 class="title-cv">
+                            <a 
+                                href={`localhost:3000/cv/view/${cvId}`}
+                                target="_blank"
+                            >
+                                {titleBox}
+                            </a>
+                            <a 
+                                href={`localhost:3000/cv/edit/${cvId}`}
+                                class="edit"
+                            >
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                        </h4>
+                        <ul class="action">
+                            <li>
+                                <a 
+                                    data-toggle="modal" 
+                                    data-cv-id="b7f21584901e9995dc4f2c010c4f736e" 
+                                    data-target="#confirmDelete"
+                                >
+                                    <i class="fa-regular fa-trash"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            {cvList.length > 0 ? ( // Kiểm tra xem danh sách CV có tồn tại không
-                <div className="cv-list">
-                    {cvList.map((cv, index) => (
-                        <CVItem 
-                            key={index}
-                            cvId={cv.id} // Giả sử mỗi CV có một thuộc tính id
-                            cvDescription={cv.description}
-                            cvLink={cv.link}
-                            editLink={cv.editLink}
-                            onDelete={() => onDelete(cv.id)} // Gọi hàm onDelete khi cần
-                        />
-                    ))}
-                </div>
-            ) : (
-                <div className="box-conten box-no-cv">
-                    <img src={noCvImage} alt="no-cv" />
-                    <p>Bạn chưa tạo CV nào</p>
-                </div>
-            )}
         </div>
     );
 }
 
-export default BoxBlock;
+export default CVItem;
