@@ -14,7 +14,7 @@ const GuessRoutes = () => {
             <Route path="/" exact element={<DefaultLayout children={<PostingFilter />} />} />
             <Route path="/login" element={<Auth />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/hoso&cv" exact element={<DefaultLayout children={<ProfileCV/>}/>} />
+            <Route path="/qly-cv" exact element={<DefaultLayout children={<ProfileCV/>}/>} />
             <Route path="/tao-cv" exact element={<DefaultLayout children={<CV/>}/>} />
         </Routes>
     );

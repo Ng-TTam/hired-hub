@@ -50,10 +50,8 @@
             border-radius: 32px;
             color: #fff;
             line-height: 1;
-            padding: 8px 12px; /* Thay đổi padding để nút có kích thước phù hợp hơn */
-            /* Bạn có thể điều chỉnh padding tùy thuộc vào độ lớn mong muốn */
-            min-width: 80px; /* Đặt độ rộng tối thiểu cho nút để đảm bảo có kích thước phù hợp */
-            text-align: center; /* Đảm bảo văn bản trong nút được căn giữa */
+            padding: 8px 12px; 
+            min-width: 80px; 
             width: 20%;
         }
     }    

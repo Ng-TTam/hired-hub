@@ -1,23 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import images from "../../../assets/images";
 import './ProfileJobSeeker.scss'
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserInformation } from "../../../redux/userSlice";
 
-function ProfileJobSeeker() {
+const ProfileJobSeeker = () =>  {
+    const dispatch = useDispatch();
+    const {user,loading, error } = useSelector(state => state.user);
+
+    useEffect(() => {
+        dispatch(fetchUserInformation());
+    }, [dispatch]);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
     return(
-        <div class="turn-on-job_header">
-            <div class="profile-avatar">
+        <div className="turn-on-job_header">
+            <div className="profile-avatar">
                 <img src={images.avatarDefault} alt="avt"/>
                 
             </div>
-            <div class="turn-on-job__header-info">
-                <div class="text-welcome">Chào bạn trở lại,</div>
-                <h4 class="profile-fullname">Đăng Tùng Nguyễn</h4>
-                <div class="account-type vip">
-                    <span>Tài khoản đã xác thực</span>
+            <div className="turn-on-job__header-info">
+                <div className="text-welcome">Chào bạn trở lại,</div>
+                <h4 className="profile-fullname">{`${user.firstName} ${user.lastName}`}</h4>
+                <div className="account-type vip">
+                    <span>{user.phoneNumber}</span>
                 </div>
-                <div class="box-footer">
+                <div className="box-footer">
                     <a href="#" class="btn btn-sm btn-upgrade">
-                        <i class="fa-solid fa-circle-arrow-up"></i>
+                        <i className="fa-solid fa-circle-arrow-up"></i>
                         <span>Nâng cấp tài khoản</span>
                     </a>
                 </div>

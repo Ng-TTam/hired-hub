@@ -1,47 +1,63 @@
-import React from "react"; 
-// import "./BoxBlock.scss";
+import React, { useState } from "react"; 
+import { Link } from "react-router-dom";
+import axios from 'axios';
+import "./CVItem.scss";
 
-function CVItem({cvId, titleBox}) {
+function CVItem({ cvId, titleBox, onDelete }) {
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+
+    const handleDelete = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            await axios.delete(`http://localhost:8888/api/v1/cv/${cvId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            alert("Xóa CV thành công!");
+            onDelete(cvId);
+            setShowConfirmDialog(false); // Ẩn hộp thoại sau khi xóa thành công
+        } catch (error) {
+            console.error("Lỗi khi xóa CV:", error);
+            alert("Đã xảy ra lỗi khi xóa CV.");
+        }
+    };
+
     return (
-        <div class="col-md-6 col-12 pr-12">
-            <div class="box-cv">
-                <img 
-                    src="https://snapshot.topcv.vn/cv-online/WgJfBwkFWwwBAlBXDg8OAwZUB14CBlIHB1ZRBw736e/1730704437.webp" 
-                    data-src="https://snapshot.topcv.vn/cv-online/WgJfBwkFWwwBAlBXDg8OAwZUB14CBlIHB1ZRBw736e/1730704437.webp" 
-                    onerror="onErrorImage(this)" 
-                    class="img-responsive entered loaded" 
-                    data-ll-status="loaded"
-                />
-                <div class="box-bg">
-                    <div class="box-info">
-                        <h4 class="title-cv">
-                            <a 
-                                href={`localhost:3000/cv/view/${cvId}`}
-                                target="_blank"
-                            >
+        <div className="col-md-6 col-12 pr-12">
+            <div className="box-cv">
+                <div className="box-bg">
+                    <div className="box-info">
+                        <h4 className="description-cv">
+                            <Link to="../tao-cv" target="_blank" className="select-cv">
                                 {titleBox}
-                            </a>
-                            <a 
-                                href={`localhost:3000/cv/edit/${cvId}`}
-                                class="edit"
-                            >
-                                <i class="fa-solid fa-pen"></i>
-                            </a>
+                            </Link>
+                            <Link to="../" className="edit">
+                                edit
+                            </Link>
                         </h4>
-                        <ul class="action">
+                        <ul className="action">
                             <li>
-                                <a 
-                                    data-toggle="modal" 
-                                    data-cv-id="b7f21584901e9995dc4f2c010c4f736e" 
-                                    data-target="#confirmDelete"
+                                <button 
+                                    onClick={() => setShowConfirmDialog(true)} // Hiện hộp thoại khi nhấn nút
+                                    className="delete-button"
                                 >
-                                    <i class="fa-regular fa-trash"></i>
-                                </a>
+                                    DELETE
+                                </button>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
+
+            {/* Hộp thoại xác nhận xóa */}
+            {showConfirmDialog && (
+                <div className="confirm-dialog">
+                    <p>Bạn có chắc chắn muốn xóa CV này không?</p>
+                    <button onClick={handleDelete} className="confirm-button">Xác nhận</button>
+                    <button onClick={() => setShowConfirmDialog(false)} className="cancel-button">Hủy</button>
+                </div>
+            )}
         </div>
     );
 }
