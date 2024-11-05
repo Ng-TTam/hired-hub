@@ -6,6 +6,7 @@ import postingReducer from './postingSlice';
 import authenticationReducer from './authenticationSlice';
 import userReducer from './userSlice';
 import cvReducer from './cvSlice';
+import filterReducer from './filterSlice';
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         jobCategories: jobCategoryReducer,
         postings: postingReducer,
         cv: cvReducer,
+        filter: filterReducer,
     },
 });
 

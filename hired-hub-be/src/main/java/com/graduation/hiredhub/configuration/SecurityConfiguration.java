@@ -41,7 +41,7 @@ public class SecurityConfiguration {
                 request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "province").permitAll()
-                        .requestMatchers(HttpMethod.GET, "posting").permitAll()
+                        .requestMatchers(HttpMethod.GET, "posting/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "position-category").permitAll()
                         .requestMatchers(HttpMethod.GET, "job-category").permitAll()
                         .anyRequest().authenticated());
