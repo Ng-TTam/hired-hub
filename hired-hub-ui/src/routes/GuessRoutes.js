@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import DefaultLayout from '../components/DefaultLayout';
-import Logout from '../components/Logout';
 import Posting from '../components/Posting';
 import PostingFilter from '../components/PostingFilter';
 import Auth from '../pages/Home/Auth';
