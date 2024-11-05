@@ -1,14 +1,16 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Dashboard from '../pages/CMS/Dashboard';
+import PostingCreation from '../pages/CMS/PostCreation';
+import PostingInfoBase from '../components/ProgressStep/PostingInfoBase/PostingInfoBase';
 
 const CMSRoutes = () => {
     return (
         <Routes>
-            {/* <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/dashboard/settings" element={<Settings />} />
-      <Route path="/dashboard/profile" element={<Profile />} /> */}
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} />*/}
+            <Route path="postinginfo" element={<PostingInfoBase />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="posting/create" element={<PostingCreation />} />
         </Routes>
     );
 };
