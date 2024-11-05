@@ -54,7 +54,7 @@ const PostingInfoReceiveCV = ({ setPostingInfoReceiveCVData }) => {
             </div>
           </div>
           <div className="select-container">
-            <span>email</span>
+            <span>Email</span>
             <div className="input-container">
               <input
                 type="text"
