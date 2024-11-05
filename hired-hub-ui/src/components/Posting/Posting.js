@@ -1,3 +1,4 @@
+import { faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import {
     faBriefcaseClock,
     faClock,
@@ -10,11 +11,12 @@ import { faCommentsDollar } from '@fortawesome/free-solid-svg-icons/faCommentsDo
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
-import { useParams } from 'react-router-dom';
-
-import { faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constants';
+import { resetAndSetDistrict, resetAndSetJobCategory, resetAndSetProvince } from '../../redux/filterSlice';
 import { fetchPosting } from '../../redux/postingSlice';
 import { convertSalary, convertWorkAddressDetail, convertWorkAddressSumary, formatDate } from '../../utils';
 import Button from '../Button';
@@ -22,7 +24,6 @@ import CompanyInfo from './CompanyInfo';
 import ContentBox from './ContentBox';
 import ContentIcon from './ContentIcon';
 import styles from './Posting.module.scss';
-import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constants';
 
 const cx = classNames.bind(styles);
 
@@ -30,10 +31,26 @@ function Posting() {
     const { id } = useParams();
     const posting = useSelector((state) => state.postings.posting);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchPosting(id));
     }, [dispatch, id]);
+
+    const handleSearchByProvince = (province) => {
+        dispatch(resetAndSetProvince(province.id));
+        navigate('/');
+    };
+
+    const handleSearchByDistrict = (address) => {
+        dispatch(resetAndSetDistrict({ provinceId: address.province.id, districtId: address.district.id }));
+        navigate('/');
+    };
+
+    const handleSearchByJobCategory = (jobCategory) => {
+        dispatch(resetAndSetJobCategory(jobCategory.id));
+        navigate('/');
+    };
 
     if (!posting) {
         return <div></div>;
@@ -120,9 +137,18 @@ function Posting() {
                     <div className={cx('job-category-detail')}>
                         <span className={cx('box__title')}>Vị trí chuyên môn</span>
                         <div className={cx('job-category-list')}>
-                            <span className={cx('label-section', 'link-tag')}>{posting.mainJob.name}</span>
+                            <span
+                                className={cx('label-section', 'link-tag')}
+                                onClick={() => handleSearchByJobCategory(posting.mainJob)}
+                            >
+                                {posting.mainJob.name}
+                            </span>
                             {posting.subJobs.map((item) => (
-                                <span key={item.id} className={cx('label-section', 'link-tag')}>
+                                <span
+                                    key={`${item.id}_subjob`}
+                                    className={cx('label-section', 'link-tag')}
+                                    onClick={() => handleSearchByJobCategory(item)}
+                                >
                                     {item.name}
                                 </span>
                             ))}
@@ -132,14 +158,20 @@ function Posting() {
                         <span className={cx('box__title')}>Khu vực</span>
                         <div className={cx('job-category-list')}>
                             {posting.jobDescription.workAddress.map((address) => (
-                                <>
-                                    <span key={address.id} className={cx('label-section', 'link-tag')}>
+                                <React.Fragment key={address.id}>
+                                    <span
+                                        className={cx('label-section', 'link-tag')}
+                                        onClick={() => handleSearchByProvince(address.province)}
+                                    >
                                         {address.province.name}
                                     </span>
-                                    <span key={address.id} className={cx('label-section', 'link-tag')}>
+                                    <span
+                                        className={cx('label-section', 'link-tag')}
+                                        onClick={() => handleSearchByDistrict(address)}
+                                    >
                                         {address.province.name} / {address.district.name}
                                     </span>
-                                </>
+                                </React.Fragment>
                             ))}
                         </div>
                     </div>

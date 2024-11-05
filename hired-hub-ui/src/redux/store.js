@@ -5,6 +5,7 @@ import jobCategoryReducer from './jobCategorySlice';
 import postingReducer from './postingSlice';
 import authenticationReducer from './authenticationSlice';
 import userReducer from './userSlice';
+import filterReducer from './filterSlice';
 
 const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
         positionCategories: positionCategoryReducer,
         jobCategories: jobCategoryReducer,
         postings: postingReducer,
+        filter: filterReducer,
     },
 });
 

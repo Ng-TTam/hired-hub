@@ -18,7 +18,7 @@ import Button, { DropdownButton } from '../../Button';
 import styles from './Filter.module.scss';
 import { fetchPostions } from '../../../redux/postionCategorySlice';
 import { fetchJobCategories } from '../../../redux/jobCategorySlice';
-import { fetchPostings } from '../../../redux/postingSlice';
+import { setCriteria } from '../../../redux/filterSlice';
 
 const cx = classNames.bind(styles);
 
@@ -38,11 +38,12 @@ const jobTypes = [{ id: 'DEFAULT', name: 'Hình thức' }, ...Object.values(conf
 const expOptions = [{ id: 'DEFAULT', name: 'Kinh nghiệm' }, ...Object.values(config.constants.ExperienceRequire)];
 
 function Filter() {
+    const dispatch = useDispatch();
+
     const provinceList = useSelector((state) => state.provinces.list);
     const postionList = useSelector((state) => state.positionCategories.list);
     const jobCategoryList = useSelector((state) => state.jobCategories.list);
-
-    const dispatch = useDispatch();
+    const criteria = useSelector((state) => state.filter.criteria);
 
     const [provinces, setProvinces] = useState([{ id: -1, name: 'Địa điểm' }]);
     const [districts, setDistricts] = useState([]);
@@ -51,9 +52,9 @@ function Filter() {
 
     const [searchText, setSearchText] = useState('');
     const [selectedProvince, setSelectedProvince] = useState(provinces[0]);
-    const [selectedDistrict, setSeletedDistrict] = useState();
+    const [selectedDistrict, setSelectedDistrict] = useState();
     const [selectedSalary, setSelectedSalary] = useState(SalaryRanges[0]);
-    const [selectedJobCategory, setSeletedJobCategory] = useState(jobCateogies[0]);
+    const [selectedJobCategory, setSelectedJobCategory] = useState(jobCateogies[0]);
     const [selectedExp, setSelectedExp] = useState(expOptions[0]);
     const [selectedPosition, setSelectedPosition] = useState(positions[0]);
     const [selectedJobType, setSelectedJobType] = useState(jobTypes[0]);
@@ -62,23 +63,45 @@ function Filter() {
         dispatch(fetchProvinces());
         dispatch(fetchPostions());
         dispatch(fetchJobCategories());
-        dispatch(fetchPostings({ pageable: { page: 0, size: 12 } }));
     }, [dispatch]);
+
+    const initializeSelections = () => {
+        setSearchText(criteria.searchValue || '');
+
+        const updatedSelections = {
+            province: provinceList.find((item) => item.id === criteria.provinceId) || provinces[0],
+            district: (criteria.districtId && districts.find((item) => item.id === criteria.districtId)) || { id: -1 },
+            jobCategory: jobCateogies.find((item) => item.id === criteria.jobCategoryId) || jobCateogies[0],
+            position: positions.find((item) => item.id === criteria.positionId) || positions[0],
+            salary:
+                SalaryRanges.find(
+                    (item) => item.minSalary === criteria.minSalary && item.maxSalary === criteria.maxSalary,
+                ) || SalaryRanges[0],
+            experience: expOptions.find((item) => item.id === criteria.experienceRequire) || expOptions[0],
+            jobType: jobTypes.find((item) => item.id === criteria.jobType) || jobTypes[0],
+        };
+
+        setSelectedProvince(updatedSelections.province);
+        setSelectedDistrict(updatedSelections.district);
+        setSelectedJobCategory(updatedSelections.jobCategory);
+        setSelectedPosition(updatedSelections.position);
+        setSelectedSalary(updatedSelections.salary);
+        setSelectedExp(updatedSelections.experience);
+        setSelectedJobType(updatedSelections.jobType);
+    };
+
+    useEffect(() => {
+        initializeSelections();
+    }, [criteria, provinceList, jobCategoryList, postionList]);
 
     useEffect(() => {
         setProvinces([{ id: -1, name: 'Địa điểm' }, ...provinceList]);
-    }, [provinceList]);
-
-    useEffect(() => {
         setJobCategoires([{ id: -1, name: 'Ngành nghề' }, ...jobCategoryList]);
-    }, [jobCategoryList]);
-
-    useEffect(() => {
         setPositions([{ id: -1, name: 'Cấp bậc' }, ...postionList]);
-    }, [postionList]);
+    }, [provinceList, jobCategoryList, postionList]);
 
     useEffect(() => {
-        if (selectedProvince.id !== provinces[0].id) {
+        if (selectedProvince.id !== -1) {
             setDistricts([{ id: -1, name: selectedProvince.name }, ...selectedProvince.districts]);
         } else {
             setDistricts([]);
@@ -86,24 +109,27 @@ function Filter() {
     }, [selectedProvince]);
 
     useEffect(() => {
-        if (districts?.length > 0) setSeletedDistrict(districts[0]);
-        else setSeletedDistrict({});
+        if (districts.length > 0) {
+            const district = criteria.districtId ? districts.find((item) => item.id === criteria.districtId) : null;
+
+            setSelectedDistrict(district || { id: -1 });
+        }
     }, [districts]);
 
     const handleSearch = () => {
         const criteria = {
             searchValue: searchText || null,
-            provinceId: selectedProvince?.id !== -1 ? selectedProvince.id : null,
-            districtId: selectedDistrict?.id !== -1 ? selectedDistrict.id : null,
-            jobCategoryId: selectedJobCategory?.id !== -1 ? selectedJobCategory.id : null,
-            positionId: selectedPosition?.id !== -1 ? selectedPosition.id : null,
+            provinceId: selectedProvince.id !== -1 ? selectedProvince.id : null,
+            districtId: selectedDistrict.id !== -1 ? selectedDistrict.id : null,
+            jobCategoryId: selectedJobCategory.id !== -1 ? selectedJobCategory.id : null,
+            positionId: selectedPosition.id !== -1 ? selectedPosition.id : null,
             minSalary: selectedSalary.minSalary,
             maxSalary: selectedSalary.maxSalary,
             experienceRequire: selectedExp?.id !== 'DEFAULT' ? selectedExp.id : null,
-            jobType: selectedJobType?.id !== 'DEFAULT' ? selectedJobType.id : null,
+            jobType: selectedJobType.id !== 'DEFAULT' ? selectedJobType.id : null,
         };
 
-        dispatch(fetchPostings({ criteria, pageable: { page: 0, size: 12 } }));
+        dispatch(setCriteria(criteria));
     };
 
     return (
@@ -136,7 +162,7 @@ function Filter() {
                     selectedItem={selectedJobCategory}
                     filterSearch
                     leftIcon={<FontAwesomeIcon icon={faBriefcase} />}
-                    onSelectItem={setSeletedJobCategory}
+                    onSelectItem={setSelectedJobCategory}
                 />
                 <Button className={cx('search-btn')} primary height="40px" onClick={handleSearch}>
                     Tìm kiếm
@@ -181,7 +207,7 @@ function Filter() {
                                 className={cx('location-item', {
                                     active: district.id === selectedDistrict?.id,
                                 })}
-                                onClick={() => setSeletedDistrict(district)}
+                                onClick={() => setSelectedDistrict(district)}
                             >
                                 {district.name}
                             </div>
