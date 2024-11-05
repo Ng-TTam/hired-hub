@@ -13,7 +13,7 @@
         align-items: center; // Căn chỉnh theo chiều dọc
     }
 
-    .Description-cv {
+    .description-cv {
         font-size: 1.2rem; // Kích thước chữ cho tiêu đề CV
         color: #333; // Màu chữ
         margin: 0; // Loại bỏ margin mặc định
@@ -23,11 +23,14 @@
             text-decoration: none; // Bỏ gạch chân
             color: inherit; // Sử dụng màu chữ của parent
         }
+        .select-cv{
+
+        }
 
         .edit {
             margin-left: 8px; // Khoảng cách giữa tiêu đề và icon chỉnh sửa
             color: #007bff; // Màu cho icon chỉnh sửa
-
+            padding-left: 20px;
             &:hover {
                 color: #0056b3; // Thay đổi màu khi hover
             }
@@ -41,7 +44,7 @@
         gap: 10px; // Khoảng cách giữa các nút
 
         li {
-            a {
+            .delete-button {
                 display: inline-block; // Hiển thị nút như block để dễ dàng hover
                 padding: 6px 12px; // Padding cho nút
                 border: 1px solid transparent; // Đường viền mặc định
@@ -49,21 +52,45 @@
                 color: #fff; // Màu chữ nút
                 background-color: #28a745; // Màu nền cho nút
                 text-decoration: none; // Bỏ gạch chân
+                touch-action: manipulation;
                 transition: background-color 0.3s, border-color 0.3s; // Hiệu ứng chuyển màu
+                user-select: none;
 
                 &:hover {
                     background-color: #218838; // Màu nền khi hover
                     border-color: #1e7e34; // Đường viền khi hover
                 }
-
-                &.btn-download-cv {
-                    background-color: #007bff; // Màu nền cho nút tải xuống
-
-                    &:hover {
-                        background-color: #0056b3; // Màu nền khi hover
-                    }
-                }
             }
         }
     }
+}
+.confirm-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.confirm-button, .cancel-button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.confirm-button {
+    background-color: #d9534f;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #5bc0de;
+    color: white;
 }

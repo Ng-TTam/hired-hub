@@ -17,22 +17,23 @@ const CVList = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        // cvList.length > 0 ? (
-        //     <div className="cv-list">
-        //         {cvList.map(cv => (
-        //             <CVItem 
-        //                 cvId={cv.id} 
-        //                 cvDescription={cv.description} 
-        //             />
-        //         ))}
-        //     </div>
-        // ) : (
+        cvList.length > 0 ? (
+            <div className="cv-list">
+                {cvList.map(cv => (
+                    <CVItem 
+                        cvkey={cv.id}
+                        cvId={cv.id} 
+                        titleBox={cv.description} 
+                    />
+                ))}
+            </div>
+        ) : (
             <div className="box-conten box-no-cv">
                 <img className='no-cv' src={images.noCVImage} alt='no-cv'/>
                 <p>Bạn chưa tạo CV nào</p>
                 
             </div>
-        // )
+        )
     );
 };
 

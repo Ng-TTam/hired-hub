@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostingController {
     PostingService postingService;
-    ApplicationService applicationService;
 
     @PostMapping
     ApiResponse<PostingDetailResponse> createPosting(@RequestBody @Valid PostingRequest postingRequest) {
