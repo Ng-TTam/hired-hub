@@ -1,48 +1,49 @@
 .sidebar {
-  width: 260px;
+  width: 240px;
   height: 100vh;
   background: white;
   padding: 16px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid #ddf8e9;
   display: flex;
   flex-direction: column;
 }
 
-.logo {
-  color: #0066ff;
+.logo-app {
+  color: #00b14f;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 24px;
+  text-align: center;
+  border: #00b14f solid 1px;
 }
 
-.team-section {
+.user-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px;
-  background: #f8f9fa;
-  border-radius: 8px;
+  border-bottom: 1px solid #9ca3af;
   margin-bottom: 16px;
 }
 
-.team-info {
+.user-info {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.team-icon {
-  width: 24px;
-  height: 24px;
+.user-icon {
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  border-radius: 8px;
+  border-radius: 20px;
 }
 
-.team-name {
+.user-name {
   color: #374151;
 }
 
-.team-type {
+.user-type {
   color: #6b7280;
   font-size: 12px;
 }
@@ -80,18 +81,18 @@
 }
 
 .nav-link:hover {
-  background-color: #f8f9fa;
+  background-color: #f2fbf6;
 }
 
 .nav-link.active {
-  background-color: #ebf5ff;
-  color: #0066ff;
+  background-color: #f2fbf6;
+  color: #00b14f;
 }
 
 .badge {
   margin-left: auto;
-  background-color: #fff3e5;
-  color: #ff6b00;
+  background-color: #fff3e5; 
+  color: #ff6a00;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
