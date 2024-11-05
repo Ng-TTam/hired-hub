@@ -25,7 +25,7 @@
             font: 125%/1.4 Inter,sans-serif;
             box-sizing: inherit;
             flex: 1;
-            color: rgb(47, 9, 240);
+            color: #00C056;
             font-size: 30px;
             .top-name{
                 height: 260px;
@@ -90,7 +90,30 @@
         margin-top: 20px;
     }
 }
+.btn-submit{
+    margin-left: 610px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #fff;
+    color: var(--white-color);
+    background-color: #00C056;
+    border-color: #00C056;
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 12px 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
 
 
-
-
+.title-edit{
+    margin-left: 510px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #00C056;
+}

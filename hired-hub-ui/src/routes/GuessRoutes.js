@@ -5,8 +5,7 @@ import Posting from '../components/Posting';
 import PostingFilter from '../components/PostingFilter';
 import Auth from '../pages/Home/Auth';
 import Logout from '../components/Logout';
-import ProfileCV from '../components/ProfileCV/ProfileCV';
-import CV from '../components/ProfileCV/CV/CV';
+
 
 const GuessRoutes = () => {
     return (
@@ -16,9 +15,7 @@ const GuessRoutes = () => {
             <Route path="/posting/:id" exact element={<DefaultLayout children={<Posting />} />} />
             <Route path="/login" element={<Auth />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/qly-cv" exact element={<DefaultLayout children={<ProfileCV/>}/>} />
-            <Route path="/xem-cv/:cvId" exact element={<DefaultLayout children={<CV/>}/>} />
-            <Route path="/tao-cv" exact element={<DefaultLayout children={<CV/>}/>} />
+            
         </Routes>
     );
 };

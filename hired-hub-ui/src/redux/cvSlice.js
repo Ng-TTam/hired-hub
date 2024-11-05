@@ -37,6 +37,39 @@ export const fetchCV = createAsyncThunk('cv/fetchCV', async (id, {rejectWithValu
     }
 });
 
+export const updateCV = createAsyncThunk('cv/updateCV', async ({ cvId, updatedCV }, { rejectWithValue }) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token không tồn tại');
+        }
+        const response = await axios.put(`${apiUrl}/${cvId}`, updatedCV, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data);
+    }
+});
+
+export const createCV = createAsyncThunk('cv/createCV', async (creacteCV, { rejectWithValue }) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token không tồn tại');
+        }
+        const response = await axios.post(`${apiUrl}`, creacteCV, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data);
+    }
+});
 
 const cvSlice = createSlice({
     name: 'cv',

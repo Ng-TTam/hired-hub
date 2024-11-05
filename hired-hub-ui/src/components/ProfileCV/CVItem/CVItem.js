@@ -19,7 +19,8 @@ function CVItem({ cvId, titleBox, onDelete }) {
             setShowConfirmDialog(false); // Ẩn hộp thoại sau khi xóa thành công
         } catch (error) {
             console.error("Lỗi khi xóa CV:", error);
-            alert("Đã xảy ra lỗi khi xóa CV.");
+            setShowConfirmDialog(false);
+            alert("CV đang tham gia ứng tuyển.");
         }
     };
 
@@ -32,7 +33,7 @@ function CVItem({ cvId, titleBox, onDelete }) {
                             <NavLink to={`../xem-cv/${cvId}`} className="select-cv">
                                 {titleBox}
                             </NavLink>
-                            <NavLink to="../" className="edit">
+                            <NavLink to={`../edit-cv/${cvId}`} className="edit">
                                 edit
                             </NavLink>
                         </h4>
