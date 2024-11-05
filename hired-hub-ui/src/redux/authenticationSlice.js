@@ -24,7 +24,7 @@ export const logoutThunk = createAsyncThunk('authentication/logout', async () =>
 export const authenticationSlice = createSlice({
     name: 'authentication',
     initialState: {
-        isLogin: !!localStorage.getItem('token'),
+        isLogin: false,
         loading: false,
         success: false,
         error: null,

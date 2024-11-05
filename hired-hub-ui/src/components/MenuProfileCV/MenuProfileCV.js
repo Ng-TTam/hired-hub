@@ -13,12 +13,12 @@ const MenuProfileCV = () => {
         {
             icon: <i className="fa-regular fa-file-user"></i>,
             title: 'Tạo CV',
-            to: '../tao-cv',
+            to: isLogin ? '../tao-cv': '../login',
         },
         {
             icon: <i className="fa-regular fa-file-user"></i>,
             title: 'Quản lý CV',
-            to: '../qly-cv',
+            to: isLogin ?  '../qly-cv':'../login',
         },
     ];
 
@@ -29,7 +29,7 @@ const MenuProfileCV = () => {
             render={(attrs) => (
                 <div tabIndex="-1" {...attrs}>
                     <PopperWrapper>
-                        <Menu items={isLogin ? MENU_ITEMS : [MENU_ITEMS[0]]} /> {/* Hiển thị 'Tạo CV' nếu không đăng nhập */}
+                        <Menu items={MENU_ITEMS}/>
                     </PopperWrapper>
                 </div>
             )}

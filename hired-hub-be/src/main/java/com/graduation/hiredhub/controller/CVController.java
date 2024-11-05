@@ -2,6 +2,8 @@ package com.graduation.hiredhub.controller;
 
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.service.ApplicationService;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.graduation.hiredhub.dto.request.CVRequest;
@@ -53,6 +55,7 @@ public class CVController {
                 .build();
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/{cvId}")
     ApiResponse<CVResponse>getCV(@PathVariable String cvId){
         CVResponse cv = cvService.getCV(cvId);

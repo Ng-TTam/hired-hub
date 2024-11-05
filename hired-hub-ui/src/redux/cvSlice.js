@@ -3,29 +3,46 @@ import axios from 'axios';
 
 const apiUrl = 'http://localhost:8888/api/v1/cv';
 
-// Tạo một thunk để lấy danh sách CV từ API
 export const fetchCVs = createAsyncThunk('cv/fetchCVs', async (_, { rejectWithValue }) => {
     try {
-        const token = localStorage.getItem('token'); // Lấy token từ localStorage
+        const token = localStorage.getItem('token');
         if (!token) {
-            throw new Error('Token không tồn tại'); // Kiểm tra nếu token không tồn tại
+            throw new Error('Token không tồn tại');
         }
         const response = await axios.get(apiUrl, {
             headers: {
-                Authorization: `Bearer ${token}`, // Thêm Bearer token vào header
+                Authorization: `Bearer ${token}`, 
             },
         });
-        return response.data.data; // Trả về dữ liệu khi thành công
+        return response.data.data;
     } catch (error) {
-        return rejectWithValue(error.response?.data || 'Lỗi không xác định'); // Trả về lỗi nếu có
+        return rejectWithValue(error.response?.data); 
     }
 });
 
-// Tạo slice cho cv
+export const fetchCV = createAsyncThunk('cv/fetchCV', async (id, {rejectWithValue }) => {
+    try {
+        const token = localStorage.getItem('token'); 
+        if (!token) {
+            throw new Error('Token không tồn tại'); 
+        }
+        const response = await axios.get(`${apiUrl}/${id}`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data; 
+    } catch (error) {
+        return rejectWithValue(error.response?.message); 
+    }
+});
+
+
 const cvSlice = createSlice({
     name: 'cv',
     initialState: {
         list: [],
+        cv: null,
         loading: false,
         error: null,
     },
@@ -33,16 +50,28 @@ const cvSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchCVs.pending, (state) => {
-                state.loading = true; // Đặt trạng thái loading
-                state.error = null; // Đặt lỗi về null khi bắt đầu
+                state.loading = true;
+                state.error = null;
             })
             .addCase(fetchCVs.fulfilled, (state, action) => {
-                state.loading = false; // Đặt trạng thái loading thành false khi thành công
-                state.list = action.payload; // Cập nhật danh sách CV
+                state.loading = false; 
+                state.list = action.payload; 
             })
             .addCase(fetchCVs.rejected, (state, action) => {
-                state.loading = false; // Đặt trạng thái loading thành false khi lỗi
-                state.error = action.payload || 'Lỗi không xác định'; // Cập nhật thông báo lỗi
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchCV.pending, (state) => {
+                state.loading = true; 
+                state.error = null; 
+            })
+            .addCase(fetchCV.fulfilled, (state, action) => {
+                state.loading = false; 
+                state.cv = action.payload; 
+            })
+            .addCase(fetchCV.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });

@@ -1,5 +1,5 @@
-import React, { useState } from "react"; 
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import axios from 'axios';
 import "./CVItem.scss";
 
@@ -29,12 +29,12 @@ function CVItem({ cvId, titleBox, onDelete }) {
                 <div className="box-bg">
                     <div className="box-info">
                         <h4 className="description-cv">
-                            <Link to="../tao-cv" target="_blank" className="select-cv">
+                            <NavLink to={`../xem-cv/${cvId}`} className="select-cv">
                                 {titleBox}
-                            </Link>
-                            <Link to="../" className="edit">
+                            </NavLink>
+                            <NavLink to="../" className="edit">
                                 edit
-                            </Link>
+                            </NavLink>
                         </h4>
                         <ul className="action">
                             <li>

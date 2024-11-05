@@ -1,10 +1,12 @@
-import React from "react";
-import BoxBlock from "./BoxBlock/BoxBlock";
+import React, { useEffect } from 'react'; 
+import { useSelector } from 'react-redux'; 
+import { useNavigate } from 'react-router-dom'; 
+import BoxBlock from './BoxBlock/BoxBlock'; 
+import ProfileJobSeeker from './ProfileJobSeeker/ProfileJobSeeker'; 
 import './ProfileCV.scss'
-import ProfileJobSeeker from "./ProfileJobSeeker/ProfileJobSeeker";
 
 function ProfileCV() {
-    return(
+    return (
         <div className="profile-cv-container">
             <div className="box-block">
                 <BoxBlock className="addboxblock" titleBox={"CV đã tạo"} />
