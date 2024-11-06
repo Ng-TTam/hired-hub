@@ -1,6 +1,7 @@
 package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
+import com.graduation.hiredhub.dto.request.ApplicationRequest;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.entity.Application;
@@ -44,7 +45,7 @@ public class ApplicationService {
     AccountService accountService;
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public ApplicationResponse createApplication(String postingId, String cvId){
+    public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String postingId, String cvId){
         Posting posting = postingRepository.findById(postingId)
                 .orElseThrow(() -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
         CV cv = cvRepository.findById(cvId)
@@ -59,7 +60,7 @@ public class ApplicationService {
         Application application = new Application();
         application.setPosting(posting);
         application.setStatus(ApplicationStatus.PENDING);
-        application.setMessage(null);
+        application.setMessage(applicationRequest.getMessage());
         application.setCreatedAt(Instant.now());
         application.setUpdatedAt(Instant.now());
         application.setCv(cv);

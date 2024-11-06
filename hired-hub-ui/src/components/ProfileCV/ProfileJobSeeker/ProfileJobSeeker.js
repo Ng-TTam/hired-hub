@@ -7,7 +7,7 @@ import { fetchUserInformation } from "../../../redux/userSlice";
 const ProfileJobSeeker = () =>  {
     const dispatch = useDispatch();
     const {user,loading, error } = useSelector(state => state.user);
-
+    const email = localStorage.getItem('email');
     useEffect(() => {
         dispatch(fetchUserInformation());
     }, [dispatch]);
@@ -25,7 +25,7 @@ const ProfileJobSeeker = () =>  {
                 <div className="text-welcome">Chào bạn trở lại,</div>
                 <h4 className="profile-fullname">{`${user.firstName} ${user.lastName}`}</h4>
                 <div className="account-type vip">
-                    <span>{user.phoneNumber}</span>
+                    <span>{email}</span>
                 </div>
                 <div className="box-footer">
                     <a href="#" class="btn btn-sm btn-upgrade">

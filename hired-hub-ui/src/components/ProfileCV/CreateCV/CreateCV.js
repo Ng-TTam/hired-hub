@@ -5,7 +5,7 @@ import images from '../../../assets/images';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useNavigate } from 'react-router-dom';
 import { createCV } from '../../../redux/cvSlice';
-import '../EditCV/EditCV.scss';
+import './CreateCV.scss';
 
 const CreateCV = () => {
     const email = localStorage.getItem('email');
@@ -69,7 +69,7 @@ const CreateCV = () => {
                                 <p><strong>MÔ TẢ</strong></p>
                             </div>
                             <div className='cv-data'>
-                                <textarea
+                                <textarea className='input-mota'
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                 />
@@ -101,14 +101,14 @@ const CreateCV = () => {
                     <div className='body-cv-2'>
                         <div className='body-cv-left'>
                             <div className='cv-text'><strong>HỌC VẤN</strong></div>
-                            <textarea
+                            <textarea className='input-cv'
                                 value={education}
                                 onChange={(e) => setEducation(e.target.value)}
                             />
                         </div>
                         <div className='body-cv-right'>
                             <div className='cv-text'><strong>KINH NGHIỆM</strong></div>
-                            <textarea
+                            <textarea  className='input-cv'
                                 value={experience}
                                 onChange={(e) => setExperience(e.target.value)}
                             />
@@ -117,14 +117,14 @@ const CreateCV = () => {
                     <div className='body-cv-2'>
                         <div className='body-cv-left'>
                             <div className='cv-text'><strong>KỸ NĂNG</strong></div>
-                            <textarea
+                            <textarea  className='input-cv'
                                 value={skill}
                                 onChange={(e) => setSkill(e.target.value)}
                             />
                         </div>
                         <div className='body-cv-right'>
                             <div className='cv-text'><strong>KHÁC</strong></div>
-                            <textarea
+                            <textarea  className='input-cv'
                                 value={others}
                                 onChange={(e) => setOthers(e.target.value)}
                             />

@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "./CVItem.scss";
 
+
 function CVItem({ cvId, titleBox, onDelete }) {
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-
+    const navigate = useNavigate();
+    const handEdit = () => {
+        navigate(`../edit-cv/${cvId}`);
+    };
     const handleDelete = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -33,17 +37,22 @@ function CVItem({ cvId, titleBox, onDelete }) {
                             <NavLink to={`../xem-cv/${cvId}`} className="select-cv">
                                 {titleBox}
                             </NavLink>
-                            <NavLink to={`../edit-cv/${cvId}`} className="edit">
-                                edit
-                            </NavLink>
                         </h4>
                         <ul className="action">
                             <li>
                                 <button 
+                                        onClick={handEdit}
+                                        className="confirm-button"
+                                    >
+                                    Chỉnh sửa
+                                </button>
+                            </li>
+                            <li>
+                                <button 
                                     onClick={() => setShowConfirmDialog(true)} // Hiện hộp thoại khi nhấn nút
-                                    className="delete-button"
+                                    className="del-button"
                                 >
-                                    DELETE
+                                    Xóa CV
                                 </button>
                             </li>
                         </ul>
@@ -55,7 +64,7 @@ function CVItem({ cvId, titleBox, onDelete }) {
             {showConfirmDialog && (
                 <div className="confirm-dialog">
                     <p>Bạn có chắc chắn muốn xóa CV này không?</p>
-                    <button onClick={handleDelete} className="confirm-button">Xác nhận</button>
+                    <button onClick={handleDelete} className="del-button">Xác nhận</button>
                     <button onClick={() => setShowConfirmDialog(false)} className="cancel-button">Hủy</button>
                 </div>
             )}

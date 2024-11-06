@@ -6,7 +6,8 @@ import Menu from '../Menu/Menu'; // Đường dẫn đến component Menu
 import './MenuProfileCV.scss'; // Đường dẫn đến tệp SCSS của component
 
 const MenuProfileCV = () => {
-    const isLogin = useSelector((state) => state.authentication.isLogin);
+    // const isLogin = useSelector((state) => state.authentication.isLogin);
+    const isLogin = localStorage.getItem('isLogin');
     
     // Danh sách các mục menu
     const MENU_ITEMS = [
@@ -27,7 +28,7 @@ const MenuProfileCV = () => {
             interactive
             placement="bottom-end"
             render={(attrs) => (
-                <div tabIndex="-1" {...attrs}>
+                <div >
                     <PopperWrapper>
                         <Menu items={MENU_ITEMS}/>
                     </PopperWrapper>
@@ -41,9 +42,6 @@ const MenuProfileCV = () => {
                             Hồ sơ & CV
                         </a>
                     </div>
-                    <span className="toggle">
-                        <i className="fa-solid fa-chevron-down"></i>
-                    </span>
                 </div>
             </div>
         </HeadlessTippy>

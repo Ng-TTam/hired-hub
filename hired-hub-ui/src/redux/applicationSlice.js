@@ -37,13 +37,14 @@ export const fetchApplicationInPosting = createAsyncThunk('applications/fetchApp
     }
 });
 
-export const createApplication = createAsyncThunk('applications/createApplication', async ({ postingId, cvId }, {rejectWithValue }) => {
+export const createApplication = createAsyncThunk('applications/createApplication', async ({ postingId, cvId, message}, {rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token'); 
         if (!token) {
             throw new Error('Token không tồn tại'); 
         }
-        const response = await axios.get(`${apiUrl}/applications/${postingId}/${cvId}`,{
+        console.log(postingId, cvId, message);
+        const response = await axios.post(`${apiUrl}/applications/${postingId}/${cvId}`, {message},{
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -71,13 +72,13 @@ export const updateApplication = createAsyncThunk('applications/updateApplicatio
     }
 });
 
-export const deleteApplication = createAsyncThunk('applications/deleteApplication', async (creacteCV, { rejectWithValue }) => {
+export const deleteApplication = createAsyncThunk('applications/deleteApplication', async (applicationId, { rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error('Token không tồn tại');
         }
-        const response = await axios.post(`${apiUrl}`, creacteCV, {
+        const response = await axios.delete(`${apiUrl}/${applicationId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -95,7 +96,12 @@ const applicationSlice = createSlice({
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        resetApplication: (state) => {
+            state.application = null; // Reset lại application
+        },
+    },
+    
     extraReducers: (builder) => {
         builder
             .addCase(fetchApplication.pending, (state) => {
@@ -123,7 +129,8 @@ const applicationSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             });
+            
     },
 });
-
+export const { resetApplication } = applicationSlice.actions;
 export default applicationSlice.reducer;

@@ -47,6 +47,7 @@ export const authenticationSlice = createSlice({
                 localStorage.setItem('token', action.payload.data.token);
                 localStorage.setItem('refresh-token', action.payload.data.refreshToken);
                 localStorage.setItem('email', action.meta.arg.email);
+                localStorage.setItem('isLogin', true);
                 state.isLogin = true;
                 state.loading = false;
                 state.success = true;

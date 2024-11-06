@@ -7,7 +7,7 @@ function BoxBlock({ titleBox}) {
         <div id="cv-list" className="box-block-addcv">
             <div className="boxheader">
                 <h1 className="title">{titleBox}</h1>
-                <a href='./tao-cv' className="btn btn-add-cv btn-primary-hover ">Tạo mới</a>
+                <a href='./tao-cv' className="confirm-button">Tạo CV mới</a>
             </div>
             <CVList />
         </div>

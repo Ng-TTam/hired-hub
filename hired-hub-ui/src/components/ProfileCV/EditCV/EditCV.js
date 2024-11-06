@@ -87,7 +87,7 @@ const EditCV = () => {
                             </div>
                             <div className='cv-data'>
                                 <p>
-                                    <textarea
+                                    <textarea className='input-mota'
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                     />
@@ -132,7 +132,7 @@ const EditCV = () => {
                             </div>
                             <div className='cv-data'>
                             <p>
-                                <textarea
+                                <textarea className='input-cv'
                                     value={education}
                                     onChange={(e) => setEducation(e.target.value)}
                                 />
@@ -147,7 +147,7 @@ const EditCV = () => {
                             </div>
                             <div className='cv-data'>
                                 <p>
-                                    <textarea
+                                    <textarea className='input-cv'
                                         value={experience}
                                         onChange={(e) => setExperience(e.target.value)}
                                     />
@@ -164,7 +164,7 @@ const EditCV = () => {
                             </div>
                             <div className='cv-data'>
                                 <p>
-                                    <textarea
+                                    <textarea className='input-cv'
                                         value={skill}
                                         onChange={(e) => setSkill(e.target.value)}
                                     />
@@ -179,7 +179,7 @@ const EditCV = () => {
                             </div>
                             <div className='cv-data'>
                                 <p>
-                                    <textarea
+                                    <textarea className='input-cv'
                                         value={others}
                                         onChange={(e) => setOthers(e.target.value)}
                                     />

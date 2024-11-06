@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
+import com.graduation.hiredhub.dto.request.ApplicationRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
@@ -48,16 +49,17 @@ public class ApplicationController {
         }
 
         @PostMapping("applications/{postingId}/{cvId}")
-        ApiResponse<ApplicationResponse> createApplication(@PathVariable String postingId,
+        ApiResponse<ApplicationResponse> createApplication( @RequestBody @Valid ApplicationRequest applicationRequest,
+                                                        @PathVariable String postingId,
                                                         @PathVariable String cvId){
                 return ApiResponse.<ApplicationResponse>builder()
-                        .data(applicationService.createApplication(postingId, cvId))
+                        .data(applicationService.createApplication(applicationRequest, postingId, cvId))
                         .message("Successfully")
                         .build();
         }
 
 
-        @DeleteMapping("application/{applicationId}")
+        @DeleteMapping("applications/{applicationId}")
         ApiResponse<ApplicationResponse> deleteApplication(@PathVariable Integer applicationId){
                 return ApiResponse.<ApplicationResponse>builder()
                         .data(applicationService.deleteApplication(applicationId))

@@ -34,7 +34,8 @@ const MENU_ITEMS = [
 ];
 
 function Header() {
-    const isLogin = useSelector((state) => state.authentication.isLogin);
+    // const isLogin = useSelector((state) => state.authentication.isLogin);
+    const isLogin = localStorage.getItem('isLogin');
 
     return (
         <header className={cx('wrapper')}>
