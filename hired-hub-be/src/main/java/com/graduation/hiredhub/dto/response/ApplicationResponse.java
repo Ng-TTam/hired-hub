@@ -19,8 +19,8 @@ public class ApplicationResponse {
     String id;
     ApplicationStatus status;
     String message;
-    CVResponse cvResponse;
-    PostingResponse postingResponse;
+    CVResponse cv;
+    PostingResponse posting;
     Instant createdAt;
     Instant updatedAt;
 }

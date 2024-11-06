@@ -24,17 +24,20 @@ import CompanyInfo from './CompanyInfo';
 import ContentBox from './ContentBox';
 import ContentIcon from './ContentIcon';
 import styles from './Posting.module.scss';
+import { fetchApplicationInPosting } from '../../redux/applicationSlice';
 
 const cx = classNames.bind(styles);
 
 function Posting() {
     const { id } = useParams();
+    const {isApplication ,application} = useSelector((state) => state.application)
     const posting = useSelector((state) => state.postings.posting);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchPosting(id));
+        dispatch(fetchApplicationInPosting(id));
     }, [dispatch, id]);
 
     const handleSearchByProvince = (province) => {
@@ -84,7 +87,12 @@ function Posting() {
                     </div>
                     <div className={cx('actions')}>
                         <Button className={cx('btn-apply')} primary leftIcon={<FontAwesomeIcon icon={faPaperPlane} />}>
-                            Ứng tuyển ngay
+                        {application ? (
+                            application.status === "PENDING" ? "Đang chờ phản hồi" :
+                            application.status === "ACTIVATE" ? "Ứng tuyển thành công" :
+                            application.status === "DEACTIVATE" ? "Đã Loại" :
+                            "Ứng tuyển ngay"
+                        ) : "Ứng tuyển ngay"}
                         </Button>
                         <Button className={cx('btn-save')} outline leftIcon={<FontAwesomeIcon icon={faHeart} />}>
                             Lưu tin

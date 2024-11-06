@@ -6,6 +6,7 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.entity.Application;
 import com.graduation.hiredhub.entity.CV;
 import com.graduation.hiredhub.entity.Employer;
+import com.graduation.hiredhub.entity.JobSeeker;
 import com.graduation.hiredhub.entity.Posting;
 import com.graduation.hiredhub.entity.enumeration.ApplicationStatus;
 import com.graduation.hiredhub.exception.AppException;
@@ -14,6 +15,7 @@ import com.graduation.hiredhub.mapper.ApplicationMapper;
 import com.graduation.hiredhub.repository.ApplicationRepository;
 import com.graduation.hiredhub.repository.CVRepository;
 import com.graduation.hiredhub.repository.EmployerRepository;
+import com.graduation.hiredhub.repository.JobSeekerRepository;
 import com.graduation.hiredhub.repository.PostingRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +40,8 @@ public class ApplicationService {
     PostingRepository postingRepository;
     CVRepository cvRepository;
     CVService cvService;
+    JobSeekerRepository jobSeekerRepository;
+    AccountService accountService;
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public ApplicationResponse createApplication(String postingId, String cvId){
@@ -67,11 +72,9 @@ public class ApplicationService {
     }
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public ApplicationResponse deleteApplication(String postingId, Integer applicationId){
+    public ApplicationResponse deleteApplication(Integer applicationId){
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED));
-        if(!application.getPosting().getId().equals(postingId))
-            throw new AppException(ErrorCode.APPLICATION_NOT_EXISTED);
         if (!application.getCv().getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
@@ -150,14 +153,31 @@ public class ApplicationService {
     }
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public ApplicationResponse getApplicationByJobSeeker(String postingId, Integer applicationId) {
+    public ApplicationResponse getApplicationByJobSeeker(Integer applicationId) {
         Application application = applicationRepository.findById(applicationId).orElseThrow(
                 () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
         );
-        if(!application.getPosting().getId().equals(postingId))
-            throw new AppException(ErrorCode.APPLICATION_NOT_EXISTED);
         if (!application.getCv().getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+        return applicationMapper.toApplicationResponse(application);
+    }
+
+    @PreAuthorize("hasRole('JOB_SEEKER')")
+    public ApplicationResponse getApplicationByJobSeekerInPosting(String postingId) {
+        Posting posting = postingRepository.findById(postingId)
+                .orElseThrow(() -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
+        List<CV> cvs = cvRepository.findByJobSeeker(getJobSeekerByAccount());
+        Application application = new Application();
+        for (CV cv : cvs) {
+            Optional<Application> optionalApplication = applicationRepository.findByPostingAndCv(posting, cv);
+            if (optionalApplication.isPresent()) {
+                application = optionalApplication.get();
+                break; // Thoát khỏi vòng lặp sau khi tìm thấy application đầu tiên
+            }
+        }
+        if (application.getId() == null) {
+            throw new AppException(ErrorCode.APPLICATION_NOT_EXISTED);
         }
         return applicationMapper.toApplicationResponse(application);
     }
@@ -178,5 +198,11 @@ public class ApplicationService {
         );
         applicationMapper.updateApplication(application, applicationDTO);
         return applicationMapper.toApplicationDTO(applicationRepository.save(application));
+    }
+
+
+    JobSeeker getJobSeekerByAccount(){
+        return jobSeekerRepository.findByAccountId(accountService.getAccountInContext().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));   
     }
 }
