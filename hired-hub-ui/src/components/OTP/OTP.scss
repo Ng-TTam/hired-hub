@@ -1,0 +1,97 @@
+.otp {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.otp-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 7rem;
+    border-radius: 20px;
+    margin: 0 auto;
+    background-color: white;
+}
+
+.otp-container h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.otp-container span {
+    color: #666;
+    font-size: .9rem;
+}
+
+.otp-input-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.otp-input {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 20px;
+    color: #333;
+    transition: all 0.2s ease;
+    &:focus {
+        border-color: #00b14f;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 177, 79, 0.102);
+    }
+}
+
+.otp-input .otp-input::-webkit-inner-spin-button,
+.otp-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.otp-footer {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.resend-button {
+    background: none;
+    border: none;
+    color: #00b14f;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    transition: color 0.2s ease;
+}
+
+.resend-button:hover {
+    color: #01823b;
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.otp-input.error {
+    border-color: #dc3545;
+    animation: shake 0.2s ease-in-out;
+}
