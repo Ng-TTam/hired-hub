@@ -30,6 +30,13 @@ public class CVService {
     AccountService accountService;
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
+    public CVResponse getCV(String cvid){
+        CV cv = cVRepository.findById(cvid)
+                .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
+        return cvMapper.toCVResponse(cv);
+    }
+
+    @PreAuthorize("hasRole('JOB_SEEKER')")
     public CVResponse createCV(CVRequest cvRequest){
         CV cv = cvMapper.toCV(cvRequest);
         cv.setJobSeeker(getJobSeekerByAccount());
@@ -37,16 +44,6 @@ public class CVService {
             cVRepository.save(cv);
         } catch (Exception e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
-        }
-        return cvMapper.toCVResponse(cv);
-    }
-
-    @PreAuthorize("@CVSecurity.isCVOwner(#cvid, authentication.name)")
-    public CVResponse getCV(String cvid){
-        CV cv = cVRepository.findById(cvid)
-                .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
-        if (!cv.getJobSeeker().getId().equals(getJobSeekerByAccount().getId())){
-            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
         return cvMapper.toCVResponse(cv);
     }

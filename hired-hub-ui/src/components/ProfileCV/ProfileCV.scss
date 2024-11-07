@@ -1,0 +1,48 @@
+.profile-cv-container {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+    font-family: Inter,sans-serif;
+    -webkit-box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f2f6;
+    margin-top: 24px;
+    padding-bottom: 0;
+    .box-block {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #333;
+        -webkit-font-smoothing: antialiased;
+        font-family: Inter,sans-serif;
+        -webkit-box-sizing: border-box;
+        position: relative;
+        min-height: 1px;
+        padding-right: 60px;
+        padding-left: 60px;
+        float: left;
+        width: 66.66666667%;
+    }
+    .profileStyle {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #333;
+        -webkit-font-smoothing: antialiased;
+        font-family: Inter,sans-serif;
+        -webkit-box-sizing: border-box;
+        position: relative;
+        min-height: 1px;
+        padding-right: 45px;
+        padding-left: 45px;
+        float: left;
+        width: 33.33333333%;
+    }
+}
+

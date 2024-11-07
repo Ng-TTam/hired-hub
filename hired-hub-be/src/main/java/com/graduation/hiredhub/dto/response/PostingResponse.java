@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -20,6 +21,8 @@ public class PostingResponse {
     String id;
     String title;
     JobType jobType;
+    Instant createdAt;
+    Instant expiredAt;
     JobCategoryDTO mainJob;
     List<JobCategoryDTO> subJobs;
     PositionCategoryDTO position;

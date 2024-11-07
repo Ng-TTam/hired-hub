@@ -1,0 +1,110 @@
+.editor-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: white;
+  width: 100%;
+  margin: 20px auto;
+}
+
+.toolbar {
+  padding: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background-color: #f9fafb;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.toolbar-button {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #374151;
+  font-family: Arial, sans-serif;
+}
+
+.toolbar-button:hover {
+  background-color: #e5e7eb;
+}
+
+.toolbar-button.bold {
+  font-weight: bold;
+}
+
+.toolbar-button.italic {
+  font-style: italic;
+  font-family: Times New Roman, serif;
+}
+
+.toolbar-button.underline {
+  text-decoration: underline;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background-color: #e5e7eb;
+  margin: 0 2px;
+}
+
+.editor-content {
+  min-height: 150px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #374151;
+  outline: none;
+  direction: ltr; /* Đảm bảo text nhập từ trái sang phải */
+}
+
+.editor-content:focus {
+  outline: none;
+  border-color: rgb(0, 132, 61); /* Màu xanh khi focus */
+  box-shadow: 0 0 0 1px rgb(0, 132, 61); /* Tạo viền xanh khi focus */
+}
+
+.editor-content:empty:before {
+  content: "";
+  color: #9ca3af;
+}
+
+/* Custom list styles */
+.editor-content ul {
+  margin: 0;
+  padding-left: 16px;
+  list-style-type: none;
+}
+
+.editor-content ul li {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.editor-content ul li:before {
+  content: "-";
+  position: absolute;
+  left: -16px;
+  color: #374151;
+}
+
+.editor-content ol {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.editor-content ol li {
+  margin-bottom: 4px;
+}
+
+::selection {
+  background: #e5e7eb;
+}

@@ -1,0 +1,141 @@
+.cv-review {
+    width: 790px; // Đặt chiều rộng của div là 80%
+    background-color: rgb(255, 255, 255); // Màu nền cho div
+    padding: 20px; // Padding cho div
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // Bóng đổ cho div
+    border-radius: 8px; // Bo góc cho div
+    margin-left: 320px; 
+    height: auto;
+
+    .header{
+        font: 125%/1.4 Inter,sans-serif;
+        box-sizing: inherit;
+        height: 330px;
+        display: flex;
+        .left_header{
+            color: #222;
+            font: 125%/1.4 Inter,sans-serif;
+            box-sizing: inherit;
+            flex: 1;
+            .img-cv{
+                margin-left: 10px;
+            }
+        }
+        .right_header{
+            font: 125%/1.4 Inter,sans-serif;
+            box-sizing: inherit;
+            flex: 1;
+            color: #00C056;
+            font-size: 30px;
+            .top-name{
+                height: 260px;
+            }
+            
+        }
+    }
+
+    .body-cv-1{
+        box-sizing: inherit;
+        display: flex;
+        height: 190px;
+        .left-body{
+            box-sizing: inherit;
+            flex: 1;
+            width: 50%;
+            background-color: white;
+            color: rgba(0, 0, 0, 0.807);
+            .cv-mo-ta{
+                margin-top: 10px;
+                text-decoration: underline;
+            }
+            .input-mota{
+                padding-top: 12px;
+                padding-right: 16px;
+                padding-bottom: 12px;
+                padding-left: 16px;
+                height: 120px;
+                font-size: 20px;
+                width: 100%;
+                background-color: white;
+                color: rgba(0, 0, 0, 0.807);
+            }
+        }
+        .right-body{
+            box-sizing: inherit;
+            flex: 1;
+            width: 50%;
+            margin-left: 20px;
+            .ql-editor{
+                margin-top: 10px;
+            }
+        }
+    }
+    .body-cv-2{
+        box-sizing: inherit;
+        display: flex;
+        height: 120px;
+        margin-top: 10px;
+        .body-cv-left{
+            box-sizing: inherit;
+            flex: 1;
+            width: 50%;
+        }
+        .body-cv-right{
+            box-sizing: inherit;
+            flex: 1;
+            width: 50%;
+            margin-left: 20px;
+        }
+        
+    }
+    .cv-text{
+        margin-left: 10px;
+        margin-top: 10px;
+        text-decoration: underline;
+    }
+    
+    .input-cv{
+        padding-top: 12px;
+        padding-right: 16px;
+        padding-bottom: 12px;
+        padding-left: 16px;
+        height: 80px;
+        font-size: 20px;
+        width: 100%;
+        background-color: rgb(33, 47, 63);
+        color: rgba(0, 0, 0, 0.807);
+        background-color: white;
+    }
+}
+.btn-submit{
+    margin-left: 610px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #fff;
+    color: var(--white-color);
+    background-color: #00C056;
+    border-color: #00C056;
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 12px 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    &:hover {
+        color: #fff;
+        background-color: #218838; // Màu nền khi hover
+        border-color: #1e7e34; // Đường viền khi hover
+    }
+}
+
+
+.title-edit{
+    margin-left: 510px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #00C056;
+}

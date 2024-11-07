@@ -1,0 +1,19 @@
+.custom-table{
+    background-color: #efeeee;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+} 
+
+.custom-table th, .custom-table td {
+    padding: 8px;
+    text-align: left;
+    background-color: white;
+    color: #4b5563; 
+    transition: background-color 0.3s ease;
+    
+}
+  
+.custom-table tr:hover  td{
+    background-color: #f2fbf6 !important;
+}

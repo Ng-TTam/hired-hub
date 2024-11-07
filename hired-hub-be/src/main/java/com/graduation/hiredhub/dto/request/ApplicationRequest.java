@@ -17,7 +17,7 @@ import java.time.Instant;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationRequest {
-    ApplicationStatus status;
+    @NotBlank(message = "BLANK MESSAGE")
     String message;
     CV cv;
     Posting posting;
