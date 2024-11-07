@@ -1,9 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from '../config/axios';
+const apiUrl = 'http://localhost:8888/api/v1/user';
 
 export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation', async (_, { rejectWithValue }) => {
+    const token = localStorage.getItem('token'); // Lấy token từ localStorage
+    if (!token) {
+        throw new Error('Token không tồn tại'); // Kiểm tra nếu token không tồn tại
+    }
     try {
-        const response = await axios.get('user');
+        const response = await axios.get(apiUrl, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Thêm Bearer token vào header
+            },
+        });
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response);
@@ -13,14 +22,14 @@ export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation'
 const userSlice = createSlice({
     name: 'userSlice',
     initialState: {
-        loading: false,
         user: null,
+        loading: false,
         error: null,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchUserInformation.pending, (state, action) => {
+            .addCase(fetchUserInformation.pending, (state) => {
                 state.loading = true;
                 state.user = null;
                 state.error = null;
@@ -28,12 +37,10 @@ const userSlice = createSlice({
             .addCase(fetchUserInformation.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload.data;
-                state.error = null;
             })
             .addCase(fetchUserInformation.rejected, (state, action) => {
                 state.loading = false;
-                state.user = null;
-                state.error = action.payload.data.message;
+                state.error = action.payload.message;
             });
     },
 });

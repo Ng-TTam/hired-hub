@@ -11,6 +11,7 @@ import Button from '../../Button';
 import styles from './Header.module.scss';
 import Menu from '../../Menu';
 import { Wrapper as PopperWrapper } from '../../Popper';
+import MenuItemProfileCV from '../../MenuProfileCV/MenuProfileCV';
 
 const cx = classNames.bind(styles);
 
@@ -33,7 +34,8 @@ const MENU_ITEMS = [
 ];
 
 function Header() {
-    const isLogin = useSelector((state) => state.authentication.isLogin);
+    // const isLogin = useSelector((state) => state.authentication.isLogin);
+    const isLogin = localStorage.getItem('isLogin');
 
     return (
         <header className={cx('wrapper')}>
@@ -44,8 +46,8 @@ function Header() {
                         <li className={cx('nav-list__item')}>
                             <NavLink to={'/'}>Việc làm</NavLink>
                         </li>
-                        <li className={cx('nav-list__item')}>
-                            <a>Hồ sơ & CV</a>
+                        <li className={cx('nav-list__itemcv')}>
+                            <MenuItemProfileCV>Hồ sơ & CV</MenuItemProfileCV>
                         </li>
                     </ul>
                     {isLogin ? (
@@ -68,10 +70,10 @@ function Header() {
                         </div>
                     ) : (
                         <div className={cx('actions')}>
-                            <Button to="login" outline>
+                            <Button to="../login" outline>
                                 Đăng nhập
                             </Button>
-                            <Button primary to="register">
+                            <Button primary to="../register">
                                 Đăng ký
                             </Button>
                         </div>

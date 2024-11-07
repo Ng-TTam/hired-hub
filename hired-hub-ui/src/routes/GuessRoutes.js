@@ -1,11 +1,11 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import DefaultLayout from '../components/DefaultLayout';
-import Logout from '../components/Logout';
 import Posting from '../components/Posting';
 import PostingFilter from '../components/PostingFilter';
 import Auth from '../pages/Home/Auth';
 import SignUp from '../pages/Home/SignUp';
+import Logout from '../components/Logout';
 
 const GuessRoutes = () => {
     return (
@@ -15,7 +15,7 @@ const GuessRoutes = () => {
             <Route path="/posting/:id" exact element={<DefaultLayout children={<Posting />} />} />
             <Route path="/login" element={<Auth />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/sign-up" element={<SignUp />} />{' '}
         </Routes>
     );
 };

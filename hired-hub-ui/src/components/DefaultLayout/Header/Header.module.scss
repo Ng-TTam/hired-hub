@@ -55,6 +55,17 @@
         color: var(--primary-color);
     }
 }
+.nav-list__itemcv {
+    list-style: none;
+    padding: 0 12px;
+    align-content: center;
+}
+.nav-list__itemcv a {
+    color: #212f3f;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
 
 .actions {
     display: flex;

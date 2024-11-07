@@ -39,12 +39,4 @@ public class UserController {
                 .data(userService.getUser())
                 .build();
     }
-
-    @GetMapping("/jobSeeker/applications")
-    ApiResponse<List<ApplicationResponse>> getApplicationsByJobSeeker(){
-        List<ApplicationResponse> applications = applicationService.getApplicationsByJobSeeker();
-        return ApiResponse.<List<ApplicationResponse>>builder()
-                .data(applications)
-                .build();
-    }
 }

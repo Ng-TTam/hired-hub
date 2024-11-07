@@ -1,0 +1,50 @@
+.box-block-addcv {
+    .boxheader {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #333;
+        font-family: Inter,sans-serif;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+        display: flex;
+        justify-content: space-between; /* Giữ khoảng cách giữa tiêu đề và nút */
+        margin-bottom: 12px;
+    
+        .title {
+            padding: 0;
+            font-family: inherit;
+            color: #000;
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 24px;
+            flex-grow: 1; /* Giúp tiêu đề chiếm không gian còn lại */
+            width: 80%;
+        }
+    
+        .btn {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            margin: 0;
+            text-decoration: none;
+            margin-bottom: 0;
+            font-size: 14px;
+            text-align: center;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+            font-weight: 700;
+            background: #00b14f;
+            border-radius: 32px;
+            color: #fff;
+            line-height: 1;
+            padding: 8px 12px; 
+            min-width: 80px; 
+            width: 20%;
+        }
+    }    
+}
+
