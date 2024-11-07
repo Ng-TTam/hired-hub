@@ -22,6 +22,7 @@ export const GenderRequire = Object.freeze({
 const constants = {
     ExperienceRequire,
     JobTypes,
+    GenderRequire,
 };
 
 export default constants;

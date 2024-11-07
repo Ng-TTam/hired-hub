@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import axiosPro from '../config/axios';
 import { baseURL } from '../config/axios';
 
 const apiUrl = `${baseURL}posting`;
@@ -27,6 +28,15 @@ export const fetchPosting = createAsyncThunk('postings/fetchPosting', async (id,
     }
 });
 
+export const createPosting = createAsyncThunk('postings/createPosting', async (posting, { rejectWithValue }) => {
+    try {
+        const response = await axiosPro.post(apiUrl, posting);
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data);
+    }
+});
+
 const postingSlice = createSlice({
     name: 'postings',
     initialState: {
@@ -37,7 +47,20 @@ const postingSlice = createSlice({
         totalElements: 0,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        setPosting: (state, action) => {
+            state.posting = {
+                ...state.posting,
+                ...action.payload,
+            };
+        },
+        setPostingJobDescription: (state, action) => {
+            state.posting.jobDescription = {
+                ...state.posting.jobDescription,
+                ...action.payload,
+            };
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchPostings.pending, (state) => {
@@ -66,8 +89,21 @@ const postingSlice = createSlice({
             .addCase(fetchPosting.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+            })
+            .addCase(createPosting.pending, (state, action) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createPosting.fulfilled, (state, action) => {
+                state.loading = false;
+                state.posting = action.payload.data;
+            })
+            .addCase(createPosting.rejected, (state, action) => {
+                state.load = false;
+                state.error = action.payload.message;
             });
     },
 });
 
+export const { setPosting, setPostingJobDescription } = postingSlice.actions;
 export default postingSlice.reducer;
