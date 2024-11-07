@@ -5,6 +5,8 @@ import gLogo from '../../assets/images/google.png';
 const LoginForm = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const urlSignUp = 'http://localhost:3000/sign-up';
+    const urlSignIn = 'http://localhost:3000/login';
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -28,7 +30,7 @@ const LoginForm = (props) => {
                     <input
                         type="email"
                         className="input"
-                        placeholder="Enter your Email"
+                        placeholder="Nhập email của bạn"
                         id="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -37,7 +39,7 @@ const LoginForm = (props) => {
                 </div>
 
                 <div className="flex-column">
-                    <label>Password </label>
+                    <label>Mật khẩu </label>
                 </div>
                 <div className="inputForm">
                     <svg height="20" viewBox="-64 0 512 512" width="20" xmlns="http://www.w3.org/2000/svg">
@@ -47,7 +49,7 @@ const LoginForm = (props) => {
                     <input
                         type="password"
                         className="input"
-                        placeholder="Enter your Password"
+                        placeholder="Nhập mật khẩu của bạn"
                         value={password}
                         id="password"
                         onChange={(e) => setPassword(e.target.value)}
@@ -55,18 +57,31 @@ const LoginForm = (props) => {
                     />
                 </div>
 
-                <div className="flex-row">
-                    <div>
-                        <input type="checkbox" />
-                        <label>Remember me </label>
+                {props.loginType === 'Đăng Nhập' ? (
+                    <div className="flex-row">
+                        <div></div>
+                        <span className="span">Quên mật khẩu?</span>
                     </div>
-                    <span className="span">Forgot password?</span>
-                </div>
-                <button className="button-submit">Sign In</button>
-                <p className="p">
-                    Don&apos;t have an account? <span className="span">Sign Up</span>
-                </p>
-                <p className="p line">Or With</p>
+                ) : (
+                    <div></div>
+                )}
+                <button className="button-submit">{props.loginType}</button>
+                {props.loginType === 'Đăng Nhập' ? (
+                    <p className="p">
+                        Chưa có tài khoản?{' '}
+                        <a className="span" href={urlSignUp}>
+                            Đăng ký
+                        </a>
+                    </p>
+                ) : (
+                    <p className="p">
+                        Đã có tài khoản?{' '}
+                        <a className="span" href={urlSignIn}>
+                            Đăng Nhập
+                        </a>
+                    </p>
+                )}
+                <p className="p line">Hoặc với</p>
 
                 <div className="flex-row">
                     <button className="btn google">
