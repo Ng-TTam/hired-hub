@@ -1,6 +1,6 @@
 .cv-review {
     width: 790px; // Đặt chiều rộng của div là 80%
-    background-color: rgb(209, 222, 226); // Màu nền cho div
+    background-color: rgb(255, 255, 255); // Màu nền cho div
     padding: 20px; // Padding cho div
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // Bóng đổ cho div
     border-radius: 8px; // Bo góc cho div
@@ -42,19 +42,22 @@
             box-sizing: inherit;
             flex: 1;
             width: 50%;
-            background-color: rgb(33, 47, 63);
-            color: rgb(255, 255, 255);
+            background-color: white;
+            color: rgba(0, 0, 0, 0.807);
             .cv-mo-ta{
-                margin-left: 10px;
                 margin-top: 10px;
                 text-decoration: underline;
             }
             .input-mota{
+                padding-top: 12px;
+                padding-right: 16px;
+                padding-bottom: 12px;
+                padding-left: 16px;
                 height: 120px;
                 font-size: 20px;
                 width: 100%;
-                background-color: rgb(33, 47, 63);
-                color: rgb(255, 255, 255);
+                background-color: white;
+                color: rgba(0, 0, 0, 0.807);
             }
         }
         .right-body{
@@ -92,12 +95,16 @@
     }
     
     .input-cv{
+        padding-top: 12px;
+        padding-right: 16px;
+        padding-bottom: 12px;
+        padding-left: 16px;
         height: 80px;
         font-size: 20px;
         width: 100%;
         background-color: rgb(33, 47, 63);
-        color: rgb(0, 0, 0);
-        background-color: rgb(209, 222, 226);
+        color: rgba(0, 0, 0, 0.807);
+        background-color: white;
     }
 }
 .btn-submit{

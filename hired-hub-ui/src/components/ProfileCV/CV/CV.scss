@@ -1,6 +1,6 @@
 .cv-review {
     width: 790px; // Đặt chiều rộng của div là 80%
-    background-color: rgb(209, 222, 226); // Màu nền cho div
+    background-color: rgb(255, 255, 255); // Màu nền cho div
     padding: 20px; // Padding cho div
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // Bóng đổ cho div
     border-radius: 8px; // Bo góc cho div
@@ -45,7 +45,6 @@
             background-color: rgb(33, 47, 63);
             color: rgb(255, 255, 255);
             .cv-mo-ta{
-                margin-left: 10px;
                 margin-top: 10px;
                 text-decoration: underline;
             }
@@ -86,7 +85,6 @@
     
     .cv-data{
         font-size: 20px;
-        margin-left: 10px;
         margin-top: 20px;
     }
 }

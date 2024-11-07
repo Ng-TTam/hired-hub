@@ -1,5 +1,5 @@
 .box-bg-1 {
-    background-color: #f9f9f9;
+    background-color: white;
     border: 1px solid #00b14f;
     border-radius: 8px;
     padding: 16px;
@@ -14,10 +14,15 @@
     height: 44px;
     justify-content: space-between;
     padding: 10px 16px;
+    color: #000000;
+    &:hover{
+        color: rgb(0, 0, 0);
+        border: 1px solid #00b14f;
+    }
 
     &.selected {
-        background-color: #e6f9e6; /* Màu nền khi CV được chọn */
-        border: 1px solid #28a745; /* Màu viền khi CV được chọn */
+        background-color: #00b14f; 
+        color: white !important;
     }
 
     .box-info-1 {
@@ -28,7 +33,6 @@
 
     .description-cv-1 {
         font-size: 1.2rem;
-        color: #000000;
         margin: 0;
         position: relative;
 
@@ -36,7 +40,7 @@
             text-decoration: none;
             color: inherit;
             &:hover {
-                color: #28a745;
+                color: #000000a3;
             }
         }
     }

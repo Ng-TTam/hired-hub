@@ -26,7 +26,7 @@ import CompanyInfo from './CompanyInfo';
 import ContentBox from './ContentBox';
 import ContentIcon from './ContentIcon';
 import styles from './Posting.module.scss';
-import { createApplication, fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
+import { createApplication, deleteApplication, fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
 import CVSelect from '../ProfileCV/CVSelect/CVSelect'
 import '@fortawesome/free-solid-svg-icons';
 
@@ -67,9 +67,16 @@ function Posting() {
         dispatch(resetAndSetJobCategory(jobCategory.id));
         navigate('/');
     };
-    const handleClick = () => {
-        if (application) {
-            navigate(`../applications/${application?.id}`);
+    const handleClickUnAppli = () => {
+        const delAppli = {applicationId : application?.id}
+        try {
+            dispatch(deleteApplication(delAppli)).unwrap();
+        } catch (error) {
+            console.error("Lỗi khi xóa ứng tuyển:", error);
+        } finally{
+            setShowConfirmDialog(false); 
+            setIsModalOpen(false);
+            window.location.reload();
         }
     };
     const handleClickApplication = () => {
@@ -85,17 +92,14 @@ function Posting() {
     };
     const handApplication = () => {
         if (!selectedCV) {
-            alert("Vui lòng chọn CV để ứng tuyển.");
             return;
         }
         const newApplication = { postingId: id, cvId: selectedCV, message };
         try {
             dispatch(createApplication(newApplication)).unwrap();
             console.log(id, selectedCV, message);
-            alert("Ứng tuyển thành công");
         } catch (error) {
             console.error("Lỗi khi ứng tuyển:", error);
-            alert("Vui lòng thử lại.");
         }finally{
             setShowCreateApplication(false);
             setIsModalOpen(false);
@@ -264,7 +268,7 @@ function Posting() {
                     {showConfirmDialog && (
                         <div className="confirm-dialog">
                             <p>Bạn có chắc chắn muốn hủy ứng tuyển?</p>
-                            <button onClick={handleClick} className="del-button">Xác nhận</button>
+                            <button onClick={handleClickUnAppli} className="del-button">Xác nhận</button>
                             <button onClick={() => {setShowConfirmDialog(false); setIsModalOpen(false);}} className="cancel-button">Hủy</button>
                         </div>
                     )}
