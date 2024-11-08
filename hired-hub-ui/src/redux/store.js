@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import provinceReducer from './provinceSlice';
-import positionCategoryReducer from './postionCategorySlice';
-import jobCategoryReducer from './jobCategorySlice';
-import postingReducer from './postingSlice';
+import applicationReducer from './applicationSlice';
 import authenticationReducer from './authenticationSlice';
-import userReducer from './userSlice';
+import companyReducer from './companySlice';
 import cvReducer from './cvSlice';
 import filterReducer from './filterSlice';
-import applicationReducer from './applicationSlice';
+import jobCategoryReducer from './jobCategorySlice';
+import postingReducer from './postingSlice';
+import positionCategoryReducer from './postionCategorySlice';
+import provinceReducer from './provinceSlice';
+import subscriptionReducer from './subscriptionSlice';
+import userReducer from './userSlice';
 
 const store = configureStore({
     reducer: {
@@ -20,6 +22,8 @@ const store = configureStore({
         cv: cvReducer,
         filter: filterReducer,
         application: applicationReducer,
+        companies: companyReducer,
+        subscriptions: subscriptionReducer,
     },
 });
 

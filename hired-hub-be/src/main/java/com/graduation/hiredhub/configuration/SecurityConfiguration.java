@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "posting/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "position-category").permitAll()
                         .requestMatchers(HttpMethod.GET, "job-category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "company/**").permitAll()
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->

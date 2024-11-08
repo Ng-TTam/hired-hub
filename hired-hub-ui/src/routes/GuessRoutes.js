@@ -6,6 +6,7 @@ import PostingFilter from '../components/PostingFilter';
 import Auth from '../pages/Home/Auth';
 import SignUp from '../pages/Home/SignUp';
 import Logout from '../components/Logout';
+import CompanyDetail from '../components/CompanyDetail';
 
 const GuessRoutes = () => {
     return (
@@ -15,7 +16,8 @@ const GuessRoutes = () => {
             <Route path="/posting/:id" exact element={<DefaultLayout children={<Posting />} />} />
             <Route path="/login" element={<Auth />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/sign-up" element={<SignUp />} />{' '}
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/company/:id" element={<DefaultLayout children={<CompanyDetail />} />} />
         </Routes>
     );
 };

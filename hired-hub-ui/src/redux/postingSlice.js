@@ -18,6 +18,18 @@ export const fetchPostings = createAsyncThunk(
     },
 );
 
+export const fetchCompanyPostings = createAsyncThunk(
+    'postings/fetchCompanyPostings',
+    async ({ id, criteria, pageable }, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${apiUrl}/by-company/${id}`, { params: { ...criteria, ...pageable } });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data.data);
+        }
+    },
+);
+
 export const fetchPosting = createAsyncThunk('postings/fetchPosting', async (id, { rejectWithValue }) => {
     try {
         const response = await axios.get(`${apiUrl}/${id}`);
@@ -66,6 +78,21 @@ const postingSlice = createSlice({
             .addCase(fetchPosting.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+            })
+            .addCase(fetchCompanyPostings.pending, (state, action) => {
+                state.loading = true;
+                state.postings = [];
+                state.error = null;
+            })
+            .addCase(fetchCompanyPostings.fulfilled, (state, action) => {
+                state.loading = false;
+                state.postings = action.payload.data.data;
+                state.totalPages = action.payload.data.totalPages;
+                state.totalElements = action.payload.data.totalElements;
+            })
+            .addCase(fetchCompanyPostings.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });

@@ -33,13 +33,15 @@ function PostingCard({ posting }) {
                             </div>
                         )}
                     >
-                        <Link className={cx('title')} to={`posting/${posting.id}`}>
+                        <Link className={cx('title')} to={`/posting/${posting.id}`}>
                             {posting.title}
                         </Link>
                     </HeadlessTippy>
                 </div>
                 <Tippy content={posting.company.name} placement="bottom">
-                    <a className={cx('company-name')}>{posting.company.name}</a>
+                    <Link className={cx('company-name')} to={`/company/${posting.company.id}`}>
+                        {posting.company.name}
+                    </Link>
                 </Tippy>
                 <div className={cx('job-description')}>
                     <div className={cx('jd-item')}>{convertSalary(posting.minimumSalary, posting.maximumSalary)}</div>

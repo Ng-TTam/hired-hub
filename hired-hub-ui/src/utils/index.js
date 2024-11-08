@@ -107,3 +107,14 @@ export const formatDateTime = (dateTimeString) => {
     const date = parseISO(dateTimeString);
     return format(date, 'dd/MM/yyyy HH:mm', { locale: vi });
 };
+
+export const convertScaleCategory = (minEmployee, maxEmployee) => {
+    if (minEmployee && maxEmployee) {
+        return `${minEmployee} - ${maxEmployee} nhân viên`;
+    } else if (!minEmployee && !maxEmployee) {
+        return 'Không rõ';
+    } else if (!minEmployee) {
+        return `Tới ${maxEmployee} nhân viên`;
+    }
+    return `${minEmployee}+ nhân viên`;
+};

@@ -1,10 +1,11 @@
 package com.graduation.hiredhub.controller;
 
-import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingRequest;
-import com.graduation.hiredhub.dto.response.*;
-import com.graduation.hiredhub.service.ApplicationService;
+import com.graduation.hiredhub.dto.response.ApiResponse;
+import com.graduation.hiredhub.dto.response.PageResponse;
+import com.graduation.hiredhub.dto.response.PostingDetailResponse;
+import com.graduation.hiredhub.dto.response.PostingResponse;
 import com.graduation.hiredhub.service.PostingService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -60,6 +61,19 @@ public class PostingController {
     @GetMapping
     public ApiResponse<PageResponse<PostingDetailResponse>> filter(PostingFilterCriteria criteria, Pageable pageable) {
         PageResponse<PostingDetailResponse> page = postingService.filter(criteria, pageable);
+        return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
+                .data(page)
+                .build();
+    }
+
+    @GetMapping("by-company/{companyId}")
+    public ApiResponse<PageResponse<PostingDetailResponse>> filterByCompany(
+            @PathVariable("companyId") String companyId,
+            @RequestParam(value = "searchText", required = false) String searchText,
+            @RequestParam(value = "provinceId", required = false) Integer provinceId,
+            Pageable pageable
+    ) {
+        PageResponse<PostingDetailResponse> page = postingService.findByCompany(companyId, searchText, provinceId, pageable);
         return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
                 .data(page)
                 .build();

@@ -69,24 +69,12 @@ function PostingPreview({ posting }) {
                         {convertWorkAddressDetail(posting.jobDescription.workAddress)}
                     </p>
                 </div>
-                {/* <div className={cx('jd-item')}>
-                    <div>
-                        <h3 className={cx('jd-item__title')}>Thời gian làm việc</h3>
-                    </div>
-                    <p className={cx('jd-item__content')}>
-                        - Tiếp nhận nhu cầu mua BĐS của khách hàng, giới thiệu, tư vấn, hướng dẫn khách hàng tham quan
-                        các dự án mà Công ty đang triển khai;<br></br> - Thực hiện giao dịch và hỗ trợ khách hàng theo
-                        dõi tiến độ thanh toán;<br></br> - Duy trì các mối quan hệ khách hàng hiện có, đồng thời xây
-                        dựng kế hoạch tìm kiếm và mở rộng mạng lưới khách hàng tiềm năng;<br></br> - Chăm sóc khách hàng
-                        sau bán hàng (được đào tạo)
-                    </p>
-                </div> */}
             </div>
             <div className={cx('actions')}>
                 <Button className={cx('btn-apply')} outline>
                     Ứng tuyển
                 </Button>
-                <Button className={cx('btn-detail')} primary>
+                <Button className={cx('btn-detail')} primary to={`/posting/${posting.id}`}>
                     Xem chi tiết
                 </Button>
             </div>

@@ -70,10 +70,10 @@ function Header() {
                         </div>
                     ) : (
                         <div className={cx('actions')}>
-                            <Button to="../login" outline>
+                            <Button to="/login" outline>
                                 Đăng nhập
                             </Button>
-                            <Button primary to="../register">
+                            <Button primary to="/register">
                                 Đăng ký
                             </Button>
                         </div>

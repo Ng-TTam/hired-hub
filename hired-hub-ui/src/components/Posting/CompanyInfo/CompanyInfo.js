@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpRightFromSquare, faLocationDot, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
+import { convertScaleCategory } from '../../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -25,7 +26,7 @@ function CompanyInfo({ company, className }) {
                     </div>
                 </Tippy>
                 <Tippy content={company.name} placement="top">
-                    <Link to={'/'} className={cx('name-label')}>
+                    <Link to={`/company/${company.id}`} className={cx('name-label')}>
                         {company.name}
                     </Link>
                 </Tippy>
@@ -36,7 +37,9 @@ function CompanyInfo({ company, className }) {
                         <FontAwesomeIcon icon={faUserGroup} />
                         <span>Quy mô:</span>
                     </div>
-                    <div className={cx('item-content')}>500-1000 nhân viên</div>
+                    <div className={cx('item-content')}>
+                        {convertScaleCategory(company.scaleCategory.minEmployee, company.scaleCategory.maxEmployee)}
+                    </div>
                 </div>
                 <div className={cx('company-info__item')}>
                     <div className={cx('item-label')}>
@@ -46,10 +49,10 @@ function CompanyInfo({ company, className }) {
                     <div className={cx('item-content')}>{company.address}</div>
                 </div>
             </div>
-            <a className={cx('link-detail')}>
+            <Link className={cx('link-detail')} to={`/company/${company.id}`}>
                 <span>Xem trang công ty</span>
                 <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-            </a>
+            </Link>
         </div>
     );
 }

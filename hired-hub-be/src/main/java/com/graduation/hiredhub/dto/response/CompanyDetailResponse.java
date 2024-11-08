@@ -12,7 +12,7 @@ import java.time.Instant;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CompanyResponse {
+public class CompanyDetailResponse {
     String id;
     String name;
     String taxCode;
@@ -25,4 +25,5 @@ public class CompanyResponse {
     Instant updatedAt;
     Boolean isActive;
     ScaleCategoryResponse scaleCategory;
+    Integer followers;
 }

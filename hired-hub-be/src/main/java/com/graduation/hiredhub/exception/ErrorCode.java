@@ -44,6 +44,7 @@ public enum ErrorCode {
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),
     KEY_NOT_EXISTED("EXISTED_003", "Key token is not existed", HttpStatus.NOT_FOUND),
     CV_NOT_EXISTED("EXISTED_101","CV is not exist", HttpStatus.NOT_FOUND),
+    COMPANY_NOT_EXISTED("EXISTED_113", "Company not existed", HttpStatus.NOT_FOUND),
 
     CV_NOT_FOUND("NOT_FOUND", "CV not found", HttpStatus.NOT_FOUND),
     POSTING_NOT_EXISTED("EXISTED_004", "Posting is not existed", HttpStatus.NOT_FOUND),
