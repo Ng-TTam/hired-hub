@@ -19,13 +19,13 @@ public class JobDescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false)
+    @Column(length = 1000, nullable = false)
     String description;
 
-    @Column(nullable = false)
+    @Column(length = 1000, nullable = false)
     String requirement;
 
-    @Column(nullable = false)
+    @Column(length = 1000, nullable = false)
     String benefit;
 
     @OneToMany(mappedBy = "jobDescription", cascade = CascadeType.ALL)

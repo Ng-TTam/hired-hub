@@ -6,12 +6,17 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
 import com.graduation.hiredhub.entity.Employer;
+import com.graduation.hiredhub.entity.JobSeeker;
 import com.graduation.hiredhub.entity.Posting;
+import com.graduation.hiredhub.entity.SavedPost;
+import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.PostingMapper;
 import com.graduation.hiredhub.repository.EmployerRepository;
+import com.graduation.hiredhub.repository.JobSeekerRepository;
 import com.graduation.hiredhub.repository.PostingRepository;
+import com.graduation.hiredhub.repository.SavedPostRepository;
 import com.graduation.hiredhub.repository.specification.PostingSpecifications;
 import com.graduation.hiredhub.service.util.PageUtils;
 import lombok.AccessLevel;
@@ -23,6 +28,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -31,16 +38,21 @@ public class PostingService {
     EmployerRepository employerRepository;
     PostingMapper postingMapper;
     AccountService accountService;
+    UserService userService;
+    JobSeekerRepository jobSeekerRepository;
+    SavedPostRepository savedPostRepository;
 
     /**
+     * Employer posting with status pending, wait admin approve post: pending -> active
      *
-     * @param postingRequest
+     * @param postingRequest posting to create
      * @return posting
      */
     @PreAuthorize("hasRole('EMPLOYER')")
     public PostingDetailResponse createPosting(PostingRequest postingRequest){
         Posting posting = postingMapper.toPosting(postingRequest);
         posting.setEmployer(getEmployerByAccount());
+        posting.setStatus(Status.PENDING);
         try{
             postingRepository.save(posting);
         }catch (Exception e){
@@ -51,18 +63,19 @@ public class PostingService {
 
     /**
      * Only employer posting can be update post
+     * Posting have status is PENDING can update
      *
-     * @param postingId
-     * @param postingRequest
+     * @param postingId: id posting
+     * @param postingRequest: posting field need update
      * @return posting
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest){
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
-
-        if( !getEmployerByAccount().getId().equals(posting.getEmployer().getId()))
-            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+        //can not update posting when posting approve
+        if(posting.getStatus() != Status.PENDING)
+            throw new AppException(ErrorCode.POSTING_NOT_PENDING);
 
         postingMapper.updatePosting(posting, postingRequest);
         try{
@@ -76,9 +89,9 @@ public class PostingService {
     /**
      * Get postings employer post
      *
-     * @param page
-     * @param size
-     * @return
+     * @param page: current page
+     * @param size: size of one page
+     * @return Page of posting response
      */
     @PreAuthorize("hasRole('EMPLOYER')")
     public PageResponse<PostingResponse> getPostingsByEmployer(int page, int size){
@@ -93,12 +106,6 @@ public class PostingService {
                 .build();
     }
 
-    /**
-     * All user can be get post detail
-     *
-     * @param postingId
-     * @return posting
-     */
     @PreAuthorize("permitAll()")
     public PostingDetailResponse getPostingDetail(String postingId){
 
@@ -108,6 +115,53 @@ public class PostingService {
         return postingMapper.toPostingDetailResponse(posting);
     }
 
+    /**
+     * Only admin is approved posting, set status post from pending -> active
+     *
+     * @param postingId: id posting
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    public void approvePosting(String postingId){
+        Posting posting = postingRepository.findById(postingId).orElseThrow(
+                () -> new AppException(ErrorCode.POSTING_NOT_EXISTED)
+        );
+
+        if(posting.getStatus() == Status.PENDING) {
+            posting.setStatus(Status.ACTIVATE);
+            postingRepository.save(posting);
+        }
+        else throw new AppException(ErrorCode.POSTING_NOT_PENDING);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<PostingResponse> getPostingPending(){
+        List<Posting> postings = postingRepository.findByStatus(Status.PENDING);
+        return postings.stream()
+                .map(postingMapper::toPostingResponse)
+                .toList();
+    }
+
+    @PreAuthorize("hasRole('JOB_SEEKER')")
+    public void savedPost(String postingId){
+        Posting posting = postingRepository.findById(postingId).orElseThrow(
+                () -> new AppException(ErrorCode.POSTING_NOT_EXISTED)
+        );
+        JobSeeker jobSeeker = jobSeekerRepository.findByAccountId(userService.getUser().getId()).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED)
+        );
+        savedPostRepository.save( SavedPost.builder()
+                .posting(posting)
+                .jobSeeker(jobSeeker)
+                .build());
+    }
+
+    @PreAuthorize("hasRole('JOB_SEEKER')")
+    public void unSavedPost(String postingId){
+        SavedPost savedPost = savedPostRepository.findByPostingId(postingId).orElseThrow(
+                () -> new AppException(ErrorCode.POSTING_NOT_EXISTED)
+        );
+        savedPostRepository.delete(savedPost);
+    }
 
     private Employer getEmployerByAccount() {
         return employerRepository.findByAccountId(accountService.getAccountInContext().getId())

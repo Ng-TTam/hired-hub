@@ -32,7 +32,7 @@ public class UserService {
     /**
      * Update profile of user is verified (status = "ACTIVATE")
      *
-     * @param userRequest
+     * @param userRequest request user field to update
      * @return profile user
      */
     @Transactional

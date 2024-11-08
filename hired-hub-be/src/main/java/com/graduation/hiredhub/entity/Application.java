@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.entity;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.graduation.hiredhub.entity.enumeration.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,6 +30,10 @@ public class Application {
     ApplicationStatus status;
 
     String message;
+
+    @Lob
+    @Column(columnDefinition = "json")
+    String cvSend;
 
     @ManyToOne
     @JoinColumn(name = "cv_id", nullable = false)

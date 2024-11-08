@@ -19,6 +19,7 @@ public class CompanyResponse {
     Instant establishYear;
     String logo;
     String address;
+    String website;
     String coverImage;
     String description;
     Instant createdAt;

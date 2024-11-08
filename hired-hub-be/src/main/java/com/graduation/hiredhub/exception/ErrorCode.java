@@ -19,6 +19,9 @@ public enum ErrorCode {
     INVALID_NUM_OF_POSITION("INVALID_008", "Number of position must be greater than or equal to 1", HttpStatus.BAD_REQUEST),
     INVALID_POSITION_EMPLOYER("INVALID_009","Position must be less than 20 characters", HttpStatus.BAD_REQUEST),
     INVALID_TITLE_POSTING("INVALID_010","Title of posting must be less than 100 characters", HttpStatus.BAD_REQUEST),
+    INVALID_COMPANY_NAME("INVALID_011","Company name must be less than 70 characters", HttpStatus.BAD_REQUEST),
+    INVALID_TAX_CODE("INVALID_012","Tax code must be less than 20 characters", HttpStatus.BAD_REQUEST),
+    INVALID_WEB_SITE("INVALID_013","Website must be less than 50 characters", HttpStatus.BAD_REQUEST),
 
     BLANK_EMAIL("BLANK_001", "Email is required", HttpStatus.BAD_REQUEST),
     BLANK_FIRST_NAME("BLANK_002", "First name is required", HttpStatus.BAD_REQUEST),
@@ -35,10 +38,16 @@ public enum ErrorCode {
     BLANK_POSITION("BLANK_013", "Position is required", HttpStatus.BAD_REQUEST),
     BLANK_NUM_OF_POSITION("BLANK_014", "Number of position is required", HttpStatus.BAD_REQUEST),
     BLANK_EXPERIENCE_REQUIRE("BLANK_015", "Experience is required", HttpStatus.BAD_REQUEST),
-
+    BLANK_COMPANY_NAME("BLANK_016", "Company name is required", HttpStatus.BAD_REQUEST),
+    BLANK_POSITION_EMPLOYER("BLANK_017", "Position of employer is required", HttpStatus.BAD_REQUEST),
+    BLANK_TAX_CODE("BLANK_018", "Tax code is required", HttpStatus.BAD_REQUEST),
+    BLANK_WEBSITE("BLANK_019", "Link website of company is required", HttpStatus.BAD_REQUEST),
 
     WRONG_CURRENT_PASS("WRONG_PASS", "Current password is wrong", HttpStatus.BAD_REQUEST),
     DOB_FUTURE("DOB_FUTURE", "Date of birth must be in the past", HttpStatus.BAD_REQUEST),
+
+    POSTING_NOT_PENDING("ERROR_POST_001","Post is not in PENDING status",HttpStatus.BAD_REQUEST),
+    POSTING_NOT_SAVED("ERROR_POST_002","Post is not saved",HttpStatus.BAD_REQUEST),
 
     USER_NOT_EXISTED("EXISTED_001", "User not existed", HttpStatus.NOT_FOUND),
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),

@@ -13,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/posting")
 @RequiredArgsConstructor
@@ -35,6 +37,30 @@ public class PostingController {
                 .build();
     }
 
+    @PostMapping("/{postingId}/approve")
+    ApiResponse<String> approvePosting(@PathVariable String postingId){
+        postingService.approvePosting(postingId);
+        return ApiResponse.<String>builder()
+                .data("Approve successful!")
+                .build();
+    }
+
+    @PostMapping("/{postingId}/save")
+    ApiResponse<String> savedPosting(@PathVariable String postingId){
+        postingService.savedPost(postingId);
+        return ApiResponse.<String>builder()
+                .data("Save post successful!")
+                .build();
+    }
+
+    @DeleteMapping("/{postingId}/unsave")
+    ApiResponse<String> unsavedPosting(@PathVariable String postingId){
+        postingService.unSavedPost(postingId);
+        return ApiResponse.<String>builder()
+                .data("Unsave post successful!")
+                .build();
+    }
+
     @GetMapping("/self")
     ApiResponse<PageResponse<PostingResponse>> getPostingsByEmployer(
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
@@ -48,6 +74,13 @@ public class PostingController {
     ApiResponse<PostingDetailResponse> getPosting(@PathVariable String postingId) {
         return ApiResponse.<PostingDetailResponse>builder()
                 .data(postingService.getPostingDetail(postingId))
+                .build();
+    }
+
+    @GetMapping("/pending")
+    ApiResponse<List<PostingResponse>> getPostingPending() {
+        return ApiResponse.<List<PostingResponse>>builder()
+                .data(postingService.getPostingPending())
                 .build();
     }
 
