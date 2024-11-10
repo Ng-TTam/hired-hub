@@ -19,10 +19,11 @@ function CompanyDetail() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const { company } = useSelector((state) => state.companies);
+    const { subscribed } = useSelector((state) => state.subscriptions);
 
     useEffect(() => {
         dispatch(fetchCompany(id));
-    }, []);
+    }, [subscribed, id]);
 
     if (!company) {
         return <></>;

@@ -71,7 +71,6 @@ const subscriptionSlice = createSlice({
             })
             .addCase(createSubscription.pending, (state) => {
                 state.loading = true;
-                state.subscribed = false;
                 state.error = null;
             })
             .addCase(createSubscription.fulfilled, (state) => {
