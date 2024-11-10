@@ -1,0 +1,113 @@
+.field-container {
+    display: flex;
+    padding: 20px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 5px;
+    background-color: #ccc;
+}
+
+.content-container {
+    display: inline-block;
+    width: 70em;
+    height: fit-content;
+    padding: 10px;
+}
+
+.content-container h3 {
+    margin: 0px;
+}
+
+.content-container h4 {
+    font-weight: normal;
+    margin: 10px 0 0 0;
+}
+
+.input-container {
+    position: relative;
+    margin: 10px auto;
+}
+
+.input-container input[type='text'],
+input[type='number'],
+input[type='date'] {
+    width: 100%;
+    border: none;
+    font-size: 16px;
+    border-bottom: 2px solid #ccc;
+    padding: 5px 0;
+    background-color: transparent;
+    outline: none;
+}
+
+.input-container .underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #00843d;
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+.input-container input[type='text']:focus ~ .underline,
+.input-container input[type='text']:valid ~ .underline,
+.input-container input[type='number']:focus ~ .underline,
+.input-container input[type='number']:valid ~ .underline,
+.input-container input[type='date']:focus ~ .underline,
+.input-container input[type='date']:valid ~ .underline {
+    transform: scaleX(1);
+}
+
+.input-two-block-container {
+    display: flex;
+    margin-top: 10px;
+}
+
+.half-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.select-container {
+    display: flex;
+    margin-right: 10px;
+    flex-direction: column;
+}
+
+select {
+    width: 200px;
+    padding: 7px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 8px;
+    appearance: none;
+}
+
+option {
+    padding: 8px;
+    font-size: 16px;
+    color: #333;
+    background-color: #ffffff;
+}
+
+option:checked {
+    background-color: #dddddd;
+}
+
+option:hover {
+    color: white;
+    background-color: #00843d;
+}

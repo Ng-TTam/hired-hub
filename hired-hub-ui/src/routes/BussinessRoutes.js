@@ -4,7 +4,6 @@ import EmployerRegister from '../components/EmloyerRegister';
 import OTP from '../components/OTP/OTP';
 import CreateCompanyForm from '../components/CreateCompanyForm/CreateCompanyForm';
 
-
 const BussinessRoutes = () => {
   return (
     <Routes>

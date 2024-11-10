@@ -1,0 +1,35 @@
+.area-container {
+    padding: 20px;
+    margin-top: 10px;
+    background-color: #f2fbf6;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.area-container h4 {
+    color: #00843d;
+    margin: 10px 0 0 0px;
+}
+
+.area {
+    display: flex;
+    align-items: center;
+}
+
+.area span {
+    color: black;
+    margin: 0 10px 0 5px;
+}
+
+.button-success {
+    background-color: #00b14f;
+    color: white;
+    border: 1px solid #00b14f;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin: 10px 0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}

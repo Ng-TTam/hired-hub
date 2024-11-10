@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.dto.response;
 
+import com.graduation.hiredhub.dto.reqResp.AccountDTO;
 import com.graduation.hiredhub.entity.enumeration.Gender;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,4 +23,5 @@ public class UserResponse {
     String phoneNumber;
     Gender gender;
     String avatar;
+    AccountDTO account;
 }

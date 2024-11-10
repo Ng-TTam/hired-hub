@@ -1,9 +1,6 @@
 package com.graduation.hiredhub.entity;
 
-import com.graduation.hiredhub.entity.enumeration.CurrencyUnit;
-import com.graduation.hiredhub.entity.enumeration.ExperienceRequire;
-import com.graduation.hiredhub.entity.enumeration.Gender;
-import com.graduation.hiredhub.entity.enumeration.JobType;
+import com.graduation.hiredhub.entity.enumeration.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -75,6 +72,9 @@ public class Posting {
     Integer minimumSalary;
 
     Integer maximumSalary;
+
+    @Enumerated(EnumType.STRING)
+    Status status;
 
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)

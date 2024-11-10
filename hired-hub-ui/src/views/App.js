@@ -1,5 +1,5 @@
 import './App.scss';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CMSRoutes from '../routes/CMSRoutes';
 import BussinessRoutes from '../routes/BussinessRoutes';
 import JobSeekerRoutes from '../routes/JobSeekerRoutes';
@@ -17,6 +17,7 @@ function App() {
             <JobSeekerRoutes />
 
             <GuessRoutes />
+
         </Router>
     );
 }

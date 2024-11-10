@@ -4,10 +4,7 @@ import com.graduation.hiredhub.dto.reqResp.JobCategoryDTO;
 import com.graduation.hiredhub.dto.reqResp.PositionCategoryDTO;
 import com.graduation.hiredhub.entity.enumeration.CurrencyUnit;
 import com.graduation.hiredhub.entity.enumeration.JobType;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
@@ -16,6 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostingResponse {
     String id;

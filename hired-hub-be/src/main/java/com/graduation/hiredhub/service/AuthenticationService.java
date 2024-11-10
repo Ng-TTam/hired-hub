@@ -78,7 +78,7 @@ public class AuthenticationService {
      * gen token for account
      *
      * @param account
-     * @return
+     * @return token
      */
     public String generateToken(Account account) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);

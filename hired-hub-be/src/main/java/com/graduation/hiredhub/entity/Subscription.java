@@ -3,6 +3,7 @@ package com.graduation.hiredhub.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 
@@ -20,6 +21,7 @@ public class Subscription {
     @Column(length = 40)
     String id;
 
+    @CreatedDate
     @Column(name = "subscribe_at")
     Instant subscribeAt;
 

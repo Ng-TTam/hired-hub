@@ -17,6 +17,9 @@ public class Employer extends User {
     @Column(length = 20)
     String position;
 
+    @Column(length = 70)
+    String companyName;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     Company company;

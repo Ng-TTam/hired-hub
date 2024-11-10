@@ -4,6 +4,8 @@ import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
+import com.graduation.hiredhub.dto.response.EmployerResponse;
+import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.entity.Account;
 import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.JobSeeker;
@@ -50,8 +52,9 @@ public class AccountService {
     /**
      * Sign up for job_seeker
      * Create account, jobSeeker and send otp -> gen token
+     * Account job_seeker is verified by OTP code sent by email
      *
-     * @param userAccountCreationRequest
+     * @param userAccountCreationRequest contain user, account to create
      * @return access token and refresh token
      */
     /**
@@ -93,7 +96,7 @@ public class AccountService {
      * Sign up for employer
      * create account, employer and send otp -> gen token
      *
-     * @param employerAccountCreationRequest
+     * @param employerAccountCreationRequest contain user, companyName, position to create account
      * @return access token and refresh token
      */
 
@@ -148,7 +151,7 @@ public class AccountService {
 
     /**
      * Send otp to reset password
-     * @param authResetPassRequest
+     * @param authResetPassRequest account contain new pass
      */
     /**
      * Send otp to reset password
@@ -165,9 +168,9 @@ public class AccountService {
      * Send key and store key after verify otp
      * Key store in cache by form: TOKEN_RESET_PASS_token: accountId
      *
-     * @param authResetPassRequest
-     * @param otp
-     * @return
+     * @param authResetPassRequest account contain new pass
+     * @param otp: code to verify
+     * @return key
      */
     public String verifyOtpResetPassword(AuthResetPassRequest authResetPassRequest, String otp){
         if(!otpService.verify(RESET_OTP, authResetPassRequest.getEmail(), otp))
@@ -189,7 +192,7 @@ public class AccountService {
     /**
      * Authenticate before using verify otp if otp invalid, must resend otp
      *
-     * @param otp
+     * @param otp: code need verify
      * @return message: "Your account verified successfully."
      */
     @Transactional
@@ -215,8 +218,8 @@ public class AccountService {
     /**
      * Reset password of account in db, can not authenticate
      *
-     * @param authChangePassRequest
-     * @param key
+     * @param authChangePassRequest: account pass to reset
+     * @param key: token save in redis to check
      * @return boolean
      */
     @Transactional

@@ -12,7 +12,7 @@ const Content = ({ selectedItem }) => {
             case 'PostingStat':
                 return <PostingStat />;
             case 'ManageCandidate':
-                return <ManageCandidate />;  
+                return <ManageCandidate />;
             case 'Notification':
                 return <Notification />;
             default:
@@ -20,11 +20,7 @@ const Content = ({ selectedItem }) => {
         }
     };
 
-    return (
-        <div className="content">
-            {renderContent()}
-        </div>
-    );
+    return <div className="content">{renderContent()}</div>;
 };
 
 export default Content;
