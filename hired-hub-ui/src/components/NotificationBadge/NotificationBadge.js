@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { connectWebSocket, disconnectWebSocket } from '../../config/webSocketConfig';
 import { fetchNotifications, markAsReadAll } from '../../redux/notificationSlice';
 import { Wrapper as PopperWrapper } from '../Popper';
-import styles from './NotificationBadge.scss';
+import styles from './NotificationBadge.module.scss';
 import NotificationItem from './NotificationItem';
 
 const cx = classNames.bind(styles);

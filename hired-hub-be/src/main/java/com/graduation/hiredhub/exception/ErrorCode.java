@@ -43,11 +43,17 @@ public enum ErrorCode {
     USER_NOT_EXISTED("EXISTED_001", "User not existed", HttpStatus.NOT_FOUND),
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),
     KEY_NOT_EXISTED("EXISTED_003", "Key token is not existed", HttpStatus.NOT_FOUND),
+    CV_NOT_EXISTED("EXISTED_101","CV is not exist", HttpStatus.NOT_FOUND),
+    COMPANY_NOT_EXISTED("EXISTED_113", "Company not existed", HttpStatus.NOT_FOUND),
+
+    CV_NOT_FOUND("NOT_FOUND", "CV not found", HttpStatus.NOT_FOUND),
     POSTING_NOT_EXISTED("EXISTED_004", "Posting is not existed", HttpStatus.NOT_FOUND),
     APPLICATION_NOT_EXISTED("EXISTED_005", "Application is not existed", HttpStatus.NOT_FOUND),
 
     EMAIL_EXISTED("EXISTED_004", "Email is existed", HttpStatus.BAD_REQUEST),
-    
+
+    APPLICATION_ALREADY_EXISTS("ALREADY_001", "application already exists",HttpStatus.BAD_REQUEST),
+
     ERROR_SEND_OTP("ERROR","Somethings wrong when send otp", HttpStatus.BAD_REQUEST),
     INTERNAL_ERROR("INTERNAL_ERROR", "Server have some error", HttpStatus.INTERNAL_SERVER_ERROR),
 

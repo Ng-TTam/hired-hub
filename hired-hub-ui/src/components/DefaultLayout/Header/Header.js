@@ -3,12 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
 import { default as React } from 'react';
-import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import images from '../../../assets/images';
 import AccountIcon from '../../AccountIcon';
 import Button from '../../Button';
 import Menu from '../../Menu';
+import MenuItemProfileCV from '../../MenuProfileCV/MenuProfileCV';
 import NotificationBadge from '../../NotificationBadge';
 import { Wrapper as PopperWrapper } from '../../Popper';
 import styles from './Header.module.scss';
@@ -34,7 +34,8 @@ const MENU_ITEMS = [
 ];
 
 function Header() {
-    const isLogin = useSelector((state) => state.authentication.isLogin);
+    // const isLogin = useSelector((state) => state.authentication.isLogin);
+    const isLogin = localStorage.getItem('isLogin');
 
     return (
         <header className={cx('wrapper')}>
@@ -47,8 +48,8 @@ function Header() {
                                 Việc làm
                             </NavLink>
                         </li>
-                        <li className={cx('nav-list__item')}>
-                            <a href="http://google.com">Hồ sơ & CV</a>
+                        <li className={cx('nav-list__itemcv')}>
+                            <MenuItemProfileCV>Hồ sơ & CV</MenuItemProfileCV>
                         </li>
                     </ul>
                     {isLogin ? (
@@ -74,10 +75,10 @@ function Header() {
                         </div>
                     ) : (
                         <div className={cx('actions')}>
-                            <Button to="login" outline>
+                            <Button to="/login" outline>
                                 Đăng nhập
                             </Button>
-                            <Button primary to="register">
+                            <Button primary to="/register">
                                 Đăng ký
                             </Button>
                         </div>

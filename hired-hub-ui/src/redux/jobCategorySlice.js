@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from '../config/axios';
+import axios from 'axios';
+import { baseURL } from '../config/axios';
 
-const apiUrl = 'job-category';
+const apiUrl = `${baseURL}job-category`;
 
 export const fetchJobCategories = createAsyncThunk('jobCategories/fetchjobCategories', async () => {
     const response = await axios.get(apiUrl);

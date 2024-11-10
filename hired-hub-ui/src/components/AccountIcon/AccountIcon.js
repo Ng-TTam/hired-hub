@@ -1,12 +1,12 @@
+import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import images from '../../assets/images';
+import { fetchUserInformation } from '../../redux/userSlice';
 import Image from '../Image';
 import styles from './AccountIcon.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { fetchUserInformation } from '../../redux/userSlice';
-import images from '../../assets/images';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 

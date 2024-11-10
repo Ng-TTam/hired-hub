@@ -18,5 +18,5 @@ public class CVResponse {
     String education;
     String skill;
     String others;
-    JobSeekerDTO jobSeeker;
+    JobSeekerDTO jobSeekerDTO;
 }

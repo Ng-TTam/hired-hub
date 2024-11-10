@@ -24,4 +24,5 @@ public class CompanyResponse {
     Instant createdAt;
     Instant updatedAt;
     Boolean isActive;
+    ScaleCategoryResponse scaleCategory;
 }

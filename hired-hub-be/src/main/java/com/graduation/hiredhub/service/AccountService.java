@@ -54,6 +54,13 @@ public class AccountService {
      * @param userAccountCreationRequest
      * @return access token and refresh token
      */
+    /**
+     * Sign up for job_seeker
+     * Create account, jobSeeker and send otp -> gen token
+     *
+     * @param userAccountCreationRequest
+     * @return access token and refresh token
+     */
     @Transactional
     public AuthenticationResponse signUp(UserAccountCreationRequest userAccountCreationRequest){
         if(accountRepository.existsByEmail(userAccountCreationRequest.getAccount().getEmail()))
@@ -81,6 +88,14 @@ public class AccountService {
         return authenticationService.createTokenBase(account);
     }
 
+
+    /**
+     * Sign up for employer
+     * create account, employer and send otp -> gen token
+     *
+     * @param employerAccountCreationRequest
+     * @return access token and refresh token
+     */
 
     /**
      * Sign up for employer
@@ -121,11 +136,20 @@ public class AccountService {
      * Resend otp when otp expire, otp invalid
      * Can resend otp if created account
      */
+
+    /**
+     * Resend otp when otp expire, otp invalid
+     * Can resend otp if created account
+     */
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public void resendOtpSignUp(){
         otpService.send(SIGNUP_OTP, getAccountInContext().getEmail());
     }
 
+    /**
+     * Send otp to reset password
+     * @param authResetPassRequest
+     */
     /**
      * Send otp to reset password
      * @param authResetPassRequest

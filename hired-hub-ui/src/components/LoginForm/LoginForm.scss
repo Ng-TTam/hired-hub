@@ -57,7 +57,7 @@ body {
 }
 
 .inputForm:focus-within {
-    border: 1.5px solid #2d79f3;
+    border: 1.5px solid #00b14f;
 }
 
 .flex-row {
@@ -77,14 +77,14 @@ body {
 .span {
     font-size: 14px;
     margin-left: 5px;
-    color: #2d79f3;
+    color: #00b14f;
     font-weight: 500;
     cursor: pointer;
 }
 
 .button-submit {
     margin: 20px 0 10px 0;
-    background-color: #151717;
+    background-color: #00b14f;
     border: none;
     color: white;
     font-size: 15px;
@@ -96,7 +96,7 @@ body {
 }
 
 .button-submit:hover {
-    background-color: #252727;
+    background-color: #00b150d6;
 }
 
 .p {

@@ -170,6 +170,27 @@ public class PostingSpecifications {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("experienceRequire"), experienceRequire);
     }
 
+    /**
+     * Creates a {@link Specification} to find postings with a specified company ID.
+     *
+     * @param companyId the ID of the company
+     * @return a {@link Specification} for filtering postings by company ID
+     */
+    public static Specification<Posting> hasCompany(String companyId) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Posting, Employer> postingEmployerJoin = root.join("employer");
+            Join<Employer, Company> employerCompanyJoin = postingEmployerJoin.join("company");
+            return criteriaBuilder.equal(employerCompanyJoin.get("id"), companyId);
+        };
+    }
+
+    public static Specification<Posting> hasTitle(String searchText) {
+        return (root, query, criteriaBuilder) -> {
+            String pattern = "%" + searchText + "%";
+            return criteriaBuilder.like(root.get("title"), pattern);
+        };
+    }
+
     private PostingSpecifications() {
     }
 }

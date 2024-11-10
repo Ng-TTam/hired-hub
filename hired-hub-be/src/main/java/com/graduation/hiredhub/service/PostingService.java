@@ -17,6 +17,7 @@ import com.graduation.hiredhub.service.util.PageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -143,5 +144,17 @@ public class PostingService {
         }
 
         return PageUtils.toPageResponse(postingRepository.findAll(spec, pageable).map(postingMapper::toPostingDetailResponse));
+    }
+
+    public PageResponse<PostingDetailResponse> findByCompany(String companyId, String searchText, Integer provinceId, Pageable pageable) {
+        Specification<Posting> spec = Specification.where(PostingSpecifications.hasCompany(companyId));
+        if (searchText != null) {
+            spec = spec.and(PostingSpecifications.hasTitle(searchText));
+        }
+        if (provinceId != null) {
+            spec = spec.and(PostingSpecifications.hasProvince(provinceId));
+        }
+        Page<Posting> page = postingRepository.findAll(spec, pageable);
+        return PageUtils.toPageResponse(page.map(postingMapper::toPostingDetailResponse));
     }
 }

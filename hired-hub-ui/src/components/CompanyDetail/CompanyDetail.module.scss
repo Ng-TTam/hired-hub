@@ -1,0 +1,159 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 16px;
+    margin: 16px 60px;
+}
+
+.content-box {
+    border-radius: 10px;
+    background-color: var(--white-color);
+    overflow: hidden;
+    height: fit-content;
+}
+
+.company-cover {
+    position: relative;
+    background: linear-gradient(90deg, #212f3f, #00b14f);
+    color: var(--white-color);
+    min-height: 358px;
+}
+
+.cover-wrapper {
+    height: 224px;
+
+    img {
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+    }
+}
+
+.company-logo {
+    position: absolute;
+    left: 42px;
+    bottom: 42px;
+    display: block;
+    width: 180px;
+    height: 180px;
+    background-color: var(--white-color);
+    object-fit: contain;
+    border-radius: 999px;
+}
+
+.comapny-overview {
+    padding: 0 40px 0 252px;
+    margin: 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.company-name {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.box-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.box-subdetail {
+    display: flex;
+    gap: 24px;
+}
+
+.subdetail-info {
+    display: flex;
+    font-size: 14px;
+    font-weight: 400;
+    gap: 8px;
+    color: var(--white-color);
+
+    a {
+        color: var(--white-color);
+    }
+}
+
+.btn-follow {
+    color: var(--primary-color);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.content-container {
+    display: flex;
+    gap: 24px;
+}
+
+.content-left,
+.content-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: fit-content;
+}
+
+.content-left {
+    flex: 2.5;
+}
+
+.content-right {
+    flex: 1;
+}
+
+.content-box__title {
+    background: linear-gradient(90deg, #1c4742, #22c96d);
+    color: var(--white-color);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 26px;
+    padding: 12px 20px;
+}
+
+.section-introduce {
+    flex: 2.5;
+}
+
+.section-contact {
+    flex: 1;
+}
+
+.section-content {
+    padding: 20px;
+    text-align: justify;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contact-item__caption {
+    display: flex;
+    gap: 8px;
+    color: #212f3f;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.caption-icon {
+    color: var(--primary-color);
+    font-size: 19.2px;
+    font-weight: 900;
+}
+
+.contact-item__des {
+    color: #4d5965;
+    font-size: 14px;
+    font-weight: 400;
+}

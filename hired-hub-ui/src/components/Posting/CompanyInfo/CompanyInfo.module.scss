@@ -1,0 +1,88 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.company-name {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    max-height: 74px;
+    align-items: center;
+}
+
+.logo-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border: 1px solid var(--gray-10, #e9eaec);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.name-label {
+    flex: 3;
+    font-size: 16px;
+    font-weight: 600;
+    max-height: 74px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.company-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.company-info__item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.item-label {
+    align-items: center;
+    color: #7f878f;
+    display: flex;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    gap: 8px;
+    flex: 1;
+}
+
+.item-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #212f3f;
+    font-size: 14px;
+    font-weight: 500;
+    flex: 3;
+}
+
+.link-detail {
+    color: #00b14f;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}

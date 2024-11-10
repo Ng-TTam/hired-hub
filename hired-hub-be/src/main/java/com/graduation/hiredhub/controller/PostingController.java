@@ -1,13 +1,11 @@
 package com.graduation.hiredhub.controller;
 
-import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
-import com.graduation.hiredhub.service.ApplicationService;
 import com.graduation.hiredhub.service.PostingService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostingController {
     PostingService postingService;
-    ApplicationService applicationService;
 
     @PostMapping
     ApiResponse<PostingDetailResponse> createPosting(@RequestBody @Valid PostingRequest postingRequest) {
@@ -54,33 +51,6 @@ public class PostingController {
                 .build();
     }
 
-    @GetMapping("/{postingId}/applications")
-    ApiResponse<PageResponse<ApplicationDTO>> getApplicationsByPosting(
-            @PathVariable String postingId,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
-        return ApiResponse.<PageResponse<ApplicationDTO>>builder()
-                .data(applicationService.getApplications(postingId, page, size))
-                .build();
-    }
-
-    @GetMapping("/{postingId}/applications/{applicationId}")
-    ApiResponse<ApplicationDTO> getApplicationByPosting(@PathVariable String postingId,
-                                                        @PathVariable Integer applicationId) {
-        return ApiResponse.<ApplicationDTO>builder()
-                .data(applicationService.getApplication(postingId, applicationId))
-                .build();
-    }
-
-    @PutMapping("/{postingId}/applications/{applicationId}")
-    ApiResponse<ApplicationDTO> responseApplicationInPosting(@PathVariable String postingId,
-                                                             @PathVariable Integer applicationId,
-                                                             @RequestBody @Valid ApplicationDTO applicationDTO) {
-        return ApiResponse.<ApplicationDTO>builder()
-                .data(applicationService.updateApplication(postingId, applicationId, applicationDTO))
-                .build();
-    }
-
     /**
      * {@code GET /posting} get a page of Posting
      *
@@ -91,6 +61,19 @@ public class PostingController {
     @GetMapping
     public ApiResponse<PageResponse<PostingDetailResponse>> filter(PostingFilterCriteria criteria, Pageable pageable) {
         PageResponse<PostingDetailResponse> page = postingService.filter(criteria, pageable);
+        return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
+                .data(page)
+                .build();
+    }
+
+    @GetMapping("by-company/{companyId}")
+    public ApiResponse<PageResponse<PostingDetailResponse>> filterByCompany(
+            @PathVariable("companyId") String companyId,
+            @RequestParam(value = "searchText", required = false) String searchText,
+            @RequestParam(value = "provinceId", required = false) Integer provinceId,
+            Pageable pageable
+    ) {
+        PageResponse<PostingDetailResponse> page = postingService.findByCompany(companyId, searchText, provinceId, pageable);
         return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
                 .data(page)
                 .build();
