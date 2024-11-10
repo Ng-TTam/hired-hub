@@ -50,5 +50,10 @@ jwt:
   expiration: 30
   refreshable: 3
 
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:
 #path:
 #  url:

@@ -1,9 +1,7 @@
 package com.graduation.hiredhub.controller;
 
 import com.graduation.hiredhub.dto.request.UserRequest;
-import com.graduation.hiredhub.dto.response.ApiResponse;
-import com.graduation.hiredhub.dto.response.ApplicationResponse;
-import com.graduation.hiredhub.dto.response.UserResponse;
+import com.graduation.hiredhub.dto.response.*;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.service.ApplicationService;
@@ -45,6 +43,22 @@ public class UserController {
         List<ApplicationResponse> applications = applicationService.getApplicationsByJobSeeker();
         return ApiResponse.<List<ApplicationResponse>>builder()
                 .data(applications)
+                .build();
+    }
+
+    @GetMapping("/pending")
+    ApiResponse<PageResponse<UserResponse>> getPendingUsers(
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page){
+        return ApiResponse.<PageResponse<UserResponse>>builder()
+                .data(userService.getUsersPending(page, size))
+                .build();
+    }
+
+    @PostMapping("/{userId}/approve")
+    ApiResponse<UserResponse> getApprovedEmployer(@PathVariable String userId){
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.approveEmployer(userId))
                 .build();
     }
 }

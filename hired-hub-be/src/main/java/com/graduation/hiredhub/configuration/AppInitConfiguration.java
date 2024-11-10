@@ -33,7 +33,7 @@ public class AppInitConfiguration {
     static String ADMIN_EMAIL_LOGIN = "admin@email.com";
 
     @NonFinal
-    static String ADMIN_PASSWORD = "admin";
+    static String ADMIN_PASSWORD = "admin-admin";
 
     PasswordEncoder passwordEncoder;
 

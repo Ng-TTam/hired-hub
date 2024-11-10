@@ -46,6 +46,7 @@ public enum ErrorCode {
     WRONG_CURRENT_PASS("WRONG_PASS", "Current password is wrong", HttpStatus.BAD_REQUEST),
     DOB_FUTURE("DOB_FUTURE", "Date of birth must be in the past", HttpStatus.BAD_REQUEST),
 
+    USER_NOT_PENDING("ERROR_USER_001", "User is not in PENDING status", HttpStatus.BAD_REQUEST),
     POSTING_NOT_PENDING("ERROR_POST_001","Post is not in PENDING status",HttpStatus.BAD_REQUEST),
     POSTING_NOT_SAVED("ERROR_POST_002","Post is not saved",HttpStatus.BAD_REQUEST),
 
@@ -64,6 +65,8 @@ public enum ErrorCode {
 
     ERROR_SEND_OTP("ERROR","Somethings wrong when send otp", HttpStatus.BAD_REQUEST),
     INTERNAL_ERROR("INTERNAL_ERROR", "Server have some error", HttpStatus.INTERNAL_SERVER_ERROR),
+    ERROR_PARSING_JSON("ERROR_001", "Error parsing JSON", HttpStatus.INTERNAL_SERVER_ERROR),
+    ERROR_SERIALIZING_JSON("ERROR_002", "Error serializing JSON", HttpStatus.INTERNAL_SERVER_ERROR),
 
     TOKEN_EXPIRED("LOG_OUT", "Your session is expired. Please login again!!!", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_VERIFY("NOT_VERIFY", "Your account is not verified", HttpStatus.BAD_REQUEST),

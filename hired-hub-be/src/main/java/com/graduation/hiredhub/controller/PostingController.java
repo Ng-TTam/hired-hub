@@ -37,6 +37,15 @@ public class PostingController {
                 .build();
     }
 
+    @GetMapping("/all")
+    ApiResponse<PageResponse<PostingResponse>> getAllPosting(
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page){
+        return ApiResponse.<PageResponse<PostingResponse>>builder()
+                .data(postingService.getAllPostings(page, size))
+                .build();
+    }
+
     @PostMapping("/{postingId}/approve")
     ApiResponse<String> approvePosting(@PathVariable String postingId){
         postingService.approvePosting(postingId);

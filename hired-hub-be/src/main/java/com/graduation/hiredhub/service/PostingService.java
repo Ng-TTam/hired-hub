@@ -1,5 +1,7 @@
 package com.graduation.hiredhub.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingRequest;
 import com.graduation.hiredhub.dto.response.PageResponse;
@@ -22,13 +24,16 @@ import com.graduation.hiredhub.service.util.PageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +46,12 @@ public class PostingService {
     UserService userService;
     JobSeekerRepository jobSeekerRepository;
     SavedPostRepository savedPostRepository;
+    ObjectMapper objectMapper;
+
+    StringRedisTemplate stringRedisTemplate;
+
+    private static final String REDIS_POSTING_KEY = "postings";
+    private static final long CACHE_POSTINGS_TTL_MINUTES = 10;
 
     /**
      * Employer posting with status pending, wait admin approve post: pending -> active
@@ -105,6 +116,46 @@ public class PostingService {
                 .data(pageData.getContent().stream().map(postingMapper::toPostingResponse).toList())
                 .build();
     }
+
+    @PreAuthorize("permitAll()")
+    public PageResponse<PostingResponse> getAllPostings(int page, int size) {
+        String cacheKey = REDIS_POSTING_KEY + "_page_" + page + "_size_" + size;
+        PageResponse<PostingResponse> pageResponse;
+
+        // Check in cache
+        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
+            try {
+                pageResponse = objectMapper.readValue(stringRedisTemplate.opsForValue().get(cacheKey),
+                        new TypeReference<PageResponse<PostingResponse>>() {});
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.ERROR_PARSING_JSON);
+            }
+        } else {
+            Pageable pageable = PageRequest.of(page - 1, size);
+            Page<Posting> pageData = postingRepository.findAll(pageable);
+
+            pageResponse = PageResponse.<PostingResponse>builder()
+                    .currentPage(page)
+                    .pageSize(pageData.getSize())
+                    .totalPages(pageData.getTotalPages())
+                    .totalElements(pageData.getTotalElements())
+                    .data(pageData.getContent().stream()
+                            .map(postingMapper::toPostingResponse)
+                            .toList())
+                    .build();
+
+            // converted from Object to JSON before save in Redis
+            try {
+                String jsonResponse = objectMapper.writeValueAsString(pageResponse);
+                stringRedisTemplate.opsForValue().set(cacheKey, jsonResponse, CACHE_POSTINGS_TTL_MINUTES, TimeUnit.MINUTES);
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.ERROR_SERIALIZING_JSON);
+            }
+        }
+
+        return pageResponse;
+    }
+
 
     @PreAuthorize("permitAll()")
     public PostingDetailResponse getPostingDetail(String postingId){

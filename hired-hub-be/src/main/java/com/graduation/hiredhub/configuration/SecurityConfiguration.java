@@ -26,8 +26,8 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private static final String[] PUBLIC_POST_ENDPOINTS = {
-            "/auth/**", "/account/sign-up", "/account/send-reset-otp", "/account/verify-reset-otp", "/account/forgot-password"};
+    private static final String[] PUBLIC_POST_ENDPOINTS = {"/auth/**", "/account/sign-up",
+            "/account/send-reset-otp", "/account/verify-reset-otp", "/account/forgot-password",};
 
     @Value("${jwt.secret}")
     protected String jwtSecret;
@@ -38,12 +38,12 @@ public class SecurityConfiguration {
                 httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource())));
 
         httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS)
-                        .permitAll()
-                        .requestMatchers(HttpMethod.GET, "province").permitAll()
-                        .requestMatchers(HttpMethod.GET, "posting/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "position-category").permitAll()
-                        .requestMatchers(HttpMethod.GET, "job-category").permitAll()
+                request.requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/province").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posting/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/position-category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/job-category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/company/**").permitAll()
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
