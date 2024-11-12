@@ -4,6 +4,7 @@ import gLogo from '../../assets/images/google.png';
 import { loginThunk, reset } from '../../redux/authenticationSlice';
 import './LoginForm.scss';
 import { useNavigate } from 'react-router-dom';
+import { fetchUserInformation } from '../../redux/userSlice';
 
 const LoginForm = (props) => {
     const dispatch = useDispatch();

@@ -3,6 +3,7 @@ import PostingJob from '../PostingJob/PostingJob';
 import PostingStat from '../PostingStat/PostingStat';
 import Notification from '../Notification/Notification';
 import ManageCandidate from '../ManageCandidate/ManageCandidate';
+import DashboardDefault from '../DashboardDefault/DashboardDefault'
 
 const Content = ({ selectedItem }) => {
     const renderContent = () => {
@@ -16,12 +17,13 @@ const Content = ({ selectedItem }) => {
             case 'Notification':
                 return <Notification />;
             default:
-                return <div>Chọn một mục từ sidebar để xem nội dung.</div>;
+                return <DashboardDefault/>;
         }
     };
 
     return (
-        <div className="content">
+        <div className="content"
+        style={{height:'100%', width:'100%'}}>
             {renderContent()}
         </div>
     );

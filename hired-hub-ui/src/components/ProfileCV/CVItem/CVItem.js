@@ -3,13 +3,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "./CVItem.scss";
 
-
 function CVItem({ cvId, titleBox, onDelete }) {
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const navigate = useNavigate();
+
     const handEdit = () => {
         navigate(`../edit-cv/${cvId}`);
     };
+
     const handleDelete = async () => {
         const token = localStorage.getItem('token');
         try {
@@ -19,12 +20,11 @@ function CVItem({ cvId, titleBox, onDelete }) {
                 },
             });
             alert("Xóa CV thành công!");
-            onDelete(cvId);
-            setShowConfirmDialog(false); // Ẩn hộp thoại sau khi xóa thành công
+            onDelete(cvId); // Gọi hàm onDelete để cập nhật lại danh sách
+            setShowConfirmDialog(false);
         } catch (error) {
             console.error("Lỗi khi xóa CV:", error);
             setShowConfirmDialog(false);
-            alert("CV đang tham gia ứng tuyển.");
         }
     };
 

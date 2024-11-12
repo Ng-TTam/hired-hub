@@ -1,19 +1,11 @@
 import React, { useEffect } from "react";
 import images from "../../../assets/images";
 import './ProfileJobSeeker.scss'
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUserInformation } from "../../../redux/userSlice";
+import { useSelector } from "react-redux";
 
 const ProfileJobSeeker = () =>  {
-    const dispatch = useDispatch();
-    const {user,loading, error } = useSelector(state => state.user);
     const email = localStorage.getItem('email');
-    useEffect(() => {
-        dispatch(fetchUserInformation());
-    }, [dispatch]);
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+    const user = useSelector((state) => state.user.user);
 
     return(
         <div className="turn-on-job_header">

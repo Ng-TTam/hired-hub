@@ -3,7 +3,6 @@ import axios from 'axios';
 import { baseURL } from '../config/axios';
 
 const apiURL = `${baseURL}auth/`;
-
 export const loginThunk = createAsyncThunk('authentication/login', async ({ email, password }, { rejectWithValue }) => {
     try {
         const response = await axios.post(`${apiURL}login`, { email, password });

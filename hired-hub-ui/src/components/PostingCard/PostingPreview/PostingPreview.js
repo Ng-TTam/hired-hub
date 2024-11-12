@@ -7,10 +7,17 @@ import constants from '../../../config/constants';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faLocationDot, faStar } from '@fortawesome/free-solid-svg-icons';
+import GetApplication from '../../Application/GetApplication/GetApplication';
+import CreateApplication from '../../Application/CreateApplication/CreateApplication';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function PostingPreview({ posting }) {
+    const handleClickApplication = () =>{
+        window.open(`/posting/${posting.id}?selectApplication=true`, '_blank');
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
@@ -83,8 +90,10 @@ function PostingPreview({ posting }) {
                 </div> */}
             </div>
             <div className={cx('actions')}>
-                <Button className={cx('btn-apply')} outline>
-                    Ứng tuyển
+                <Button className={cx('btn-apply')} outline
+                        onClick={handleClickApplication}
+                >
+                    Ứng tuyển ngay
                 </Button>
                 <Button className={cx('btn-detail')} primary>
                     Xem chi tiết
