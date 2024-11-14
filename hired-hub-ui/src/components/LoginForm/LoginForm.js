@@ -2,21 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import gLogo from '../../assets/images/google.png';
 import { loginThunk, reset } from '../../redux/authenticationSlice';
+import images from '../../assets/images';
 import './LoginForm.scss';
 import { useNavigate } from 'react-router-dom';
+import { LoaderCircleIcon } from 'lucide-react';
+import { jwtDecode } from 'jwt-decode';
 
-const LoginForm = (props) => {
+const LoginForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isLogin, error, success } = useSelector((state) => state.authentication);
+    const { isLogin, error, success, loading } = useSelector((state) => state.authentication);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const urlSignUp = 'http://localhost:3000/sign-up';
-    const urlSignIn = 'http://localhost:3000/login';
 
     useEffect(() => {
-        if (isLogin && success && !error) navigate('/');
+        if (localStorage.getItem('isLogin')) {
+            const token = localStorage.getItem('token');
+            let role = jwtDecode(token).scope;
+            if (role === 'JOB_SEEKER') navigate('/');
+            else if (role === 'ADMIN') navigate('/');
+            else navigate('/dashboard');
+        }
     }, [isLogin, error, success, navigate]);
 
     const handleSubmit = (e) => {
@@ -26,8 +34,11 @@ const LoginForm = (props) => {
 
     return (
         <div className="container">
-            <form className="form" onSubmit={handleSubmit}>
-                <h1 className="label-auth">{props.loginType}</h1>
+            <form className="form-login" onSubmit={handleSubmit}>
+                <h1 className="label-auth">Đăng nhập</h1>
+                <div className="logo-app-auth" >
+                    <img src={images.logoApp} alt="logo-app" title="Logo của TopCV"/>
+                </div>
                 <div className="flex-column">
                     <label>Email </label>
                 </div>
@@ -66,31 +77,19 @@ const LoginForm = (props) => {
                         required
                     />
                 </div>
+                {error && <p className="error-message show">Tài khoản hoặc mật khẩu không đúng.</p>}
 
-                {props.loginType === 'Đăng Nhập' ? (
                     <div className="flex-row">
                         <div></div>
-                        <span className="span">Quên mật khẩu?</span>
+                        <a className="span" onClick={(e) => navigate('/reset-password')}>Quên mật khẩu?</a>
                     </div>
-                ) : (
-                    <div></div>
-                )}
-                <button className="button-submit">{props.loginType}</button>
-                {props.loginType === 'Đăng Nhập' ? (
+                <button className="button-submit">{loading ? <LoaderCircleIcon size={15} /> : "Đăng nhập"}</button>
                     <p className="p">
                         Chưa có tài khoản?{' '}
                         <a className="span" href={urlSignUp}>
                             Đăng ký
                         </a>
                     </p>
-                ) : (
-                    <p className="p">
-                        Đã có tài khoản?{' '}
-                        <a className="span" href={urlSignIn}>
-                            Đăng Nhập
-                        </a>
-                    </p>
-                )}
                 <p className="p line">Hoặc với</p>
 
                 <div className="flex-row">

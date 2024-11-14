@@ -10,6 +10,8 @@ import positionCategoryReducer from './postionCategorySlice';
 import provinceReducer from './provinceSlice';
 import subscriptionReducer from './subscriptionSlice';
 import userReducer from './userSlice';
+import employerReducer from './employerSilce';
+import accountReducer from './accountSlice';
 
 const store = configureStore({
     reducer: {
@@ -24,6 +26,8 @@ const store = configureStore({
         application: applicationReducer,
         companies: companyReducer,
         subscriptions: subscriptionReducer,
+        employer: employerReducer,
+        account: accountReducer,
     },
 });
 

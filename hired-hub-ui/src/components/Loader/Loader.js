@@ -1,9 +1,9 @@
 import React from "react";
 import './Loader.scss';
 
-const Loader = () => {
+const Loader = ({ size }) => {
   return (
-    <div className="spinner" />
+    <div className="spinner" style={{ "--size": `${size}px` }}/>
   );
 };
 

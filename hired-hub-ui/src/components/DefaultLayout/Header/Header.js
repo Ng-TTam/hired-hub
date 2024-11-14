@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import images from '../../../assets/images';
 import AccountIcon from '../../AccountIcon';
@@ -34,13 +33,12 @@ const MENU_ITEMS = [
 ];
 
 function Header() {
-    // const isLogin = useSelector((state) => state.authentication.isLogin);
     const isLogin = localStorage.getItem('isLogin');
 
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <img src={images.logoTopCV} alt="TopCV Logo" title="Logo của TopCV" className={cx('logo')} />
+                <img src={images.hiredHubLogo} alt="Hired-hub-logo" title="Logo của TopCV" className={cx('logo')} />
                 <div className={cx('nav-bar')}>
                     <ul className={cx('nav-list')}>
                         <li className={cx('nav-list__item')}>

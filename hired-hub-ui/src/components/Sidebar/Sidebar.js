@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   LayoutDashboard,
   User,
@@ -102,7 +101,7 @@ const Sidebar = ({ onSelectItem, selectedItem }) => {
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-link">
+            <a href="/logout" className="nav-link">
               <LogOut size={20} />
               <span>Đăng xuất</span>
             </a>

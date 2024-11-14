@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import styles from './Pagination.module.scss';
 
 const cx = classNames.bind(styles);

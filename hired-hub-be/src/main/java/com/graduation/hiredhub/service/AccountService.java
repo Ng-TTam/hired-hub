@@ -200,7 +200,7 @@ public class AccountService {
     public String verifyOtp(String otp){
         Account account = getAccountInContext();
 
-        if(!account.getStatus().equals(Status.PENDING)) throw new AppException(ErrorCode.INTERNAL_ERROR);
+        if(!account.getStatus().equals(Status.PENDING)) throw new AppException(ErrorCode.USER_NOT_PENDING);
 
         if(!otpService.verify(SIGNUP_OTP, account.getEmail(), otp))
             throw new AppException(ErrorCode.INVALID_OTP);

@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './EmployerRegister.scss';
 import register from '../../assets/images/register.png';
-import { Building, Building2Icon, Lock, MailIcon, PhoneIcon, User2, WarehouseIcon } from 'lucide-react';
+import { Building, Building2Icon, Loader, Lock, MailIcon, PhoneIcon, User2, WarehouseIcon } from 'lucide-react';
+import { clearRegisterState, registerEmployer } from '../../redux/employerSilce';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { fetchProvinces } from '../../redux/provinceSlice';
 
 const EmployerRegister = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +17,9 @@ const EmployerRegister = () => {
     const [districts, setDistricts] = useState([]);
     const [isDistrictDisabled, setIsDistrictDisabled] = useState(true);
     const [isTermsChecked, setIsTermsChecked] = useState(false);
+    const dispatch = useDispatch();
+    const { loading, error, success } = useSelector((state) => state.employer);
+    const navigate = useNavigate();
 
     const urlSignIn = 'http://localhost:3000/login';
 
@@ -27,7 +34,7 @@ const EmployerRegister = () => {
         lastName: '',
         gender: '',
         phoneNumber: '',
-        company: '',
+        companyName: '',
         province: '',
         district: '',
     });
@@ -59,11 +66,7 @@ const EmployerRegister = () => {
         setIsTermsChecked(e.target.checked);
     };
 
-    const data = {
-        'Hà Nội': ['Ba Đình', 'Đống Đa', 'Hai Bà Trưng'],
-        'Hồ Chí Minh': ['Quận 1', 'Quận 3', 'Quận 5'],
-        'Đà Nẵng': ['Hải Châu', 'Thanh Khê', 'Sơn Trà'],
-    };
+    const data = useSelector((state) => state.provinces.list);
 
     const handleProvinceChange = (event) => {
         const province = event.target.value;
@@ -110,6 +113,8 @@ const EmployerRegister = () => {
                         ? 'Nhập lại mật khẩu'
                         : name === 'phoneNumber'
                         ? 'Số điện thoại cá nhân'
+                        :name === 'companyName'
+                        ? 'Tên công ty'
                         : name === 'province'
                         ? 'Tỉnh/thành phố'
                         : ''
@@ -142,6 +147,7 @@ const EmployerRegister = () => {
             confirmPassword: account.confirmPassword,
             phoneNumber: user.phoneNumber,
             province: user.province,
+            companyName: user.companyName,
         };
 
         let isValid = true;
@@ -168,15 +174,26 @@ const EmployerRegister = () => {
                 user: {
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    dob: '',
+                    dob: '2002-11-11',
                     address: user.province + (user.district === '' ? '' : ' - ' + user.district),
                     phoneNumber: user.phoneNumber,
                     gender: user.gender,
                 },
+                companyName: user.companyName
             };
-            console.log('Form Data:', formData);
+            // console.log('Form Data:', formData);
+            dispatch(registerEmployer(formData));
         }
     };
+
+    useEffect(() => {
+        dispatch(fetchProvinces());
+
+        return () => {
+          dispatch(clearRegisterState());
+          if(success) navigate('/dashboard');
+        };
+      }, [dispatch, success, navigate]);
 
     return (
         <div className="register-container">
@@ -190,11 +207,11 @@ const EmployerRegister = () => {
                             <label className="form-label">
                                 Email đăng nhập <span>*</span>
                             </label>
-                            <div className="input-container">
+                            <div className="input-container-1">
                                 <input
                                     name="email"
                                     type="email"
-                                    className="form-input"
+                                    className="form-input-1"
                                     placeholder="Email"
                                     value={account.email}
                                     onChange={handleAccountChange}
@@ -210,10 +227,10 @@ const EmployerRegister = () => {
                             <label className="form-label">
                                 Mật khẩu <span>*</span>
                             </label>
-                            <div className="input-container">
+                            <div className="input-container-1">
                                 <input
                                     type={showPassword ? 'text' : 'password'}
-                                    className="form-input"
+                                    className="form-input-1"
                                     name="password"
                                     value={account.password}
                                     onChange={handleAccountChange}
@@ -248,10 +265,10 @@ const EmployerRegister = () => {
                             <label className="form-label">
                                 Nhập lại mật khẩu <span>*</span>
                             </label>
-                            <div className="input-container">
+                            <div className="input-container-1">
                                 <input
                                     type={showConfirmPassword ? 'text' : 'password'}
-                                    className="form-input"
+                                    className="form-input-1"
                                     name="confirmPassword"
                                     value={account.confirmPassword}
                                     onChange={handleAccountChange}
@@ -292,11 +309,11 @@ const EmployerRegister = () => {
                                     <label className="form-label">
                                         Họ và tên <span>*</span>
                                     </label>
-                                    <div className="input-container" style={{ display: 'inline-flex' }}>
+                                    <div className="input-container-1" style={{ display: 'inline-flex' }}>
                                         <input
                                             type="text"
                                             name="firstName"
-                                            className="form-input"
+                                            className="form-input-1"
                                             placeholder="Họ"
                                             value={user.firstName}
                                             onChange={handleUserChange}
@@ -306,7 +323,7 @@ const EmployerRegister = () => {
                                         <input
                                             type="text"
                                             name="lastName"
-                                            className="form-input"
+                                            className="form-input-1"
                                             placeholder="Tên"
                                             value={user.lastName}
                                             onChange={handleUserChange}
@@ -353,11 +370,11 @@ const EmployerRegister = () => {
                                     <label className="form-label">
                                         Số điện thoại cá nhân <span>*</span>
                                     </label>
-                                    <div className="input-container">
+                                    <div className="input-container-1">
                                         <input
                                             type="tel"
                                             name="phoneNumber"
-                                            className="form-input"
+                                            className="form-input-1"
                                             placeholder="Số điện thoại cá nhân"
                                             value={user.phoneNumber}
                                             onChange={handleUserChange}
@@ -375,19 +392,19 @@ const EmployerRegister = () => {
                                     <label className="form-label">
                                         Công ty <span>*</span>
                                     </label>
-                                    <div className="input-container">
+                                    <div className="input-container-1">
                                         <input
                                             type="text"
-                                            name="company"
-                                            className="form-input"
+                                            name="companyName"
+                                            className="form-input-1"
                                             placeholder="Tên công ty"
-                                            value={user.company}
+                                            value={user.companyName}
                                             onChange={handleUserChange}
                                             onBlur={handleBlur}
                                         />
                                         <Building size={20} className="input-icon" />
                                     </div>
-                                    <p className={`error-message ${errors.company ? 'show' : ''}`}>{errors.company}</p>
+                                    <p className={`error-message ${errors.companyName ? 'show' : ''}`}>{errors.companyName}</p>
                                 </div>
 
                                 {/* Province Selection */}
@@ -395,7 +412,7 @@ const EmployerRegister = () => {
                                     <label className="form-label">
                                         Địa điểm làm việc <span>*</span>
                                     </label>
-                                    <div className="input-container">
+                                    <div className="input-container-1">
                                         <select
                                             className="select-input"
                                             name="province"
@@ -415,12 +432,14 @@ const EmployerRegister = () => {
                                     <p className={`error-message ${errors.province ? 'show' : ''}`}>
                                         {errors.province}
                                     </p>
+                                    {error && <p className='error-message show'>{error.message}</p>}
+
                                 </div>
 
                                 {/* District Selection */}
                                 <div className="form-group">
                                     <label className="form-label">Quận/huyện</label>
-                                    <div className="input-container">
+                                    <div className="input-container-1">
                                         <select
                                             className="select-input"
                                             name="district"
@@ -458,7 +477,8 @@ const EmployerRegister = () => {
                             </div>
 
                             <button type="submit" className="submit-button" disabled={!isTermsChecked}>
-                                Hoàn tất
+                                {loading ? <Loader size={16} /> : 'Hoàn tất'}
+                                {success && <p>Đăng ký thành công!</p>}
                             </button>
 
                             <div className="login-prompt">

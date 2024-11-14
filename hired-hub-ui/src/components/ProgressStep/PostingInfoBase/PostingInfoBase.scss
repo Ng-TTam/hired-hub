@@ -37,9 +37,9 @@
     margin: 10px auto;
 }
 
-.input-container input[type='text'],
-input[type='number'],
-input[type='date'] {
+.input-container input[type=text],
+input[type=number],
+input[type=date] {
     width: 100%;
     border: none;
     font-size: 16px;
@@ -60,12 +60,12 @@ input[type='date'] {
     transition: all 0.3s ease;
 }
 
-.input-container input[type='text']:focus ~ .underline,
-.input-container input[type='text']:valid ~ .underline,
-.input-container input[type='number']:focus ~ .underline,
-.input-container input[type='number']:valid ~ .underline,
-.input-container input[type='date']:focus ~ .underline,
-.input-container input[type='date']:valid ~ .underline {
+.input-container input[type=text]:focus ~ .underline,
+.input-container input[type=text]:valid ~ .underline,
+.input-container input[type=number]:focus ~ .underline,
+.input-container input[type=number]:valid ~ .underline,
+.input-container input[type=date]:focus ~ .underline,
+.input-container input[type=date]:valid ~ .underline {
     transform: scaleX(1);
 }
 
@@ -87,7 +87,7 @@ input[type='date'] {
     flex-direction: column;
 }
 
-select {
+.select-container select {
     width: 200px;
     padding: 7px;
     border: 1px solid #ddd;

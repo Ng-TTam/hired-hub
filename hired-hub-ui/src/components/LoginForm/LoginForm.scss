@@ -8,7 +8,7 @@ body {
     align-items: center;
 }
 
-.form {
+.form-login {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -25,7 +25,7 @@ body {
         'Helvetica Neue', sans-serif;
 }
 
-.form button {
+.form-login button {
     align-self: flex-end;
 }
 
@@ -134,4 +134,21 @@ body {
 .label-auth {
     display: flex;
     justify-content: center;
+}
+
+.logo-app-auth {
+    display: flex;
+    justify-content: center;
+    img{
+        width: 10em;
+        margin: 2em 0;
+    }
+    
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
 }

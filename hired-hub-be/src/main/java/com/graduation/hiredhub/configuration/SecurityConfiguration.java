@@ -27,7 +27,9 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfiguration {
     private static final String[] PUBLIC_POST_ENDPOINTS = {"/auth/**", "/account/sign-up",
-            "/account/send-reset-otp", "/account/verify-reset-otp", "/account/forgot-password",};
+            "/account/send-reset-otp", "/account/verify-reset-otp", "/account/forgot-password",
+            "/account/employer/sign-up",
+    };
 
     @Value("${jwt.secret}")
     protected String jwtSecret;

@@ -5,6 +5,7 @@ import Posting from '../components/Posting';
 import PostingFilter from '../components/PostingFilter';
 import Auth from '../pages/Home/Auth';
 import SignUp from '../pages/Home/SignUp';
+import VerifyOtp from '../pages/Home/VerifyOtp';
 import Logout from '../components/Logout';
 import CompanyDetail from '../components/CompanyDetail';
 
@@ -17,6 +18,8 @@ const GuessRoutes = () => {
             <Route path="/login" element={<Auth />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/sign-up" element={<SignUp />} />
+            <Route path='/verify-otp' element={<VerifyOtp />} />
+            <Route path='/reset-password' element/>
             <Route path="/company/:id" element={<DefaultLayout children={<CompanyDetail />} />} />
         </Routes>
     );

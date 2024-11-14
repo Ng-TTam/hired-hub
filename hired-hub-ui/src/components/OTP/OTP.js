@@ -1,10 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './OTP.scss';
 import { KeySquareIcon } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { resendOtp } from '../../redux/accountSlice';
 
 const OTP = ({ length = 6, onComplete }) => {
     const [otp, setOtp] = useState(new Array(length).fill(''));
     const inputRefs = useRef([]);
+    const dispatch = useDispatch();
+    const { otpResendLoading, otpResendError, otpResendSuccess } = useSelector((state) => state.account);
+
+
+    const handleResend = (event) => {
+        event.preventDefault();
+        dispatch(resendOtp());
+    }
 
     useEffect(() => {
         // Focus on first input when component mounts
@@ -93,8 +103,9 @@ const OTP = ({ length = 6, onComplete }) => {
                     ))}
                 </div>
                 <div className="otp-footer">
-                    Chưa nhận được mã? <a className="resend-button">Gửi lại</a>
+                    Chưa nhận được mã? <a className="resend-button"  onClick={handleResend}>Gửi lại</a>
                 </div>
+                {otpResendSuccess && <span>Mã otp đã được gửi lại.</span>}
             </div>
         </div>
     );

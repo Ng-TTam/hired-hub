@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from '../config/axios';
-const apiUrl = 'http://localhost:8888/api/v1/user';
+import { baseURL } from '../config/axios';
+
+const apiUrl = `${baseURL}user`;
 
 export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation', async (_, { rejectWithValue }) => {
     const token = localStorage.getItem('token'); // Lấy token từ localStorage
