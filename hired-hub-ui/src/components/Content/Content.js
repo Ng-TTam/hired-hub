@@ -3,7 +3,7 @@ import PostingJob from '../PostingJob/PostingJob';
 import PostingStat from '../PostingStat/PostingStat';
 import Notification from '../Notification/Notification';
 import ManageCandidate from '../ManageCandidate/ManageCandidate';
-import DashboardDefault from '../DashboardDefault/DashboardDefault'
+import DashboardDefault from '../DashboardDefault/DashboardDefault';
 
 const Content = ({ selectedItem }) => {
     const renderContent = () => {

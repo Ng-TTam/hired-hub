@@ -16,6 +16,7 @@ import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.request.ApplicationRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
+import com.graduation.hiredhub.dto.response.ApplicationStatisticsResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.service.ApplicationService;
 import com.graduation.hiredhub.service.PostingService;
@@ -99,6 +100,22 @@ public class ApplicationController {
                 List<ApplicationResponse> applications = applicationService.getApplicationsByJobSeeker();
                 return ApiResponse.<List<ApplicationResponse>>builder()
                         .data(applications)
+                        .build();
+        }
+
+        @GetMapping("employer/applications")
+        ApiResponse<List<ApplicationResponse>> getApplicationsByEmployer(){
+                List<ApplicationResponse> applications = applicationService.getApplicationsByEmployer();
+                return ApiResponse.<List<ApplicationResponse>>builder()
+                        .data(applications)
+                        .build();
+        }
+
+        @GetMapping("employer/applications/statistics")
+        ApiResponse<ApplicationStatisticsResponse> getApplicationStatistics(){
+                ApplicationStatisticsResponse applicationStatisticsResponse = applicationService.getApplicationStatistics();
+                return ApiResponse.<ApplicationStatisticsResponse>builder()
+                        .data(applicationStatisticsResponse)
                         .build();
         }
 

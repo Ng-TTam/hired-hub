@@ -18,4 +18,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     List<Application> findByCv(CV cv);
 
     Optional<Application> findByPostingAndCv(Posting postingId, CV cv);
+
+    List<Application> findByPosting(Posting posting);
 }

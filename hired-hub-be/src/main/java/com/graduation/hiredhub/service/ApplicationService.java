@@ -3,6 +3,7 @@ package com.graduation.hiredhub.service;
 import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.request.ApplicationRequest;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
+import com.graduation.hiredhub.dto.response.ApplicationStatisticsResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.entity.Application;
 import com.graduation.hiredhub.entity.CV;
@@ -43,6 +44,7 @@ public class ApplicationService {
     CVService cvService;
     JobSeekerRepository jobSeekerRepository;
     AccountService accountService;
+    EmployerRepository employerRepository;
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String postingId, String cvId){
@@ -133,6 +135,52 @@ public class ApplicationService {
                 .map(applicationMapper::toApplicationResponse)
                 .collect(Collectors.toList());
     }
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public List<ApplicationResponse> getApplicationsByEmployer(){
+        List<Posting> postings = postingRepository.findByEmployerId(getEmployerByAccount().getId());
+        List<Application> applications = new ArrayList<Application>();
+        for (Posting posting: postings){
+            applications.addAll(applicationRepository.findByPosting(posting));
+        }
+        List<ApplicationResponse> applicationResponses = new ArrayList<ApplicationResponse>();
+        for(Application application : applications){
+            String email = application.getCv().getJobSeeker().getAccount().getEmail();
+            ApplicationResponse applicationResponse = applicationMapper.toApplicationResponse(application);
+            applicationResponse.setEmail(email);
+            applicationResponses.add(applicationResponse);
+        }
+        return applicationResponses;
+    }
+
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ApplicationStatisticsResponse getApplicationStatistics() {
+        List<Posting> postings = postingRepository.findByEmployerId(getEmployerByAccount().getId());
+        List<Application> applications = new ArrayList<>();
+        
+        for (Posting posting : postings) {
+            applications.addAll(applicationRepository.findByPosting(posting));
+        }
+        Integer posting_Count = postings.size();
+        Integer cV_Pending = 0;
+        Integer cV_Deactive = 0;
+        Integer cV_Active = 0;
+        
+        for (Application application : applications) {
+            if (application.getStatus().toString().equals("ACTIVATE")) {
+                cV_Active++;
+            } else if (application.getStatus().toString().equals("DEACTIVATE")) {
+                cV_Deactive++;
+            } else {
+                cV_Pending++;
+            }
+        }
+        return ApplicationStatisticsResponse.builder()
+            .posting_Count(posting_Count)
+            .cV_Active(cV_Active)
+            .cV_Deactive(cV_Deactive)
+            .cV_Pending(cV_Pending)
+            .build();
+    }
 
     /**
      * Get application detail in posting of employer
@@ -205,5 +253,10 @@ public class ApplicationService {
     JobSeeker getJobSeekerByAccount(){
         return jobSeekerRepository.findByAccountId(accountService.getAccountInContext().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));   
+    }
+
+    Employer getEmployerByAccount(){
+        return employerRepository.findByAccountId(accountService.getAccountInContext().getId())
+        .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
     }
 }

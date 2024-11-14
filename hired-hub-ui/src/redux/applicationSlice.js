@@ -3,15 +3,15 @@ import axios from 'axios';
 
 const apiUrl = 'http://localhost:8888/api/v1';
 
-export const fetchApplication = createAsyncThunk(
-    'applications/fetchApplication',
-    async (applicationId, { rejectWithValue }) => {
+export const fetchApplications = createAsyncThunk(
+    'applications/fetchApplications',
+    async ( _, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
                 throw new Error('Token không tồn tại');
             }
-            const response = await axios.get(`${apiUrl}/applications/${applicationId}`, {
+            const response = await axios.get(`${apiUrl}/employer/applications`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -112,6 +112,7 @@ const applicationSlice = createSlice({
     name: 'application',
     initialState: {
         application: null,
+        applications: [],
         loading: false,
         error: null,
     },
@@ -123,19 +124,20 @@ const applicationSlice = createSlice({
 
     extraReducers: (builder) => {
         builder
-            .addCase(fetchApplication.pending, (state) => {
+            .addCase(fetchApplications.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchApplication.fulfilled, (state, action) => {
+            .addCase(fetchApplications.fulfilled, (state, action) => {
                 state.loading = false;
-                state.application = action.payload;
+                console.log("abc", action.payload);
+                state.applications = action.payload;
             })
-            .addCase(fetchApplication.rejected, (state, action) => {
+            .addCase(fetchApplications.rejected, (state, action) => {
                 state.loading = false;
+                console.log("abc", action.payload);
                 state.error = action.payload;
-            });
-        builder
+            })
             .addCase(fetchApplicationInPosting.pending, (state) => {
                 state.loading = true;
                 state.error = null;

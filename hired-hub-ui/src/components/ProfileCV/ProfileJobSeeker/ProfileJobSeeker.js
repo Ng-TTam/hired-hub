@@ -15,9 +15,9 @@ const ProfileJobSeeker = () =>  {
             </div>
             <div className="turn-on-job__header-info">
                 <div className="text-welcome">Chào bạn trở lại,</div>
-                <h4 className="profile-fullname">{`${user.firstName} ${user.lastName}`}</h4>
+                <h4 className="profile-fullname">{user? `${user.firstName} ${user.lastName}` : "Nguyễn Văn A"}</h4>
                 <div className="account-type vip">
-                    <span>{email}</span>
+                    <span>{email? email : "email@example.com"}</span>
                 </div>
                 <div className="box-footer">
                     <a href="#" class="btn btn-sm btn-upgrade">

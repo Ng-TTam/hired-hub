@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import './DashboardDefault.scss'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullhorn } from "@fortawesome/free-solid-svg-icons/faBullhorn";
@@ -8,8 +8,20 @@ import {faFileImport} from "@fortawesome/free-solid-svg-icons/faFileImport";
 import {faEnvelope} from "@fortawesome/free-regular-svg-icons/faEnvelope";
 import {faPhone} from "@fortawesome/free-solid-svg-icons/faPhone";
 import image from "../../assets/images/index"
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStatisticsDashboard } from "../../redux/statisticsSlice";
+import { fetchUserInformation } from "../../redux/userSlice";
 
 const DashboardDefault = () =>{
+    const email = localStorage.getItem('email');
+    const { user } = useSelector(state => state.user);
+    const dispatch = useDispatch();
+    const {statistics} = useSelector((state) => state.statistics);
+
+    useEffect(() => {
+        dispatch(fetchStatisticsDashboard());
+        dispatch(fetchUserInformation());
+    }, [dispatch]);
 
     return(
         <div className="dashbroad-default">
@@ -24,7 +36,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >0</h5>
+                                    >{statistics? statistics.posting_Count : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >Tin tuyển dụng hiển thị</div>
                                 </div>
@@ -41,7 +53,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >0</h5>
+                                    >{statistics? statistics.cv_Active : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >CV tiếp nhận</div>
                                 </div>
@@ -60,7 +72,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >0</h5>
+                                    >{statistics? statistics.cv_Pending : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >CV ứng tuyển mới</div>
                                 </div>
@@ -77,7 +89,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >0</h5>
+                                    >{statistics? statistics.cv_Deactive : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >CV đã từ chối</div>
                                 </div>
@@ -125,21 +137,21 @@ const DashboardDefault = () =>{
                     </div>
                     <div className="dd-right-infor">
                         <div className="dd-infor-name" style={{fontSize:'16px', fontWeight: 'bold'}}>
-                            Nguyễn Văn A
+                            {user? `${user.firstName} ${user.lastName}`  : "Nguyễn Văn A"}
                         </div>
                         <div className="dd-infor-mail" style={{fontSize:'14px'}}>
                             <FontAwesomeIcon
                                 icon={faEnvelope}
                                 style={{ color: 'black', fontSize: '14px', marginRight: '10px' }}
                             />
-                            email@example.com
+                            {email? email : "email@example.com"}
                         </div>
                         <div className="dd-infor-sdt" style={{fontSize:'14px'}}>
                             <FontAwesomeIcon
                                 icon={faPhone}
                                 style={{ color: 'black', fontSize: '14px', marginRight: '10px' }}
                             />
-                            0123456789
+                            {user? user.phoneNumber : "01234567890"}
                         </div>
                     </div>
                     <div className="dd-right-right">

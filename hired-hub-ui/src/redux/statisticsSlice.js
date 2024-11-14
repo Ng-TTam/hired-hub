@@ -1,54 +1,53 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from '../config/axios';
 
-const apiUrl = 'http://localhost:8888/api/v1/user';
+const apiUrl = 'http://localhost:8888/api/v1';
 
-// Thunk để lấy thông tin người dùng
-export const fetchUserInformation = createAsyncThunk(
-    'user/fetchUserInformation', 
+export const fetchStatisticsDashboard = createAsyncThunk(
+    'statistics/fetchStatisticsDashboard', 
     async (_, { rejectWithValue }) => {
         const token = localStorage.getItem('token'); // Lấy token từ localStorage
         if (!token) {
             throw new Error('Token không tồn tại');
         }
         try {
-            const response = await axios.get(apiUrl, {
+            const response = await axios.get(`${apiUrl}/employer/applications/statistics`, {
                 headers: {
                     Authorization: `Bearer ${token}`, // Thêm Bearer token vào header
                 },
             });
+            console.log("Error payload:", response.data);
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.response);
+            console.log("Error payload:", error);
+            return rejectWithValue("con mẹ mày nhá");
         }
     }
 );
 
-const userSlice = createSlice({
-    name: 'userSlice',
+const statisticsSlice = createSlice({
+    name: 'statisticsSlice',
     initialState: {
-        user: JSON.parse(localStorage.getItem('user')) || null, // Lấy dữ liệu từ localStorage nếu có
+        statistics: null,
         loading: false,
         error: null,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchUserInformation.pending, (state) => {
+            .addCase(fetchStatisticsDashboard.pending, (state) => {
                 state.loading = true;
-                state.user = null;
                 state.error = null;
             })
-            .addCase(fetchUserInformation.fulfilled, (state, action) => {
+            .addCase(fetchStatisticsDashboard.fulfilled, (state, action) => {
                 state.loading = false;
-                localStorage.setItem('user', JSON.stringify(action.payload.data)); // Lưu vào localStorage
-                state.user = action.payload.data;
+                state.statistics = action.payload.data;
             })
-            .addCase(fetchUserInformation.rejected, (state, action) => {
+            .addCase(fetchStatisticsDashboard.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });
     },
 });
 
-export default userSlice.reducer;
+export default statisticsSlice.reducer;

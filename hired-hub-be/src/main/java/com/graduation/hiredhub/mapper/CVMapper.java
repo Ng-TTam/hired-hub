@@ -12,7 +12,7 @@ import com.graduation.hiredhub.entity.CV;
 public interface CVMapper {
     CV toCV(CVRequest cvRequest);
 
-    @Mapping(source = "jobSeeker", target = "jobSeekerDTO")
+    @Mapping(source = "jobSeeker", target = "jobSeeker")
     CVResponse toCVResponse(CV cv);
     
     void updateCV(@MappingTarget CV cv, CVRequest cvRequest);

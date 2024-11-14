@@ -8,6 +8,7 @@ import userReducer from './userSlice';
 import cvReducer from './cvSlice';
 import filterReducer from './filterSlice';
 import applicationReducer from './applicationSlice';
+import statisticsReducer from './statisticsSlice';
 
 const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
         cv: cvReducer,
         filter: filterReducer,
         application: applicationReducer,
+        statistics: statisticsReducer,
     },
 });
 
