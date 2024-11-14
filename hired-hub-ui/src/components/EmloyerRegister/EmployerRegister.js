@@ -69,31 +69,30 @@ const EmployerRegister = () => {
     const data = useSelector((state) => state.provinces.list);
 
     const handleProvinceChange = (event) => {
-        const province = event.target.value;
-        setSelectedProvince(province);
-        setUser((prevState) => ({
-            ...prevState,
-            province: province,
-            district: '',
-        }));
-
-        if (province && data[province]) {
-            setDistricts(data[province]);
+        const provinceId = event.target.value;
+        const province = data.find((p) => p.id == provinceId);
+        if (province) {
+            setSelectedProvince(province);
+            setUser((prevState) => ({
+                ...prevState,
+                province: province,
+                district: '',
+            }));
+            setDistricts(province.districts);
             setIsDistrictDisabled(false);
-        } else {
-            setDistricts([]);
-            setIsDistrictDisabled(true);
-            setSelectedDistrict('');
         }
     };
 
     const handleDistrictChange = (event) => {
-        const district = event.target.value;
-        setSelectedDistrict(district);
-        setUser((prevState) => ({
-            ...prevState,
-            district: district,
-        }));
+        const districtId = event.target.value;
+        const district = districts.find((d) => d.id == districtId);
+        if (district) {
+            setSelectedDistrict(district);
+            setUser((prevState) => ({
+                ...prevState,
+                district: district,
+            }));
+        }
     };
 
     const validateField = (name, value) => {
@@ -113,7 +112,7 @@ const EmployerRegister = () => {
                         ? 'Nhập lại mật khẩu'
                         : name === 'phoneNumber'
                         ? 'Số điện thoại cá nhân'
-                        :name === 'companyName'
+                        : name === 'companyName'
                         ? 'Tên công ty'
                         : name === 'province'
                         ? 'Tỉnh/thành phố'
@@ -175,11 +174,11 @@ const EmployerRegister = () => {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     dob: '2002-11-11',
-                    address: user.province + (user.district === '' ? '' : ' - ' + user.district),
+                    address: user.province.name + (user.district.name === '' ? '' : ' - ' + user.district.name),
                     phoneNumber: user.phoneNumber,
                     gender: user.gender,
                 },
-                companyName: user.companyName
+                companyName: user.companyName,
             };
             // console.log('Form Data:', formData);
             dispatch(registerEmployer(formData));
@@ -190,10 +189,10 @@ const EmployerRegister = () => {
         dispatch(fetchProvinces());
 
         return () => {
-          dispatch(clearRegisterState());
-          if(success) navigate('/dashboard');
+            dispatch(clearRegisterState());
+            if (success) navigate('/dashboard');
         };
-      }, [dispatch, success, navigate]);
+    }, [dispatch, success, navigate]);
 
     return (
         <div className="register-container">
@@ -404,7 +403,9 @@ const EmployerRegister = () => {
                                         />
                                         <Building size={20} className="input-icon" />
                                     </div>
-                                    <p className={`error-message ${errors.companyName ? 'show' : ''}`}>{errors.companyName}</p>
+                                    <p className={`error-message ${errors.companyName ? 'show' : ''}`}>
+                                        {errors.companyName}
+                                    </p>
                                 </div>
 
                                 {/* Province Selection */}
@@ -416,14 +417,14 @@ const EmployerRegister = () => {
                                         <select
                                             className="select-input"
                                             name="province"
-                                            value={selectedProvince}
+                                            value={selectedProvince.id}
                                             onChange={handleProvinceChange}
                                             onBlur={handleBlur}
                                         >
                                             <option value="">Chọn Tỉnh/Thành phố</option>
-                                            {Object.keys(data).map((province) => (
-                                                <option key={province} value={province}>
-                                                    {province}
+                                            {data.map((province) => (
+                                                <option key={province.id} value={province.id}>
+                                                    {province.name}
                                                 </option>
                                             ))}
                                         </select>
@@ -432,8 +433,7 @@ const EmployerRegister = () => {
                                     <p className={`error-message ${errors.province ? 'show' : ''}`}>
                                         {errors.province}
                                     </p>
-                                    {error && <p className='error-message show'>{error.message}</p>}
-
+                                    {error && <p className="error-message show">{error.message}</p>}
                                 </div>
 
                                 {/* District Selection */}
@@ -443,14 +443,14 @@ const EmployerRegister = () => {
                                         <select
                                             className="select-input"
                                             name="district"
-                                            value={selectedDistrict}
+                                            value={selectedDistrict.id}
                                             onChange={handleDistrictChange}
                                             disabled={isDistrictDisabled}
                                         >
                                             <option value="">Chọn Quận/Huyện</option>
                                             {districts.map((district) => (
-                                                <option key={district} value={district}>
-                                                    {district}
+                                                <option key={district.id} value={district.id}>
+                                                    {district.name}
                                                 </option>
                                             ))}
                                         </select>
