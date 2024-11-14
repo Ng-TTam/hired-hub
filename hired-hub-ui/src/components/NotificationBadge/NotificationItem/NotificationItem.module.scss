@@ -1,0 +1,34 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.unread {
+    opacity: 1;
+}
+
+.wrapper:hover .content,
+.wrapper:hover .title {
+    color: var(--primary-color);
+}
+
+.title,
+.content,
+.created-time {
+    color: #212f3f;
+    font-size: 14px;
+    text-align: justify;
+}
+
+.title {
+    font-weight: 600;
+}
+
+.created-time {
+    font-size: 12px;
+    font-weight: 300;
+}

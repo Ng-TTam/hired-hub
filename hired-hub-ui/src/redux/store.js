@@ -7,6 +7,7 @@ import cvReducer from './cvSlice';
 import employerReducer from './employerSilce';
 import filterReducer from './filterSlice';
 import jobCategoryReducer from './jobCategorySlice';
+import notificationReducer from './notificationSlice';
 import postingReducer from './postingSlice';
 import positionCategoryReducer from './postionCategorySlice';
 import provinceReducer from './provinceSlice';
@@ -22,6 +23,7 @@ const store = configureStore({
         positionCategories: positionCategoryReducer,
         jobCategories: jobCategoryReducer,
         postings: postingReducer,
+        notifications: notificationReducer,
         cv: cvReducer,
         filter: filterReducer,
         application: applicationReducer,

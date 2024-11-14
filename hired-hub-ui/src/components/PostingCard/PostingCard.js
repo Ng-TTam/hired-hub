@@ -25,6 +25,7 @@ function PostingCard({ posting }) {
                     <HeadlessTippy
                         interactive
                         placement="right"
+                        delay={[300, 300]}
                         render={(attrs) => (
                             <div tabIndex="-1" {...attrs}>
                                 <PopperWrapper>

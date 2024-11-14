@@ -1,12 +1,18 @@
 package com.graduation.hiredhub.repository;
 
 import com.graduation.hiredhub.entity.SavedPost;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface SavedPostRepository extends JpaRepository<SavedPost, Integer> {
-    Optional<SavedPost> findByPostingId(String postingId);
+    Page<SavedPost> findAllByJobSeekerId(String jobSeekerId, Pageable pageable);
+
+    Optional<SavedPost> findByJobSeekerIdAndPostingId(String jobSeekerId, String postingId);
+
+    boolean existsByJobSeekerIdAndPostingId(String jobSeekerId, String postingId);
+
+    void deleteByJobSeekerIdAndPostingId(String jobSeekerId, String postingId);
 }
