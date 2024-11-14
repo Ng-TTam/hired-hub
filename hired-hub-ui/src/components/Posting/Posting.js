@@ -37,7 +37,7 @@ import '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
-function Posting() {
+function Posting({ className }) {
     const { id } = useParams();
     const { application } = useSelector((state) => state.application);
     const posting = useSelector((state) => state.postings.posting);
@@ -118,7 +118,7 @@ function Posting() {
     }
 
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', className)}>
             {isModalOpen && <div className="overlay"></div>}
             <div className={cx('content__left')}>
                 <div className={cx('content-left__header', 'box')}>

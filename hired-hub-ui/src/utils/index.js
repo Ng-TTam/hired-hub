@@ -15,6 +15,7 @@ export const convertSalary = (minSalary, maxSalary) => {
 };
 
 export const convertWorkAddressSumary = (workAddresses) => {
+    if (!workAddresses) return '';
     const addressesLength = workAddresses.length;
 
     if (addressesLength === 1) {
@@ -33,6 +34,7 @@ export const convertWorkAddressSumary = (workAddresses) => {
 };
 
 export const convertWorkAddress = (workAddresses) => {
+    if (!workAddresses) return '';
     const addressesLength = workAddresses.length;
 
     if (addressesLength === 0) {
@@ -52,6 +54,7 @@ export const convertWorkAddress = (workAddresses) => {
 };
 
 export const convertWorkAddressDetail = (workAddresses) => {
+    if (!workAddresses) return '';
     const addressesLength = workAddresses.length;
 
     if (addressesLength === 0) {
@@ -99,11 +102,13 @@ export const getRemainingTime = (expiredAt) => {
 };
 
 export const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = parseISO(dateString);
     return format(date, 'dd/MM/yyyy', { locale: vi });
 };
 
 export const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString) return '';
     const date = parseISO(dateTimeString);
     return format(date, 'dd/MM/yyyy HH:mm', { locale: vi });
 };

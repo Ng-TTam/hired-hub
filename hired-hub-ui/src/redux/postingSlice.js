@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import axiosPro from '../config/axios';
-import { baseURL } from '../config/axios';
+import axiosPro, { baseURL } from '../config/axios';
 
 const apiUrl = `${baseURL}posting`;
 
@@ -31,6 +30,18 @@ export const fetchCompanyPostings = createAsyncThunk(
     },
 );
 
+export const fetchAdminPostings = createAsyncThunk(
+    'postings/fetchAdminPostings',
+    async ({ criteria, pageable }, { rejectWithValue }) => {
+        try {
+            const response = await axiosPro.get(`${apiUrl}/admin`, { params: { ...criteria, ...pageable } });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    },
+);
+
 export const fetchPosting = createAsyncThunk('postings/fetchPosting', async (id, { rejectWithValue }) => {
     try {
         const response = await axios.get(`${apiUrl}/${id}`);
@@ -48,6 +59,18 @@ export const createPosting = createAsyncThunk('postings/createPosting', async (p
         return rejectWithValue(error.response?.data);
     }
 });
+
+export const updateStatus = createAsyncThunk(
+    'postings/updateStatus',
+    async ({ postingId, status }, { rejectWithValue }) => {
+        try {
+            const response = await axiosPro.put(`${apiUrl}/update-status`, { postingId, status });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    },
+);
 
 const postingSlice = createSlice({
     name: 'postings',
@@ -116,6 +139,20 @@ const postingSlice = createSlice({
             .addCase(fetchCompanyPostings.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(fetchAdminPostings.pending, (state, action) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchAdminPostings.fulfilled, (state, action) => {
+                state.loading = false;
+                state.postings = action.payload.data.data;
+                state.totalPages = action.payload.data.totalPages;
+                state.totalElements = action.payload.data.totalElements;
+            })
+            .addCase(fetchAdminPostings.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
             });
     },
 });

@@ -1,0 +1,64 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.content {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
+
+.box-title {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.box {
+    background-color: var(--white-color);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.title {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.subdetail {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.subdetail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.subdetail-item__icon {
+    color: var(--primary-color);
+}
+
+.job-description {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
