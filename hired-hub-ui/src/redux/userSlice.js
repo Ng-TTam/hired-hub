@@ -5,14 +5,14 @@ import { baseURL } from '../config/axios';
 const apiUrl = `${baseURL}user`;
 
 export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation', async (_, { rejectWithValue }) => {
-    const token = localStorage.getItem('token'); // Lấy token từ localStorage
+    const token = localStorage.getItem('token');
     if (!token) {
-        throw new Error('Token không tồn tại'); // Kiểm tra nếu token không tồn tại
+        throw new Error('Token không tồn tại');
     }
     try {
         const response = await axios.get(apiUrl, {
             headers: {
-                Authorization: `Bearer ${token}`, // Thêm Bearer token vào header
+                Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
@@ -24,7 +24,7 @@ export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation'
 const userSlice = createSlice({
     name: 'userSlice',
     initialState: {
-        user: null,
+        user: JSON.parse(localStorage.getItem('user')) || null,
         loading: false,
         error: null,
     },
@@ -38,11 +38,12 @@ const userSlice = createSlice({
             })
             .addCase(fetchUserInformation.fulfilled, (state, action) => {
                 state.loading = false;
+                localStorage.setItem('user', JSON.stringify(action.payload.data));
                 state.user = action.payload.data;
             })
             .addCase(fetchUserInformation.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message;
+                state.error = action.payload;
             });
     },
 });

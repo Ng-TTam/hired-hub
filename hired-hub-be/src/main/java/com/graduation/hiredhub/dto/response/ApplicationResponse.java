@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.dto.response;
 
+import com.graduation.hiredhub.dto.reqResp.JobSeekerDTO;
 import com.graduation.hiredhub.entity.CV;
 import com.graduation.hiredhub.entity.Posting;
 import com.graduation.hiredhub.entity.enumeration.ApplicationStatus;
@@ -23,4 +24,5 @@ public class ApplicationResponse {
     PostingResponse posting;
     Instant createdAt;
     Instant updatedAt;
+    String email;
 }

@@ -36,8 +36,8 @@ const LoginForm = () => {
         <div className="container">
             <form className="form-login" onSubmit={handleSubmit}>
                 <h1 className="label-auth">Đăng nhập</h1>
-                <div className="logo-app-auth" >
-                    <img src={images.logoApp} alt="logo-app" title="Logo của TopCV"/>
+                <div className="logo-app-auth">
+                    <img src={images.logoApp} alt="logo-app" title="Logo của TopCV" />
                 </div>
                 <div className="flex-column">
                     <label>Email </label>
@@ -79,17 +79,19 @@ const LoginForm = () => {
                 </div>
                 {error && <p className="error-message show">Tài khoản hoặc mật khẩu không đúng.</p>}
 
-                    <div className="flex-row">
-                        <div></div>
-                        <a className="span" onClick={(e) => navigate('/reset-password')}>Quên mật khẩu?</a>
-                    </div>
-                <button className="button-submit">{loading ? <LoaderCircleIcon size={15} /> : "Đăng nhập"}</button>
-                    <p className="p">
-                        Chưa có tài khoản?{' '}
-                        <a className="span" href={urlSignUp}>
-                            Đăng ký
-                        </a>
-                    </p>
+                <div className="flex-row">
+                    <div></div>
+                    <a className="span" onClick={(e) => navigate('/reset-password')}>
+                        Quên mật khẩu?
+                    </a>
+                </div>
+                <button className="button-submit">{loading ? <LoaderCircleIcon size={15} /> : 'Đăng nhập'}</button>
+                <p className="p">
+                    Chưa có tài khoản?{' '}
+                    <a className="span" href={urlSignUp}>
+                        Đăng ký
+                    </a>
+                </p>
                 <p className="p line">Hoặc với</p>
 
                 <div className="flex-row">

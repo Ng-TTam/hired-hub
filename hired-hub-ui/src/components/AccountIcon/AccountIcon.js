@@ -16,8 +16,30 @@ function AccountIcon() {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        dispatch(fetchUserInformation());
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                if (parsedUser && parsedUser.avatar) {
+                    dispatch({ type: 'user/fetchUserInformation', payload: parsedUser });
+                }
+            } catch (error) {
+                console.error('Lỗi khi parse dữ liệu người dùng từ localStorage:', error);
+            }
+        } else {
+            dispatch(fetchUserInformation());
+        }
     }, [dispatch]);
+
+    useEffect(() => {
+        if (user) {
+            try {
+                localStorage.setItem('user', JSON.stringify(user));
+            } catch (error) {
+                console.error('Lỗi khi lưu dữ liệu vào localStorage:', error);
+            }
+        }
+    }, [user]);
 
     return (
         <div className={cx('wrapper')} onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>

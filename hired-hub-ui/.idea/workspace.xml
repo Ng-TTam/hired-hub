@@ -5,25 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0e7ecd5-6b18-495c-9807-934bb06a08dd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/dto/response/ApplicationStatisticsResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/recruitment-empty.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/CVManagementItem/CVManagementItem.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/CVManagementItem/CVManagementItem.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DashboardDefault/DashboardDefault.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/DashboardDefault/DashboardDefault.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/redux/statisticsSlice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/controller/ApplicationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/controller/ApplicationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/dto/response/ApplicationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/dto/response/ApplicationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/dto/response/CVResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/dto/response/CVResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/mapper/CVMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/mapper/CVMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/repository/ApplicationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/repository/ApplicationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/repository/PostingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/repository/PostingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/service/ApplicationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../hired-hub-be/src/main/java/com/graduation/hiredhub/service/ApplicationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/images/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AccountIcon/AccountIcon.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountIcon/AccountIcon.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Application/CreateApplication/CreateApplication.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Application/CreateApplication/CreateApplication.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Application/GetApplication/GetApplication.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Application/GetApplication/GetApplication.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Content/Content.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Content/Content.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EditorContent/EditorContent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EditorContent/EditorContent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Pagination/Pagination.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PostingInfoBase/PostingInfoBase.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PostingInfoBase/PostingInfoBase.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PostingInfoDetail/PostingInfoDetail.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PostingInfoGeneral/PostingInfoGeneral.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PostingInfoGeneral/PostingInfoGeneral.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PostingInfoReceiveCV/PostingInfoReceiveCV.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ProgressStep/ProgressStep.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProgressStep/ProgressStep.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ProgressStep/ProgressStep.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Bussiness/Auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Bussiness/Auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Bussiness/Auth.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Bussiness/Auth.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/CMS/PostCreation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/CMS/PostCreation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/BussinessRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/BussinessRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LoginForm/LoginForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LoginForm/LoginForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ManageCandidate/ManageCandidate.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ManageCandidate/ManageCandidate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Posting/Posting.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Posting/Posting.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PostingCard/PostingPreview/PostingPreview.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PostingCard/PostingPreview/PostingPreview.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ProfileCV/CVItem/CVItem.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileCV/CVItem/CVItem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ProfileCV/CVList/CVList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileCV/CVList/CVList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ProfileCV/CreateCV/CreateCV.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileCV/CreateCV/CreateCV.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ProfileCV/ProfileJobSeeker/ProfileJobSeeker.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileCV/ProfileJobSeeker/ProfileJobSeeker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/applicationSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/applicationSlice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/authenticationSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/authenticationSlice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/store.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/userSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/userSlice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/GuessRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/GuessRoutes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +59,7 @@
   "keyToString": {
     "Node.js.App.js.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/createpost",
+    "git-widget-placeholder": "Merging develop",
     "last_opened_file_path": "D:/hiredHub/hired-hub-ui",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -74,6 +88,7 @@
       <workItem from="1729941397072" duration="1437000" />
       <workItem from="1730105323632" duration="108000" />
       <workItem from="1730888563515" duration="443000" />
+      <workItem from="1731568519607" duration="27000" />
     </task>
     <servers />
   </component>

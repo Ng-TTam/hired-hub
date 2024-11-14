@@ -8,6 +8,7 @@ const images = {
     defaultCompanyCover: require('./default-company-cover.jpg'),
     logoApp: require('./logo_app.png'),
     hiredHubLogo: require('./hired-hub-logo.png'),
+    recruitmentEmpty: require('./recruitment-empty.png'),
 };
 
 export default images;

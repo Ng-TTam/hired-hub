@@ -4,7 +4,7 @@ import { fetchUserInformation } from '../../../redux/userSlice';
 import images from '../../../assets/images';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useNavigate } from 'react-router-dom';
-import { createCV } from '../../../redux/cvSlice';
+import { createCV, fetchCVs } from '../../../redux/cvSlice';
 import './CreateCV.scss';
 
 const CreateCV = () => {
@@ -33,8 +33,13 @@ const CreateCV = () => {
             others,
         };
         try {
-            dispatch(createCV(newCV)).unwrap();
-            navigate(`../qly-cv`);
+            // Dispatch action tạo CV
+            dispatch(createCV(newCV)).unwrap().then(() => {
+                // Sau khi tạo CV thành công, gọi lại action để cập nhật danh sách CV
+                dispatch(fetchCVs()); // fetchCVList là action để lấy lại danh sách CV từ server
+                // Điều hướng về trang '/qly-cv'
+                navigate(`../qly-cv`);
+            });
         } catch (error) {
             console.error("Lỗi khi tạo CV:", error);
             alert("Vui lòng nhập đầy đủ thông tin CV.");

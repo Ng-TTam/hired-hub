@@ -1,19 +1,11 @@
 import React, { useEffect } from "react";
 import images from "../../../assets/images";
 import './ProfileJobSeeker.scss'
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUserInformation } from "../../../redux/userSlice";
+import { useSelector } from "react-redux";
 
 const ProfileJobSeeker = () =>  {
-    const dispatch = useDispatch();
-    const {user,loading, error } = useSelector(state => state.user);
     const email = localStorage.getItem('email');
-    useEffect(() => {
-        dispatch(fetchUserInformation());
-    }, [dispatch]);
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+    const user = useSelector((state) => state.user.user);
 
     return(
         <div className="turn-on-job_header">
@@ -23,9 +15,9 @@ const ProfileJobSeeker = () =>  {
             </div>
             <div className="turn-on-job__header-info">
                 <div className="text-welcome">Chào bạn trở lại,</div>
-                <h4 className="profile-fullname">{`${user.firstName} ${user.lastName}`}</h4>
+                <h4 className="profile-fullname">{user? `${user.firstName} ${user.lastName}` : "Nguyễn Văn A"}</h4>
                 <div className="account-type vip">
-                    <span>{email}</span>
+                    <span>{email? email : "email@example.com"}</span>
                 </div>
                 <div className="box-footer">
                     <a href="#" class="btn btn-sm btn-upgrade">

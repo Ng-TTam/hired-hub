@@ -12,5 +12,8 @@ import java.util.List;
 
 public interface PostingRepository extends JpaRepository<Posting, String>, JpaSpecificationExecutor<Posting> {
     Page<Posting> findByEmployer(Employer employer, Pageable pageable);
+
     List<Posting> findByStatus(Status status);
+
+    List<Posting> findByEmployerId(String employerId);
 }

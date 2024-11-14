@@ -7,15 +7,13 @@ import {
     faUser,
     faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
-import { faFeatherPointed } from '@fortawesome/free-solid-svg-icons/faFeatherPointed';
-import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
 import { faCommentsDollar } from '@fortawesome/free-solid-svg-icons/faCommentsDollar';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constants';
 import { resetAndSetDistrict, resetAndSetJobCategory, resetAndSetProvince } from '../../redux/filterSlice';
@@ -26,14 +24,10 @@ import CompanyInfo from './CompanyInfo';
 import ContentBox from './ContentBox';
 import ContentIcon from './ContentIcon';
 import styles from './Posting.module.scss';
-import {
-    createApplication,
-    deleteApplication,
-    fetchApplicationInPosting,
-    resetApplication,
-} from '../../redux/applicationSlice';
-import CVSelect from '../ProfileCV/CVSelect/CVSelect';
+import { fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
 import '@fortawesome/free-solid-svg-icons';
+import CreateApplication from '../Application/CreateApplication/CreateApplication';
+import GetApplication from '../Application/GetApplication/GetApplication';
 
 const cx = classNames.bind(styles);
 
@@ -44,11 +38,12 @@ function Posting() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showApplication, setShowApplication] = useState(false);
-    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [showCreateApplication, setShowCreateApplication] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedCV, setSelectedCV] = useState(null);
-    const [message, setMessage] = useState('');
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    var selectApplication = queryParams.get('selectApplication') === 'true';
+    const [createAgain, setCreateAgain] = useState(false);
 
     useEffect(() => {
         dispatch(fetchPosting(id));
@@ -72,19 +67,7 @@ function Posting() {
         dispatch(resetAndSetJobCategory(jobCategory.id));
         navigate('/');
     };
-    const handleClickUnAppli = () => {
-        const delAppli = application?.id;
-        try {
-            console.log(delAppli);
-            dispatch(deleteApplication(delAppli)).unwrap();
-        } catch (error) {
-            console.error('Lỗi khi xóa ứng tuyển:', error);
-        } finally {
-            setShowConfirmDialog(false);
-            setIsModalOpen(false);
-            window.location.reload();
-        }
-    };
+
     const handleClickApplication = () => {
         setIsModalOpen(true);
         if (application) {
@@ -93,23 +76,32 @@ function Posting() {
             setShowCreateApplication(true);
         }
     };
-    const handleCVSelect = (cvId) => {
-        setSelectedCV(cvId); // Cập nhật ID của CV đã chọn
-    };
-    const handApplication = () => {
-        if (!selectedCV) {
-            return;
+    useEffect(() => {
+        const hasViewed = sessionStorage.getItem('hasViewedApplicationModal');
+        if (!hasViewed && selectApplication) {
+            handleClickApplication();
+            sessionStorage.setItem('hasViewedApplicationModal', 'true');
         }
-        const newApplication = { postingId: id, cvId: selectedCV, message };
-        try {
-            dispatch(createApplication(newApplication)).unwrap();
-            console.log(id, selectedCV, message);
-        } catch (error) {
-            console.error('Lỗi khi ứng tuyển:', error);
-        } finally {
-            setShowCreateApplication(false);
-            setIsModalOpen(false);
+    }, [selectApplication]);
+
+    const handleApplication = (reload) => {
+        setShowCreateApplication(false);
+        setShowApplication(false);
+        setIsModalOpen(false);
+        dispatch(fetchApplicationInPosting(id));
+        if (reload) {
             window.location.reload();
+        }
+    };
+    const handApplicationAgain = (reload) => {
+        setShowCreateApplication(false);
+        setShowApplication(false);
+        setIsModalOpen(false);
+        dispatch(fetchApplicationInPosting(id));
+        if (reload) {
+            setCreateAgain(true);
+            setShowCreateApplication(true);
+            setIsModalOpen(true);
         }
     };
 
@@ -151,15 +143,7 @@ function Posting() {
                             leftIcon={<FontAwesomeIcon icon={faPaperPlane} />}
                             onClick={handleClickApplication}
                         >
-                            {application
-                                ? application.status === 'PENDING'
-                                    ? 'Đang chờ phản hồi'
-                                    : application.status === 'ACTIVATE'
-                                    ? 'Ứng tuyển thành công'
-                                    : application.status === 'DEACTIVATE'
-                                    ? 'Đã Loại'
-                                    : 'Ứng tuyển ngay'
-                                : 'Ứng tuyển ngay'}
+                            {application ? 'Đã ứng tuyển' : 'Ứng tuyển ngay'}
                         </Button>
                         <Button className={cx('btn-save')} outline leftIcon={<FontAwesomeIcon icon={faHeart} />}>
                             Lưu tin
@@ -253,162 +237,13 @@ function Posting() {
                 </div>
             </div>
 
-            {showApplication && (
-                <div className="confirm-dialog">
-                    <h2 className="application__title">Thông Tin Ứng Tuyển</h2>
-                    <div className="application__content">
-                        <div className="application__item">
-                            <span className="application__label">Trạng thái:</span>
-                            <span
-                                className={`application__status application__status--${application?.status.toLowerCase()}`}
-                            >
-                                {application.status === 'PENDING'
-                                    ? 'Đang chờ phản hồi'
-                                    : application.status === 'ACTIVATE'
-                                    ? 'Ứng tuyển thành công'
-                                    : 'Đã Loại'}
-                            </span>
-                        </div>
-                        <div className="application__item">
-                            <span className="application__label">Thư giới thiệu:</span>
-                            <p className="application__message">{application?.message}</p>
-                        </div>
-                        <div className="application__item">
-                            <span className="application__label">CV:</span>
-                            <Link to={`../xem-cv/${application?.cv.id}`} className="application__cvName">
-                                {application?.cv.description}
-                            </Link>
-                        </div>
-                        {/* <div className="application__item">
-                            <span className="application__label">Post:</span>
-                            <Link to={`../posting/${application?.posting.id}`} className="application__postName">{application?.posting.title}</Link>
-                        </div> */}
-                    </div>
-                    <button
-                        onClick={() => {
-                            setIsModalOpen(false);
-                            setShowApplication(false);
-                        }}
-                        className="confirm-button"
-                    >
-                        Xác nhận
-                    </button>
-                    <button onClick={() => setShowConfirmDialog(true)} className="del-button">
-                        Hủy ứng tuyển
-                    </button>
-                    {showConfirmDialog && (
-                        <div className="confirm-dialog">
-                            <p>Bạn có chắc chắn muốn hủy ứng tuyển?</p>
-                            <button onClick={handleClickUnAppli} className="del-button">
-                                Xác nhận
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setShowConfirmDialog(false);
-                                    setIsModalOpen(false);
-                                }}
-                                className="cancel-button"
-                            >
-                                Hủy
-                            </button>
-                        </div>
-                    )}
-                </div>
-            )}
+            {showApplication && <GetApplication postingSelect={posting} onApplicationAgain={handApplicationAgain} />}
             {showCreateApplication && (
-                <div className="application-dialog">
-                    <div className="header-application-dialog">
-                        <h2 style={{ fontSize: '18px' }} className="application__title">
-                            Ứng Tuyển <span style={{ color: '#15bf61', fontSize: '18px' }}>{posting?.title}</span>
-                        </h2>
-                    </div>
-                    <div className="form-application-dialog">
-                        <div className="application-tile-header">
-                            <FontAwesomeIcon
-                                icon={faFolder}
-                                style={{ color: '#15bf61', fontSize: '22px', marginRight: '10px' }}
-                            />
-                            <span style={{ fontSize: '16px' }}>Chọn CV để ứng tuyển</span>
-                        </div>
-                        <div className="application_content">
-                            <CVSelect onCVSelect={handleCVSelect} />
-                            {/* <div className="application__item">
-                                <span className="application__label">Post:</span>
-                                <Link to={`../posting/${application?.posting.id}`} className="application__postName">{application?.posting.title}</Link>
-                            </div> */}
-                        </div>
-                        <div className="application-message-appli">
-                            <FontAwesomeIcon
-                                icon={faFeatherPointed}
-                                style={{ color: '#15bf61', fontSize: '22px', marginRight: '10px' }}
-                            />
-                            <span style={{ fontSize: '16px' }}>Thư giới thiệu</span>
-                        </div>
-                        <div className="application-message-title">
-                            <span style={{ fontSize: '16px' }}>
-                                Một thư giới thiệu ngắn gọn, chỉn chu sẽ giúp bạn trở nên chuyên nghiệp và gây ấn tượng
-                                hơn với nhà tuyển dụng.
-                            </span>
-                        </div>
-                        <textarea
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            className="appl-mess"
-                            rows="3"
-                            placeholder="Viết giới thiệu ngắn gọn về bản thân (điểm mạnh, điểm yếu) và nêu rõ mong muốn, lý do bạn muốn ứng tuyển cho vị trí này."
-                            style={{ height: '92px' }}
-                        />
-                        <div className="text-left" id="box-note-modal-apply">
-                            <h4 className="note-title">
-                                <i className="fa-solid fa-triangle-exclamation" style={{ color: 'ff0000' }}></i> Lưu ý:
-                            </h4>
-                            <div className="note-content">
-                                <p className="note-content__list">
-                                    <span>
-                                        HiredHub khuyên tất cả các bạn hãy luôn cẩn trọng trong quá trình tìm việc và
-                                        chủ động nghiên cứu về thông tin công ty, vị trí việc làm trước khi ứng tuyển.{' '}
-                                        <br />
-                                        Ứng viên cần có trách nhiệm với hành vi ứng tuyển của mình. Nếu bạn gặp phải tin
-                                        tuyển dụng hoặc nhận được liên lạc đáng ngờ của nhà tuyển dụng, hãy báo cáo ngay
-                                        cho HiredHub qua email
-                                        <a className="color-green" target="_top" href="mailto:langxuatchieu@gmail.com">
-                                            {' '}
-                                            langxuatchieu@gmail.com
-                                        </a>{' '}
-                                        để được hỗ trợ kịp thời.
-                                    </span>
-                                </p>
-                                <p className="note-content__list">
-                                    <span>
-                                        {'Tìm hiểu thêm kinh nghiệm phòng tránh lừa đảo '}
-                                        <a
-                                            href="https://blog.topcv.vn/huong-dan-tim-viec-an-toan-trong-ky-nguyen-so/"
-                                            target="__blank"
-                                            className="hight-light color-green"
-                                        >
-                                            tại đây
-                                        </a>
-                                        .
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bottom-application-dialog">
-                        <button onClick={handApplication} className="confirm-button">
-                            Ứng tuyển
-                        </button>
-                        <button
-                            onClick={() => {
-                                setShowCreateApplication(false);
-                                setIsModalOpen(false);
-                            }}
-                            className="cancel-button"
-                        >
-                            Hủy
-                        </button>
-                    </div>
-                </div>
+                <CreateApplication
+                    postingSelect={posting}
+                    applicationId={application ? application.id : null}
+                    onApplication={handleApplication}
+                />
             )}
         </div>
     );

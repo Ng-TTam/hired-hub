@@ -1,6 +1,5 @@
 package com.graduation.hiredhub.dto.response;
 
-import com.graduation.hiredhub.dto.reqResp.JobSeekerDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,12 +10,9 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CVResponse {
-    String id;
-    String description;
-    String experience;
-    String education;
-    String skill;
-    String others;
-    JobSeekerDTO jobSeeker;
+public class ApplicationStatisticsResponse {
+    Integer cV_Pending;
+    Integer cV_Deactive;
+    Integer cV_Active;
+    Integer posting_Count;
 }
