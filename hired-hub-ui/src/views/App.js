@@ -6,17 +6,17 @@ import JobSeekerRoutes from '../routes/JobSeekerRoutes';
 import GuessRoutes from '../routes/GuessRoutes';
 
 function App() {
+    const role = localStorage.getItem('role');
+    console.log(role);
+
     return (
         <Router>
-            {/* Route of CMS for */}
-            <CMSRoutes />
-
-            {/* Route of  */}
-            <BussinessRoutes />
-
-            <JobSeekerRoutes />
-
-            <GuessRoutes />
+            <Routes>
+                {role === 'ADMIN' && <Route path="/admin/*" element={<CMSRoutes />} />}
+                {role === 'EMPLOYER' && <Route path="/business/*" element={<BussinessRoutes />} />}
+                {role === 'JOB_SEEKER' && <Route path="/job-seeker/*" element={<JobSeekerRoutes />} />}
+                <Route path="/*" element={<GuessRoutes />} />
+            </Routes>
         </Router>
     );
 }

@@ -1,0 +1,16 @@
+.wrapper {
+    position: relative;
+    background-color: var(--white-color);
+    padding: 24px;
+
+    &:after {
+        position: absolute;
+        content: '';
+        background-color: #000;
+        height: 1px;
+        width: 100%;
+        bottom: -8px;
+        left: 0;
+        margin: 16px 0;
+    }
+}

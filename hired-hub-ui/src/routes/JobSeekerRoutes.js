@@ -9,14 +9,24 @@ import GetApplication from '../components/Application/GetApplication/GetApplicat
 import GetApplicationInPosting from '../components/Application/GetApplicationInPosting/GetApplicationInPosting';
 
 const JobSeekerRoutes = () => {
-    return <Routes>
-            <Route path="/qly-cv" exact element={<DefaultLayout children={<ProfileCV/>}/>} />
-            <Route path="/xem-cv/:cvId" exact element={<DefaultLayout children={<CV/>}/>} />
-            <Route path="/tao-cv" exact element={<DefaultLayout children={<CreateCV/>}/>} />
-            <Route path="/edit-cv/:cvId" exact element={<DefaultLayout children={<EditCV/>}/>} />
-            <Route path="/applications/:applicationId" exact element={<DefaultLayout children={<GetApplication/>}/>} />
-            <Route path="/applications/posting/:postingId" exact element={<DefaultLayout children={<GetApplicationInPosting/>}/>} />
-    </Routes>;
+    return (
+        <Routes>
+            <Route path="/qly-cv" exact element={<DefaultLayout children={<ProfileCV />} />} />
+            <Route path="/xem-cv/:cvId" exact element={<DefaultLayout children={<CV />} />} />
+            <Route path="/tao-cv" exact element={<DefaultLayout children={<CreateCV />} />} />
+            <Route path="/edit-cv/:cvId" exact element={<DefaultLayout children={<EditCV />} />} />
+            <Route
+                path="/applications/:applicationId"
+                exact
+                element={<DefaultLayout children={<GetApplication />} />}
+            />
+            <Route
+                path="/applications/posting/:postingId"
+                exact
+                element={<DefaultLayout children={<GetApplicationInPosting />} />}
+            />
+        </Routes>
+    );
 };
 
 export default JobSeekerRoutes;

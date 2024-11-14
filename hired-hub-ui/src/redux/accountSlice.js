@@ -4,7 +4,6 @@ import { baseURL } from '../config/axios';
 
 const apiURL = `${baseURL}account/`;
 
-// Async Thunks
 export const registerAccount = createAsyncThunk('account/sign-up', async (accountData, { rejectWithValue }) => {
     try {
         const response = await axios.post(`${apiURL}sign-up`, accountData);
@@ -14,21 +13,25 @@ export const registerAccount = createAsyncThunk('account/sign-up', async (accoun
     }
 });
 
-export const verifyOtp = createAsyncThunk('account/verify-otp', async ( otp, { rejectWithValue }) => {
+export const verifyOtp = createAsyncThunk('account/verify-otp', async (otp, { rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post(`${apiURL}verify-otp?otp=${otp}`, {}, {
-            headers: {
-                Authorization: `Bearer ${token}`,
+        const response = await axios.post(
+            `${apiURL}verify-otp?otp=${otp}`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             },
-        });
+        );
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response?.data || error.message);
     }
 });
 
-export const resendOtp = createAsyncThunk('account/resend-otp', async ( token, { rejectWithValue }) => {
+export const resendOtp = createAsyncThunk('account/resend-otp', async (token, { rejectWithValue }) => {
     token = localStorage.getItem('token');
     try {
         const response = await axios.get(`${apiURL}resend-otp`, {
@@ -42,7 +45,7 @@ export const resendOtp = createAsyncThunk('account/resend-otp', async ( token, {
     }
 });
 
-export const sendResetPassOtp = createAsyncThunk('account/send-reset-otp', async ( email , { rejectWithValue }) => {
+export const sendResetPassOtp = createAsyncThunk('account/send-reset-otp', async (email, { rejectWithValue }) => {
     try {
         const response = await axios.post(`${apiURL}send-reset-otp`, { email });
         return response.data;
@@ -51,23 +54,29 @@ export const sendResetPassOtp = createAsyncThunk('account/send-reset-otp', async
     }
 });
 
-export const verifyResetPassOtp = createAsyncThunk('account/verify-reset-otp', async ( email, otp , { rejectWithValue }) => {
-    try {
-        const response = await axios.post(`${apiURL}verify-reset-otp?otp=${otp}`, { email });
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || error.message);
-    }
-});
+export const verifyResetPassOtp = createAsyncThunk(
+    'account/verify-reset-otp',
+    async (email, otp, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${apiURL}verify-reset-otp?otp=${otp}`, { email });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    },
+);
 
-export const forgotPass = createAsyncThunk('account/forgot-password', async ( key, newPassAccountData , { rejectWithValue }) => {
-    try {
-        const response = await axios.post(`${apiURL}forgot-password?key=${key}`, newPassAccountData);
-        return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response?.data || error.message);
-    }
-});
+export const forgotPass = createAsyncThunk(
+    'account/forgot-password',
+    async (key, newPassAccountData, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${apiURL}forgot-password?key=${key}`, newPassAccountData);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    },
+);
 
 // Redux Slice
 const accountSlice = createSlice({

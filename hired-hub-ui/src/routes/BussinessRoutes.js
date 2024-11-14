@@ -1,17 +1,19 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import EmployerRegister from '../components/EmloyerRegister';
-import OTP from '../components/OTP/OTP';
+import { Route, Routes } from 'react-router-dom';
 import CreateCompanyForm from '../components/CreateCompanyForm/CreateCompanyForm';
+import EmployerRegister from '../components/EmloyerRegister';
+import Dashboard from '../pages/CMS/Dashboard';
+import PostingCreation from '../pages/CMS/PostCreation';
 
 const BussinessRoutes = () => {
-  return (
-    <Routes>
-      <Route path='/employer/register' element={<EmployerRegister />} />
-      <Route path='/employer/otp' element={<OTP />} />
-      <Route path='/company/create' element={<CreateCompanyForm />} />
-    </Routes>
-  );
+    return (
+        <Routes>
+            <Route path="/register" element={<EmployerRegister />} />
+            <Route path="/company/create" element={<CreateCompanyForm />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/posting/create" element={<PostingCreation />} />
+        </Routes>
+    );
 };
 
 export default BussinessRoutes;

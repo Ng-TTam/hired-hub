@@ -3,10 +3,7 @@ package com.graduation.hiredhub.dto.response;
 import com.graduation.hiredhub.dto.reqResp.JobCategoryDTO;
 import com.graduation.hiredhub.dto.reqResp.JobDescriptionDTO;
 import com.graduation.hiredhub.dto.reqResp.PositionCategoryDTO;
-import com.graduation.hiredhub.entity.enumeration.CurrencyUnit;
-import com.graduation.hiredhub.entity.enumeration.ExperienceRequire;
-import com.graduation.hiredhub.entity.enumeration.Gender;
-import com.graduation.hiredhub.entity.enumeration.JobType;
+import com.graduation.hiredhub.entity.enumeration.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,4 +34,5 @@ public class PostingDetailResponse {
     Integer minimumSalary;
     Integer maximumSalary;
     CompanyResponse company;
+    Status status;
 }

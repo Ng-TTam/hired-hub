@@ -1,7 +1,9 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.request.AdminPostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingRequest;
+import com.graduation.hiredhub.dto.request.PostingStatusRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
@@ -40,14 +42,14 @@ public class PostingController {
     @GetMapping("/all")
     ApiResponse<PageResponse<PostingResponse>> getAllPosting(
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page){
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         return ApiResponse.<PageResponse<PostingResponse>>builder()
                 .data(postingService.getAllPostings(page, size))
                 .build();
     }
 
     @PostMapping("/{postingId}/approve")
-    ApiResponse<String> approvePosting(@PathVariable String postingId){
+    ApiResponse<String> approvePosting(@PathVariable String postingId) {
         postingService.approvePosting(postingId);
         return ApiResponse.<String>builder()
                 .data("Approve successful!")
@@ -103,5 +105,22 @@ public class PostingController {
         return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
                 .data(page)
                 .build();
+    }
+
+    @GetMapping("admin")
+    public ApiResponse<PageResponse<PostingDetailResponse>> adminFilter(
+            AdminPostingFilterCriteria criteria,
+            Pageable pageable
+    ) {
+        PageResponse<PostingDetailResponse> page = postingService.adminFilter(criteria, pageable);
+        return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
+                .data(page)
+                .build();
+    }
+
+    @PutMapping("update-status")
+    public ApiResponse<Void> updatePostingStatus(@RequestBody PostingStatusRequest postingStatusRequest) {
+        postingService.updatePostingStatus(postingStatusRequest);
+        return ApiResponse.<Void>builder().build();
     }
 }

@@ -1,12 +1,12 @@
+import { jwtDecode } from 'jwt-decode';
+import { LoaderCircleIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import gLogo from '../../assets/images/google.png';
-import { loginThunk, reset } from '../../redux/authenticationSlice';
-import images from '../../assets/images';
-import './LoginForm.scss';
 import { useNavigate } from 'react-router-dom';
-import { LoaderCircleIcon } from 'lucide-react';
-import { jwtDecode } from 'jwt-decode';
+import images from '../../assets/images';
+import gLogo from '../../assets/images/google.png';
+import { loginThunk } from '../../redux/authenticationSlice';
+import './LoginForm.scss';
 
 const LoginForm = () => {
     const dispatch = useDispatch();
@@ -21,20 +21,20 @@ const LoginForm = () => {
         if (localStorage.getItem('isLogin')) {
             const token = localStorage.getItem('token');
             let role = jwtDecode(token).scope;
-            if (role === 'JOB_SEEKER') navigate('/');
-            else if (role === 'ADMIN') navigate('/');
-            else navigate('/dashboard');
+            localStorage.setItem('role', role);
+            if (role === 'JOB_SEEKER') window.location.replace('/');
+            else if (role === 'ADMIN') window.location.replace('/admin/dashboard');
+            else window.location.replace('/business/dashboard');
         }
-    }, [isLogin, error, success, navigate]);
+    }, [isLogin, error, success]);
 
     const handleSubmit = (e) => {
-        e.preventDefault();
         dispatch(loginThunk({ email, password }));
     };
 
     return (
         <div className="container">
-            <form className="form-login" onSubmit={handleSubmit}>
+            <div className="form-login">
                 <h1 className="label-auth">Đăng nhập</h1>
                 <div className="logo-app-auth">
                     <img src={images.logoApp} alt="logo-app" title="Logo của TopCV" />
@@ -85,7 +85,9 @@ const LoginForm = () => {
                         Quên mật khẩu?
                     </a>
                 </div>
-                <button className="button-submit">{loading ? <LoaderCircleIcon size={15} /> : 'Đăng nhập'}</button>
+                <button className="button-submit" onClick={handleSubmit}>
+                    {loading ? <LoaderCircleIcon size={15} /> : 'Đăng nhập'}
+                </button>
                 <p className="p">
                     Chưa có tài khoản?{' '}
                     <a className="span" href={urlSignUp}>
@@ -126,7 +128,7 @@ const LoginForm = () => {
                         Apple
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };

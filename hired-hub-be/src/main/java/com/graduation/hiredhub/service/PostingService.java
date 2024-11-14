@@ -2,21 +2,28 @@ package com.graduation.hiredhub.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graduation.hiredhub.dto.request.AdminPostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
 import com.graduation.hiredhub.dto.request.PostingRequest;
+import com.graduation.hiredhub.dto.request.PostingStatusRequest;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
+import com.graduation.hiredhub.entity.Account;
 import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.Posting;
+import com.graduation.hiredhub.entity.User;
+import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.PostingMapper;
+import com.graduation.hiredhub.repository.AccountRepository;
 import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.PostingRepository;
 import com.graduation.hiredhub.repository.specification.PostingSpecifications;
 import com.graduation.hiredhub.service.util.PageUtils;
+import com.graduation.hiredhub.service.util.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,6 +52,7 @@ public class PostingService {
 
     private static final String REDIS_POSTING_KEY = "postings";
     private static final long CACHE_POSTINGS_TTL_MINUTES = 10;
+    private final AccountRepository accountRepository;
 
     /**
      * Employer posting with status pending, wait admin approve post: pending -> active
@@ -231,5 +239,43 @@ public class PostingService {
         }
         Page<Posting> page = postingRepository.findAll(spec, pageable);
         return PageUtils.toPageResponse(page.map(postingMapper::toPostingDetailResponse));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public PageResponse<PostingDetailResponse> adminFilter(AdminPostingFilterCriteria criteria, Pageable pageable) {
+        Specification<Posting> spec = Specification.where(null);
+        if (criteria.getSearchValue() != null) {
+            spec = spec.and(PostingSpecifications.withSearchText(criteria.getSearchValue()));
+        }
+        if (criteria.getProvinceId() != null) {
+            spec = spec.and(PostingSpecifications.hasProvince(criteria.getProvinceId()));
+        }
+        if (criteria.getJobCategoryId() != null) {
+            spec = spec.and(PostingSpecifications.hasJobCategory(criteria.getJobCategoryId()));
+        }
+        if (criteria.getStatus() != null) {
+            spec = spec.and(PostingSpecifications.hasStatus(criteria.getStatus()));
+        }
+
+        Page<PostingDetailResponse> page = postingRepository.findAll(spec, pageable)
+                .map(postingMapper::toPostingDetailResponse);
+        return PageUtils.toPageResponse(page);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or @postingSecurity.isPostingOwner(#postingId,  authentication.name)")
+    public void updatePostingStatus(PostingStatusRequest postingStatusRequest) {
+        Posting posting = postingRepository.findById(postingStatusRequest.getPostingId())
+                .orElseThrow(() -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
+        Account account = accountRepository.findById(SecurityUtils.getCurrentUserLogin().get())
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        if (account.getRole().equals(Role.JOB_SEEKER)
+                && !postingStatusRequest.getStatus().equals(Status.PENDING)
+                && !posting.getStatus().equals(Status.PENDING)) {
+            posting.setStatus(postingStatusRequest.getStatus());
+            postingRepository.save(posting);
+            return;
+        }
+        posting.setStatus(postingStatusRequest.getStatus());
+        postingRepository.save(posting);
     }
 }
