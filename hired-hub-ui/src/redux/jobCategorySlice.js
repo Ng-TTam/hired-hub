@@ -21,6 +21,7 @@ const jobCategorySlice = createSlice({
         builder
             .addCase(fetchJobCategories.pending, (state) => {
                 state.loading = true;
+                state.error = null;
             })
             .addCase(fetchJobCategories.fulfilled, (state, action) => {
                 state.loading = false;

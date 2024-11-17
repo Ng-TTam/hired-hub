@@ -72,6 +72,7 @@ public enum ErrorCode {
 
     TOKEN_EXPIRED("LOG_OUT", "Your session is expired. Please login again!!!", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_VERIFY("NOT_VERIFY", "Your account is not verified", HttpStatus.BAD_REQUEST),
+    ACCOUNT_NOT_EXISTED("EXISTED_999", "Account is not existed", HttpStatus.BAD_REQUEST)
     ;
 
     private final String code;
