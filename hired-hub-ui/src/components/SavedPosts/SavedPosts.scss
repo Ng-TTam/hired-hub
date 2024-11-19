@@ -1,0 +1,38 @@
+.savedpost-container {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex; /* Sử dụng flexbox để chia cột */
+    gap: 30px; /* Khoảng cách giữa các cột */
+    font-family: Inter, sans-serif;
+    padding-top: 20px;
+
+    
+    .savedpost-data {
+        flex: 3; /* Chiếm 3 phần của chiều rộng (tỉ lệ 3:1) */
+        background-color: white; /* Màu nền cho dễ phân biệt */
+        border-radius: 10px; /* Bo góc */
+        .savedpost-header{
+            background: linear-gradient(90deg, #263238, #00b14f 105.53%);
+            height: 180px;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 45px 14px;
+        }
+        .savedpost-count{
+            font-size: 15px;
+            padding: 16px;
+        }
+        .savedpost-list{
+            padding: 20px 16px;
+        }
+    }
+
+    .savedpost-profile {
+        flex: 1; /* Chiếm 1 phần của chiều rộng */
+        background-color: white;
+        border-radius: 10px;
+        height: fit-content;
+    }
+}

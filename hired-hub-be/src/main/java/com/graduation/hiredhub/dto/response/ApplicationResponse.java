@@ -25,4 +25,5 @@ public class ApplicationResponse {
     Instant createdAt;
     Instant updatedAt;
     String email;
+    Instant cvUpdateAt;
 }

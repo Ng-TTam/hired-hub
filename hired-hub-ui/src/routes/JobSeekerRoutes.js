@@ -7,14 +7,16 @@ import CreateCV from '../components/ProfileCV/CreateCV/CreateCV';
 import EditCV from '../components/ProfileCV/EditCV/EditCV';
 import GetApplication from '../components/Application/GetApplication/GetApplication';
 import GetApplicationInPosting from '../components/Application/GetApplicationInPosting/GetApplicationInPosting';
+import SavedPosts from '../components/SavedPosts/SavedPosts';
 
 const JobSeekerRoutes = () => {
     return (
         <Routes>
-            <Route path="/qly-cv" exact element={<DefaultLayout children={<ProfileCV />} />} />
-            <Route path="/xem-cv/:cvId" exact element={<DefaultLayout children={<CV />} />} />
-            <Route path="/tao-cv" exact element={<DefaultLayout children={<CreateCV />} />} />
-            <Route path="/edit-cv/:cvId" exact element={<DefaultLayout children={<EditCV />} />} />
+            <Route path="/cv-management" exact element={<DefaultLayout children={<ProfileCV />} />} />
+            <Route path="/cv-review/:cvId" exact element={<DefaultLayout children={<CV />} />} />
+            <Route path="/cv-create" exact element={<DefaultLayout children={<CreateCV />} />} />
+            <Route path="/cv-edit/:cvId" exact element={<DefaultLayout children={<EditCV />} />} />
+            <Route path='saved-posts' exact element={<DefaultLayout children={<SavedPosts />} />} />
             <Route
                 path="/applications/:applicationId"
                 exact

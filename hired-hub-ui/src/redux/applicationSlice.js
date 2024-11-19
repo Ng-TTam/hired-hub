@@ -40,6 +40,26 @@ export const fetchApplicationInPosting = createAsyncThunk(
     },
 );
 
+export const fetchApplication = createAsyncThunk(
+    'applications/fetchApplication',
+    async (applicationId, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token không tồn tại');
+            }
+            const response = await axios.get(`${apiUrl}/applications/${applicationId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data);
+        }
+    },
+);
+
 export const createApplication = createAsyncThunk(
     'applications/createApplication',
     async ({ postingId, cvId, message }, { rejectWithValue }) => {
@@ -74,6 +94,27 @@ export const updateApplication = createAsyncThunk(
                 throw new Error('Token không tồn tại');
             }
             const response = await axios.put(`${apiUrl}/${cvId}`, updatedCV, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data);
+        }
+    },
+);
+
+export const setApplicationStatus = createAsyncThunk(
+    'applications/setStatus', 
+    async({applicationId, applicationStatus}, {rejectWithValue}) =>{
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token không tồn tại');
+            }
+            console.log("ddmmm", applicationId);
+            const response = await axios.put(`${apiUrl}/applications/${applicationId}`, applicationStatus,{
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -144,6 +185,18 @@ const applicationSlice = createSlice({
                 state.application = action.payload;
             })
             .addCase(fetchApplicationInPosting.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchApplication.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchApplication.fulfilled, (state, action) => {
+                state.loading = false;
+                state.application = action.payload;
+            })
+            .addCase(fetchApplication.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

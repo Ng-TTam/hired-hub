@@ -1,5 +1,7 @@
 package com.graduation.hiredhub.dto.response;
 
+import java.time.Instant;
+
 import com.graduation.hiredhub.dto.reqResp.JobSeekerDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,5 +20,6 @@ public class CVResponse {
     String education;
     String skill;
     String others;
+    Instant updatedAt;
     JobSeekerDTO jobSeeker;
 }

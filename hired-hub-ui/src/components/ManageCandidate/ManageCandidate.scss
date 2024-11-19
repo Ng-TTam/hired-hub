@@ -1,0 +1,122 @@
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    padding: 20px;
+  
+    th, td {
+        padding: 15px;
+        text-align: left;
+        font-size: 14px;
+        border-bottom: 1px solid #ddd;
+    }
+  
+    th {
+        text-align: center;  // Căn giữa nội dung theo chiều ngang
+        vertical-align: middle;
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+  
+    tbody tr:hover {
+        background-color: #f9f9f9;
+    }
+  
+    .candidate-info {
+        display: flex;
+        align-items: center;
+
+        .cv-manage-image {
+            margin-right: 10px;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .cv-manage-name {
+            font-weight: 600;
+        }
+    }
+
+    .cv-description {
+        cursor: pointer;
+        margin-bottom: 5px;
+        font-style: italic;
+        color: #555;
+        &:hover {
+            color: #28a745;
+        }
+    }
+    .posting-title-appli{
+        cursor: pointer;
+        margin-bottom: 5px;
+        font-style: italic;
+        color: #555;
+        &:hover {
+            color: #28a745;
+        }
+    }
+
+    .cv-update-time {
+    font-size: 12px;
+    color: #999;
+    }
+
+    .contact-info {
+    font-size: 14px;
+    color: #555;
+    }
+
+    td {
+    vertical-align: top;
+    }
+}
+.status-cv-appro{
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    border: 1px solid #28a745;
+    background-color: white;
+    border-color: #28a745;
+    color: #28a745;
+}
+.status-cv-reject{
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    border: 1px solid #dc3545;
+    background-color: white;
+    border-color: #dc3545;
+    color: #dc3545;
+}
+.status-button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+
+    &.active {
+        border: 1px solid #28a745;
+        background-color: white;
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+    &.deactive {
+        border: 1px solid #dc3545;
+        background-color: white;
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+    &:hover {
+    opacity: 0.8;
+    }
+}
+  

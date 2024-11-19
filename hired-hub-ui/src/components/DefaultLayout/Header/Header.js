@@ -1,5 +1,6 @@
 import { faArrowRightFromBracket, faLock, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
 import React from 'react';
@@ -22,6 +23,11 @@ const MENU_ITEMS = [
         to: '/1',
     },
     {
+        icon: <FontAwesomeIcon icon={faFloppyDisk} />,
+        title: 'Việc làm đã lưu',
+        to: '../../job-seeker/saved-posts',
+    },
+    {
         icon: <FontAwesomeIcon icon={faLock} />,
         title: 'Đổi mật khẩu',
         to: '/2',
@@ -31,6 +37,7 @@ const MENU_ITEMS = [
         title: 'Đăng xuất',
         to: '/logout',
     },
+    
 ];
 
 function Header() {

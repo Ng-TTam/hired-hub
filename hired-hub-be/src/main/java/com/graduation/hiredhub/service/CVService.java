@@ -17,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ public class CVService {
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public CVResponse createCV(CVRequest cvRequest){
         CV cv = cvMapper.toCV(cvRequest);
+        cv.setUpdatedAt(Instant.now());
         cv.setJobSeeker(getJobSeekerByAccount());
         try {
             cVRepository.save(cv);
@@ -57,6 +59,7 @@ public class CVService {
         }
         cvMapper.updateCV(cv, cvRequest);
         cv.setJobSeeker(getJobSeekerByAccount());
+        cv.setUpdatedAt(Instant.now());
         try {
             cVRepository.save(cv);
         } catch (Exception e) {
