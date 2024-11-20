@@ -24,11 +24,11 @@ const SavedPostingItem = ({savedPosting}) =>{
     }
 
     const handPosting = () =>{
-        navigate(`../posting/${savedPosting.posting.id}`);
+        navigate(`../../posting/${savedPosting.posting.id}`);
     }
 
     const handCompany = () =>{
-        navigate(`../company/${savedPosting.posting.company.id}`);
+        navigate(`../../company/${savedPosting.posting.company.id}`);
     }
 
     return(

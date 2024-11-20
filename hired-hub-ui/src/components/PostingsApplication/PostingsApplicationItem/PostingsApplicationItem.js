@@ -16,16 +16,16 @@ const PostingsApplicationItem = ({application}) =>{
         return format(parseISO(date), "dd/MM/yyyy - HH:mm", { locale: vi });
     }
 
-    const handCV = async () =>{
+    const handCV = () =>{
         navigate(`../cv-review/${application.cv.id}`);
     }
 
     const handPosting = () =>{
-        navigate(`../posting/${application.posting.id}`);
+        navigate(`../../posting/${application.posting.id}`);
     }
 
     const handCompany = () =>{
-        navigate(`../company/${application.posting.company.id}`);
+        navigate(`../../company/${application.posting.company.id}`);
     }
 
     return(
