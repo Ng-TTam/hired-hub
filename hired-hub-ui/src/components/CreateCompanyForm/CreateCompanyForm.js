@@ -1,170 +1,185 @@
-import React, { useState } from 'react';
-import './CreateCompanyForm.scss';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Form, Input, Select, Upload } from 'antd';
+import classNames from 'classnames/bind';
+import React, { useEffect, useState } from 'react';
+import 'react-quill/dist/quill.snow.css';
+import { useDispatch, useSelector } from 'react-redux';
+import images from '../../assets/images';
+import { createCompany } from '../../redux/companySlice';
+import { fetchScaleCategories } from '../../redux/scaleCategorySlice';
+import EditorContent from '../EditorContent/EditorContent';
+import Image from '../Image';
+import styles from './CreateCompanyForm.module.scss';
+
+const cx = classNames.bind(styles);
+const { Option } = Select;
 
 const CreateCompanyForm = () => {
-    const [formData, setFormData] = useState({
-        logo: '',
-        companyName: '',
-        taxCode: '',
-        businessArea: '',
-        address: '',
-        phone: '',
-        email: '',
-        website: '',
-        scale: '',
-        description: '',
-    });
+    const dispatch = useDispatch();
+    const scaleCategories = useSelector((state) => state.scaleCategories.list);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
+    const [form] = Form.useForm();
+    const [logoPreview, setLogoPreview] = useState(null);
+    const [coverPreview, setCoverPreview] = useState(null);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form data:', formData);
-        // Handle form submission
-    };
+    useEffect(() => {
+        dispatch(fetchScaleCategories());
+    }, [dispatch]);
 
-    const handleLogoChange = (e) => {
-        // Handle logo file upload
-        const file = e.target.files[0];
-        if (file) {
-            console.log('Selected logo:', file);
+    const handleSubmit = (values) => {
+        const formData = new FormData();
+
+        formData.append('name', values.name);
+        formData.append('taxCode', values.taxCode);
+        formData.append('address', values.address);
+        formData.append('phone', values.phone);
+        formData.append('email', values.email);
+        formData.append('website', values.website || null);
+        formData.append('description', values.description || null);
+
+        if (values.logo && values.logo[0]) {
+            formData.append('logo', values.logo[0].originFileObj);
         }
+        if (values.coverImage && values.coverImage[0]) {
+            formData.append('coverImage', values.coverImage[0].originFileObj);
+        }
+
+        const selectedScaleCategory = scaleCategories.find((category) => category.id === values.scaleCategory);
+        if (selectedScaleCategory) {
+            formData.append('scaleCategory.id', selectedScaleCategory.id);
+        }
+
+        dispatch(createCompany(formData));
+    };
+
+    const handleCoverPreview = ({ file }) => {
+        setCoverPreview(URL.createObjectURL(file.originFileObj));
+    };
+
+    const handleLogoPreview = ({ file }) => {
+        setLogoPreview(URL.createObjectURL(file.originFileObj));
     };
 
     return (
-        <form className="company-form" onSubmit={handleSubmit}>
-            <div className="form-group-1">
-                <div className="logo-upload">
-                    <label>Logo</label>
-                    <input type="file" id="logo" accept="image/*" onChange={handleLogoChange} />
-                    <button type="button" className="change-logo-btn">
-                        Đổi logo
-                    </button>
+        <Form
+            form={form}
+            layout="vertical"
+            className={cx('company-form')}
+            onFinish={handleSubmit}
+            initialValues={{ scaleCategory: '' }}
+        >
+            <div className={cx('upload-section')}>
+                <div className={cx('cover-upload-container')}>
+                    <Image
+                        className={cx('cover-preview-container')}
+                        src={coverPreview}
+                        alt="cover preview"
+                        fallback={images.defaultCompanyCover}
+                    />
+                    <Form.Item name="coverImage" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList || []}>
+                        <Upload
+                            className={cx('change-logo-btn')}
+                            accept="image/*"
+                            maxCount={1}
+                            showUploadList={false}
+                            onChange={handleCoverPreview}
+                        >
+                            <FontAwesomeIcon icon={faCamera} />
+                        </Upload>
+                    </Form.Item>
+                </div>
+                <div className={cx('logo-upload-container')}>
+                    <Image
+                        className={cx('logo-preview-container')}
+                        src={logoPreview}
+                        alt="Logo preview"
+                        fallback={images.logoDefault}
+                    />
+                    <Form.Item name="logo" valuePropName="fileList" getValueFromEvent={(e) => e?.fileList || []}>
+                        <Upload
+                            accept="image/*"
+                            maxCount={1}
+                            showUploadList={false}
+                            onChange={handleLogoPreview}
+                            className={cx('change-logo-btn')}
+                        >
+                            <FontAwesomeIcon icon={faCamera} />
+                        </Upload>
+                    </Form.Item>
                 </div>
             </div>
-            <div className="form-grid">
+
+            {/* Form Fields */}
+            <div className={cx('form-grid')}>
                 {/* Left Column */}
-                <div className="form-column">
-                    <div className="form-group-1">
-                        <label>Tên công ty</label>
-                        <input
-                            type="text"
-                            name="companyName"
-                            placeholder="Nhập tên công ty"
-                            value={formData.companyName}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="form-group-1">
-                        <label>Mã số thuế</label>
-                        <input
-                            type="text"
-                            name="taxCode"
-                            placeholder="Nhập mã số thuế"
-                            value={formData.taxCode}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="form-group-1">
-                        <label>Lĩnh vực hoạt động</label>
-                        <select name="businessArea" value={formData.businessArea} onChange={handleInputChange}>
-                            <option value="">Chọn lĩnh vực hoạt động</option>
-                            <option value="tech">Công nghệ</option>
-                            <option value="finance">Tài chính</option>
-                            <option value="retail">Bán lẻ</option>
-                        </select>
-                    </div>
-
-                    <div className="form-group-1">
-                        <label>Địa chỉ</label>
-                        <input
-                            type="text"
-                            name="address"
-                            placeholder="Nhập địa chỉ công ty"
-                            value={formData.address}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="form-group-1">
-                        <label>Điện thoại</label>
-                        <input
-                            type="tel"
-                            name="phone"
-                            placeholder="Nhập số điện thoại"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                        />
-                    </div>
+                <div className={cx('form-column')}>
+                    <Form.Item
+                        label="Tên công ty"
+                        name="name"
+                        rules={[{ required: true, message: 'Vui lòng nhập tên công ty' }]}
+                    >
+                        <Input placeholder="Nhập tên công ty" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Mã số thuế"
+                        name="taxCode"
+                        rules={[{ required: true, message: 'Vui lòng nhập mã số thuế' }]}
+                    >
+                        <Input placeholder="Nhập mã số thuế" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Địa chỉ"
+                        name="address"
+                        rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
+                    >
+                        <Input placeholder="Nhập địa chỉ công ty" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Điện thoại"
+                        name="phone"
+                        rules={[{ required: true, message: 'Vui lòng nhập số điện thoại' }]}
+                    >
+                        <Input placeholder="Nhập số điện thoại" />
+                    </Form.Item>
                 </div>
 
                 {/* Right Column */}
-                <div className="form-column">
-                    <div className="form-group-1">
-                        <label>Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Nhập email công ty"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="form-group-1">
-                        <label>Website</label>
-                        <input
-                            type="url"
-                            name="website"
-                            placeholder="https://"
-                            value={formData.website}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="form-group-1">
-                        <label>Quy mô</label>
-                        <select name="scale" value={formData.scale} onChange={handleInputChange}>
-                            <option value="">Chọn quy mô công ty</option>
-                            <option value="small">Dưới 50 nhân viên</option>
-                            <option value="medium">50-200 nhân viên</option>
-                            <option value="large">Trên 200 nhân viên</option>
-                        </select>
-                    </div>
-
-                    {/* <div className="form-group-1 description-group">
-            <label>Mô tả công ty</label>
-            <div className="text-editor-toolbar">
-              <button type="button">B</button>
-              <button type="button">I</button>
-              <button type="button">U</button>
-              <button type="button">≡</button>
-              <button type="button">⋮</button>
-            </div>
-            <textarea
-              name="description"
-              placeholder="Nhập vào nội dung"
-              value={formData.description}
-              onChange={handleInputChange}
-            />
-          </div> */}
+                <div className={cx('form-column')}>
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập email' },
+                            { type: 'email', message: 'Email không hợp lệ' },
+                        ]}
+                    >
+                        <Input placeholder="Nhập email công ty" />
+                    </Form.Item>
+                    <Form.Item label="Website" name="website">
+                        <Input placeholder="https://example.com" />
+                    </Form.Item>
+                    <Form.Item label="Quy mô" name="scaleCategory">
+                        <Select value={form.scaleCategory} placeholder="Chọn quy mô công ty">
+                            {scaleCategories?.map((item) => (
+                                <Option key={item.id} value={item.id}>
+                                    {item.name}
+                                </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
                 </div>
             </div>
-
-            <div className="form-footer">
-                <button type="submit" className="submit-btn">
+            <Form.Item label="Mô tả công ty" name="description">
+                <EditorContent className={cx('description-group')} />
+            </Form.Item>
+            {/* Footer */}
+            <Form.Item>
+                <Button type="primary" htmlType="submit">
                     Lưu
-                </button>
-            </div>
-        </form>
+                </Button>
+            </Form.Item>
+        </Form>
     );
 };
 

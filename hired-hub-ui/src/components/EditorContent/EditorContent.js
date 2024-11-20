@@ -2,7 +2,7 @@ import { BoldIcon, ItalicIcon, List, ListOrderedIcon, UnderlineIcon } from 'luci
 import React, { useEffect, useRef } from 'react';
 import './EditorContent.scss';
 
-const EditorContent = ({ value, onChange }) => {
+const EditorContent = ({ value, onChange, className }) => {
     const editorRef = useRef(null);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const EditorContent = ({ value, onChange }) => {
     };
 
     return (
-        <div className="editor-container">
+        <div className={('editor-container', className)}>
             <div className="toolbar">
                 <button type="button" className="toolbar-button bold" onClick={() => handleFormat('bold')}>
                     <BoldIcon size={20} />

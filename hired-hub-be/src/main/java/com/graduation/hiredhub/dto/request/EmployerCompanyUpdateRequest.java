@@ -1,4 +1,4 @@
-package com.graduation.hiredhub.dto.reqResp;
+package com.graduation.hiredhub.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,9 +9,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ScaleCategoryDTO {
-    Integer id;
-    String name;
-    Integer minEmployee;
-    Integer maxEmployee;
+public class EmployerCompanyUpdateRequest {
+    String companyId;
 }

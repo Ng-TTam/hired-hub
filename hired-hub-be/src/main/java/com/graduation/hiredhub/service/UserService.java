@@ -1,15 +1,18 @@
 package com.graduation.hiredhub.service;
 
+import com.graduation.hiredhub.dto.request.EmployerCompanyUpdateRequest;
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.EmployerResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.UserResponse;
+import com.graduation.hiredhub.entity.Company;
 import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.User;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.UserMapper;
+import com.graduation.hiredhub.repository.CompanyRepository;
 import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.UserRepository;
 import lombok.AccessLevel;
@@ -28,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
+    private final CompanyRepository companyRepository;
     UserRepository userRepository;
     UserMapper userMapper;
     MinioService minioService;
@@ -112,5 +116,20 @@ public class UserService {
 
         return userRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public void updateEmployerCompany(EmployerCompanyUpdateRequest employerCompanyUpdateRequest) {
+        String accountId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employer employer = employerRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if (employer.getCompany() != null) {
+            throw new AppException(ErrorCode.EMPLOYER_COMPANY_ALREADY_EXISTS);
+        }
+        Company company = companyRepository.findById(employerCompanyUpdateRequest.getCompanyId())
+                .orElseThrow(() -> new AppException(ErrorCode.COMPANY_NOT_EXISTED));
+        employer.setCompany(company);
+        employerRepository.save(employer);
     }
 }

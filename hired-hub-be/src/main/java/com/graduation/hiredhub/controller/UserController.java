@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.request.EmployerCompanyUpdateRequest;
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
@@ -59,5 +60,11 @@ public class UserController {
         return ApiResponse.<UserResponse>builder()
                 .data(userService.approveEmployer(userId))
                 .build();
+    }
+
+    @PostMapping("/update-company-info")
+    ApiResponse<Void> updateEmployerCompany(@RequestBody EmployerCompanyUpdateRequest employerCompanyUpdateRequest) {
+        userService.updateEmployerCompany(employerCompanyUpdateRequest);
+        return ApiResponse.<Void>builder().build();
     }
 }

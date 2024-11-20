@@ -14,7 +14,6 @@
 .form-column {
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
 
 .form-group-1 {
@@ -49,52 +48,70 @@
     border-color: #28a745;
 }
 
-.logo-upload {
-    display: flex;
-    gap: 10px;
+.upload-section {
+    height: 358px;
+    width: 100%;
+    margin: 24px auto 48px;
     align-items: center;
+    position: relative;
+    width: 100%;
+    background: linear-gradient(90deg, #212f3f, #00b14f);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.logo-upload input[type='file'] {
-    display: none;
+.cover-upload-container {
+    width: 100%;
+    position: relative;
+}
+
+.logo-upload-container {
+    position: absolute;
+    left: 42px;
+    bottom: 16px;
+}
+
+.cover-preview-container {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 225px;
+}
+
+.logo-preview-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: 1px solid var(--gray-99, #e9eaec);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #f9f9f9;
 }
 
 .change-logo-btn {
-    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 50%;
     cursor: pointer;
-    color: #333;
+    position: absolute;
+    bottom: 32px;
+    right: 8px;
 }
 
-.text-editor-toolbar {
-    display: flex;
-    gap: 5px;
-    padding: 5px;
-    border: 1px solid #e0e0e0;
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
-    background-color: #f8f9fa;
-}
-
-.text-editor-toolbar button {
-    padding: 4px 8px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #333;
-}
-
-.text-editor-toolbar button:hover {
-    background-color: #e9ecef;
-    border-radius: 3px;
-}
-
-.description-group textarea {
+.description-group {
     min-height: 100px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
     resize: vertical;
 }
 

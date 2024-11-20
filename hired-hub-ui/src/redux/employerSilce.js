@@ -1,20 +1,41 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { baseURL } from '../config/axios';
+import axiosPro, { baseURL } from '../config/axios';
+import { notification } from 'antd';
 
 const apiURL = `${baseURL}account/employer/sign-up`;
+const updateCompanyURL = `${baseURL}user/update-company-info`;
 
-export const registerEmployer = createAsyncThunk(
-    'employer/register',
-    async (employerData, { rejectWithValue }) => {
+export const registerEmployer = createAsyncThunk('employer/register', async (employerData, { rejectWithValue }) => {
+    try {
+        const response = await axios.post(apiURL, employerData);
+        return response.data;
+    } catch (error) {
+        // Trả về lỗi nếu có
+        return rejectWithValue(error.response?.data || error.message);
+    }
+});
+
+export const updateEmployerCompany = createAsyncThunk(
+    'employer/updateCompanyInfo',
+    async ({ companyId }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(apiURL, employerData);
+            const response = await axiosPro.post(updateCompanyURL, { companyId });
+            notification.success({
+                message: 'Thành công',
+                description: 'Cập nhật thông tin công ty thành công',
+            });
             return response.data;
         } catch (error) {
-            // Trả về lỗi nếu có
-            return rejectWithValue(error.response?.data || error.message);
+            notification.error({
+                message: 'Thất bại',
+                description: `Cập nhật thông tin công ty thất bại - ${
+                    error.response.data.message || error.response.data || 'lỗi bất định'
+                }`,
+            });
+            return rejectWithValue(error.response.data);
         }
-    }
+    },
 );
 
 const employerSlice = createSlice({

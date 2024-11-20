@@ -14,6 +14,7 @@ import provinceReducer from './provinceSlice';
 import statisticsReducer from './statisticsSlice';
 import subscriptionReducer from './subscriptionSlice';
 import userReducer from './userSlice';
+import scaleCategoryReducer from './scaleCategorySlice';
 
 const store = configureStore({
     reducer: {
@@ -32,6 +33,7 @@ const store = configureStore({
         employer: employerReducer,
         account: accountReducer,
         statistics: statisticsReducer,
+        scaleCategories: scaleCategoryReducer,
     },
 });
 

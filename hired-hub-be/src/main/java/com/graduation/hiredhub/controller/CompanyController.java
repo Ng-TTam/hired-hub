@@ -27,10 +27,11 @@ public class CompanyController {
 
     @GetMapping
     public ApiResponse<PageResponse<CompanyResponse>> getAllCompanies(
+            @RequestParam(value = "companyName", required = false) String companyName,
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         return ApiResponse.<PageResponse<CompanyResponse>>builder()
-                .data(companyService.getAllCompany(page, size))
+                .data(companyService.getAllCompany(companyName, page, size))
                 .build();
     }
 

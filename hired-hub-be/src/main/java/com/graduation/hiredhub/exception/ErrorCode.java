@@ -63,6 +63,7 @@ public enum ErrorCode {
     EMAIL_EXISTED("EXISTED_004", "Email is existed", HttpStatus.BAD_REQUEST),
 
     APPLICATION_ALREADY_EXISTS("ALREADY_001", "application already exists",HttpStatus.BAD_REQUEST),
+    EMPLOYER_COMPANY_ALREADY_EXISTS("ALREADY_123", "The employer already has a company", HttpStatus.BAD_REQUEST),
 
     ERROR_SEND_OTP("ERROR","Somethings wrong when send otp", HttpStatus.BAD_REQUEST),
     INTERNAL_ERROR("INTERNAL_ERROR", "Server have some error", HttpStatus.INTERNAL_SERVER_ERROR),
