@@ -16,7 +16,7 @@ const PostingsApplicationItem = ({application}) =>{
         return format(parseISO(date), "dd/MM/yyyy - HH:mm", { locale: vi });
     }
 
-    const handCV = async () =>{
+    const handCV = () =>{
         navigate(`../cv-review/${application.cv.id}`);
     }
 

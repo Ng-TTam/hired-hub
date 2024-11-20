@@ -83,7 +83,7 @@ const UpdateInfor = () => {
                 <form onSubmit={handleSubmit}>
                 <div className="ui-form-group">
                     <label>
-                    Họ <span className="ui-required">*</span>
+                    Họ <span className="ui-required" style={{color: "red"}}>*</span>
                     </label>
                     <input
                     type="text"
@@ -96,7 +96,7 @@ const UpdateInfor = () => {
                 </div>
                 <div className="ui-form-group">
                     <label>
-                    Tên <span className="ui-required">*</span>
+                    Tên <span className="ui-required" style={{color: "red"}}>*</span>
                     </label>
                     <input
                     type="text"
@@ -109,7 +109,7 @@ const UpdateInfor = () => {
                 </div>
 
                 <div className="ui-form-group">
-                    <label>Số điện thoại <span className="ui-required">*</span>
+                    <label>Số điện thoại <span className="ui-required" style={{color: "red"}}>*</span>
                     </label>
                     <input
                     type="tel"
@@ -121,7 +121,7 @@ const UpdateInfor = () => {
                 </div>
 
                 <div className="ui-form-group">
-                    <label>Ngày Sinh <span className="ui-required">*</span>
+                    <label>Ngày Sinh <span className="ui-required" style={{color: "red"}}>*</span>
                     </label>
                     <input
                     type="date"
@@ -132,7 +132,7 @@ const UpdateInfor = () => {
                 </div>
 
                 <div className="ui-form-group">
-                    <label>Giới Tính <span className="ui-required">*</span>
+                    <label>Giới Tính <span className="ui-required" style={{color: "red"}}>*</span>
                     </label>
                     <select
                     className="ui-date"
@@ -150,7 +150,7 @@ const UpdateInfor = () => {
                 </div>
 
                 <div className="ui-form-group">
-                    <label>Địa chỉ <span className="ui-required">*</span>
+                    <label>Địa chỉ <span className="ui-required" style={{color: "red"}}>*</span>
                     </label>
                     <input
                     type="text"

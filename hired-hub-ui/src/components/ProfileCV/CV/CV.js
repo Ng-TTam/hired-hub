@@ -33,7 +33,7 @@ const CV = () => {
                         src={user?.avatar || images.cvAvatarDefault}
                         alt="User avatar"
                         fallback={ images.cvAvatarDefault}
-                        style={{maxWidth: "100%", maxHeight: "100%", objectFit:"cover", marginLeft:"auto" , marginRight:"auto"}}
+                        style={{maxWidth: "85%", maxHeight: "85%%", objectFit:"cover", marginLeft:"auto" , marginRight:"auto"}}
                     />
                     
                 </div>
