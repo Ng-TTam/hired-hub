@@ -1,19 +1,20 @@
 .ui-container{
-    width: 60%;
+    width: 70%;
     margin-left: auto;
     margin-right: auto;
     display: flex; /* Sử dụng flexbox để chia cột */
     gap: 10%; /* Khoảng cách giữa các cột */
     font-family: Inter, sans-serif;
     padding-top: 20px;
+    font-family: Inter, sans-serif;
+    font-style: normal;
     .ui-form-container {
-        flex: 2;
+        flex: 3;
         padding: 20px;
         background-color: #fff;
         border: 1px solid #eaeaea;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        font-family: Arial, sans-serif;
       
         h2 {
           font-size: 20px;
