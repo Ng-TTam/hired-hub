@@ -1,6 +1,7 @@
 import { faArrowRightFromBracket, faLock, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
+import { faBriefcase } from '@fortawesome/free-solid-svg-icons/faBriefcase';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
 import React from 'react';
@@ -20,7 +21,12 @@ const MENU_ITEMS = [
     {
         icon: <FontAwesomeIcon icon={faPenToSquare} />,
         title: 'Cài đặt thông tin cá nhân',
-        to: '/1',
+        to: '../../job-seeker/update-information',
+    },
+    {
+        icon: <FontAwesomeIcon icon={faBriefcase} />,
+        title: 'Việc làm đã ứng tuyển',
+        to: '../../job-seeker/postings-application',
     },
     {
         icon: <FontAwesomeIcon icon={faFloppyDisk} />,

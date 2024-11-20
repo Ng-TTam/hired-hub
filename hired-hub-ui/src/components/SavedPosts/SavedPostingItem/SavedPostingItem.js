@@ -33,7 +33,7 @@ const SavedPostingItem = ({savedPosting}) =>{
 
     return(
         <div className="sp-item">
-            <div className="spost-avatar">
+            <div className="spost-avatar" style={{ alignSelf:"center"}}>
                 <img src={images.logoDefault} style={{width:"102px", height:"102px", borderRadius:"5%"}}/>
             </div>
             <div className="sp-data">

@@ -13,6 +13,7 @@ public interface ApplicationMapper {
 
     @Mapping(source = "cv", target = "cv")
     @Mapping(source = "posting", target = "posting")
+    @Mapping(source = "posting.employer.company", target = "posting.company")
     ApplicationResponse toApplicationResponse(Application application);
 
     @Mapping(target = "cv", ignore = true)

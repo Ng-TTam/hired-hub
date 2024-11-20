@@ -20,6 +20,23 @@ export const fetchApplications = createAsyncThunk('applications/fetchApplication
     }
 });
 
+export const fetchApplicationsJobSeeker = createAsyncThunk('applications/fetchApplicationsJobSeeker', async (_, { rejectWithValue }) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token không tồn tại');
+        }
+        const response = await axios.get(`${apiUrl}/jobSeeker/applications`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data);
+    }
+});
+
 export const fetchApplicationInPosting = createAsyncThunk(
     'applications/fetchApplicationByPosing',
     async (postingId, { rejectWithValue }) => {
@@ -168,14 +185,26 @@ const applicationSlice = createSlice({
             })
             .addCase(fetchApplications.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log('abc', action.payload);
                 state.applications = action.payload;
             })
             .addCase(fetchApplications.rejected, (state, action) => {
                 state.loading = false;
-                console.log('abc', action.payload);
                 state.error = action.payload;
             })
+
+            .addCase(fetchApplicationsJobSeeker.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchApplicationsJobSeeker.fulfilled, (state, action) => {
+                state.loading = false;
+                state.applications = action.payload;
+            })
+            .addCase(fetchApplicationsJobSeeker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
             .addCase(fetchApplicationInPosting.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -188,6 +217,7 @@ const applicationSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+
             .addCase(fetchApplication.pending, (state) => {
                 state.loading = true;
                 state.error = null;

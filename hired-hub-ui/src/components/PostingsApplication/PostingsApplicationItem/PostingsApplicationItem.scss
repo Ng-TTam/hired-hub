@@ -1,4 +1,4 @@
-.sp-item{
+.pai-item{
     background-color: white;
     margin-left: auto;
     margin-right: auto;
@@ -8,7 +8,7 @@
     padding: 12px;
     margin-bottom: 16px;
     border: 3px solid #f4f4f4;
-    .sp-avatar{
+    .pai-avatar{
         flex: 1; 
         border-radius: 10px;
         display: flex;
@@ -16,14 +16,14 @@
         align-items: center;
         height: 100%;
     }
-    .sp-data{
+    .pai-data{
         flex: 8; /* Chiếm 1 phần của chiều rộng */
         border-radius: 10px;
         display: inline-grid;
         gap: 12px;
         width: 100%;
         
-        .sp-title-block{
+        .pai-title-block{
             height: auto;
             font-size: 16px;
             align-items: baseline;
@@ -31,7 +31,7 @@
             justify-content: space-between;
             margin-bottom: 8px;
 
-            .sp-posting-title{
+            .pai-posting-title{
                 color: #212f3f;
                 display: -webkit-box;
                 flex: 1;
@@ -46,7 +46,7 @@
                     color: #00b14f;
                 }
             }
-            .sp-money{
+            .pai-money{
                 align-items: center;
                 color: #00b14f;
                 display: flex;
@@ -60,7 +60,7 @@
             }
         }
 
-        .sp-comany-name{
+        .pai-comany-name{
             width: fit-content;
             height: 20px;
             font-size: 14px;
@@ -71,18 +71,25 @@
             }
         }
 
-        .sp-time-save{
+        .pai-time-save{
             height: 20px;
             font-size: 15px;
-            margin-bottom: 12px;
             color: #424e5c;
+            .pai-cv-des{
+                color: #00b14f;
+                cursor: pointer;
+                &:hover {
+                    color: #00b15088;
+                }
+            }
         }
+        
 
-        .sp-infor{
+        .pai-infor{
             height: 28px;
             display: flex;
             justify-content: space-between;
-            .sp-infor-time{
+            .pai-infor-time{
                 height: 100%;
                 background: #e9eaec;
                 border-radius: 3px;
@@ -94,7 +101,7 @@
                 margin-top: 0;
                 padding: 4px 8px;
             }
-            .sp-action{
+            .pai-action{
                 height: 100%;
                 padding: 0px 8px;
                 margin: 0 5px;
@@ -105,15 +112,11 @@
                 background-color: white;
                 border-color: #28a745;
                 color: #28a745;
-
-                align-items: center;
-                background: #e9eaec;
-                color: #424e5c;
-                display: inline-flex;
-                width: auto;
                 &:hover {
-                    opacity: 0.7;
-                    }
+                    background-color: #28a746a2;
+                    border-color: #28a74691;
+                    color: white;
+                }
             }
             
         }

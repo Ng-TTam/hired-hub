@@ -21,6 +21,24 @@ export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation'
     }
 });
 
+export const updateInformation = createAsyncThunk('user/updateInformation', async(infor, { rejectWithValue }) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token không tồn tại');
+    }
+    try {
+        const response = await axios.post(`${apiUrl}/update-profile`, infor, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response);
+    }
+});
+
 const userSlice = createSlice({
     name: 'userSlice',
     initialState: {
@@ -42,6 +60,20 @@ const userSlice = createSlice({
                 state.user = action.payload.data;
             })
             .addCase(fetchUserInformation.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            .addCase(updateInformation.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateInformation.fulfilled, (state, action) => {
+                state.loading = false;
+                localStorage.setItem('user', JSON.stringify(action.payload.data));
+                state.user = action.payload.data;
+            })
+            .addCase(updateInformation.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

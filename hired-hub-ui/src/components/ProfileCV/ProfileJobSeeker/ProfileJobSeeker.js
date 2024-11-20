@@ -13,7 +13,7 @@ const ProfileJobSeeker = () =>  {
         style={{padding: "20px"}}>
             <div className="profile-avatar">
                 <Image className='img-cv-1'
-                    src={user.avatar || images.avatarDefault}
+                    src={user?.avatar? user?.avatar : images.avatarDefault}
                     alt="User avatar"
                     fallback={ images.avatarDefault}
                     style={{maxWidth: "60%", maxHeight: "60%", aspectRatio: "1 / 1", objectFit:"cover",borderRadius: "50%" , marginLeft:"auto" , marginRight:"auto"}}

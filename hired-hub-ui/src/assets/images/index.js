@@ -9,6 +9,7 @@ const images = {
     logoApp: require('./logo_app.png'),
     hiredHubLogo: require('./hired-hub-logo.png'),
     recruitmentEmpty: require('./recruitment-empty.png'),
+    emptyApllication : require('./emptyApplication.png'),
 };
 
 export default images;

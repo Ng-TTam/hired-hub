@@ -12,12 +12,10 @@ const MenuProfileCV = () => {
     // Danh sách các mục menu
     const MENU_ITEMS = [
         {
-            icon: <i className="fa-regular fa-file-user"></i>,
             title: 'Tạo CV',
             to: isLogin ? '../../job-seeker/cv-create': '../login',
         },
         {
-            icon: <i className="fa-regular fa-file-user"></i>,
             title: 'Quản lý CV',
             to: isLogin ?  '../../job-seeker/cv-management':'../login',
         },
@@ -26,7 +24,7 @@ const MenuProfileCV = () => {
     return (
         <HeadlessTippy
             interactive
-            placement="bottom-end"
+            placement="bottom"
             render={(attrs) => (
                 <div >
                     <PopperWrapper>
