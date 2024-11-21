@@ -7,6 +7,7 @@ import Pagination from '../Pagination';
 import PostingCard from '../PostingCard';
 import Filter from './Filter';
 import styles from './PostingFilter.module.scss';
+import WebsiteFooter from '../Footer/Footer';
 
 const cx = classNames.bind(styles);
 
@@ -24,15 +25,22 @@ function PostingFilter() {
     };
 
     return (
-        <div className={cx('wrapper')}>
-            <Filter />
-            <div className={cx('content')}>
-                {postings.map((posting) => (
-                    <PostingCard key={posting.id} posting={posting} />
-                ))}
+        <>
+            <div className={cx('wrapper')}>
+                <Filter />
+                <div className={cx('content')}>
+                    {postings.map((posting) => (
+                        <PostingCard key={posting.id} posting={posting} />
+                    ))}
+                </div>
+                <Pagination
+                    currentPage={pagination.page + 1}
+                    totalPages={totalPages}
+                    onPageChange={handleOnPageChange}
+                />
             </div>
-            <Pagination currentPage={pagination.page + 1} totalPages={totalPages} onPageChange={handleOnPageChange} />
-        </div>
+            <WebsiteFooter />
+        </>
     );
 }
 

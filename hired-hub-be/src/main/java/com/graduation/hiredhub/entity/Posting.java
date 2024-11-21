@@ -53,7 +53,7 @@ public class Posting {
     List<Application> applications;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "job_description_id", nullable = false)
+    @JoinColumn(name = "job_description_id")
     JobDescription jobDescription;
 
     @ManyToOne

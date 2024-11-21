@@ -5,15 +5,18 @@ import Select from 'react-select';
 import { fetchJobCategories } from '../../../redux/jobCategorySlice';
 import { setPosting } from '../../../redux/postingSlice';
 import './PostingInfoBase.scss';
+import { Typography } from 'antd';
 
-const PostingInfoBase = () => {
+const PostingInfoBase = ({ validate }) => {
     const dispatch = useDispatch();
     const jobCategories = useSelector((state) => state.jobCategories.list);
     const { posting } = useSelector((state) => state.postings);
 
     const [title, setTitle] = useState(posting?.title || '');
-    const [mainJob, setMainJob] = useState(posting?.mainJob || {});
+    const [mainJob, setMainJob] = useState(posting?.mainJob || null);
     const [subJobs, setSubJobs] = useState(posting?.subJobs || []);
+    const [errors, setErrors] = useState('');
+    const { Text } = Typography;
 
     useEffect(() => {
         dispatch(fetchJobCategories());
@@ -28,6 +31,22 @@ const PostingInfoBase = () => {
             }),
         );
     }, [title, mainJob, subJobs]);
+
+    useEffect(() => {
+        if (validate) {
+            validate(() => {
+                const newErrors = {};
+                if (!title.trim()) {
+                    newErrors.title = 'Vui lòng nhập tiêu đề tin tuyển dụng!';
+                }
+                if (!mainJob) {
+                    newErrors.mainJob = 'Vui lòng chọn ngành nghề chính!';
+                }
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            });
+        }
+    }, [validate, title, mainJob]);
 
     return (
         <>
@@ -49,8 +68,9 @@ const PostingInfoBase = () => {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                         />
-                        <div className="underline" />
+                        <div className="underline" /> 
                     </div>
+                    {errors.title && <Text type="danger">{errors.title}</Text>}
                 </div>
             </div>
 
@@ -73,6 +93,7 @@ const PostingInfoBase = () => {
                                 getOptionValue={(option) => option.id}
                                 onChange={setMainJob}
                             />
+                            {errors.mainJob && <Text type="danger">{errors.mainJob}</Text>}
                         </div>
                         <div className="select-container half-container">
                             <span>Ngành nghề phụ</span>

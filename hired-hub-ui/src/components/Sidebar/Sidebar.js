@@ -1,110 +1,84 @@
+import React from "react";
+import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   User,
-  Package,
   ChartBarIcon,
   LogOut,
   LibraryBig,
 } from "lucide-react";
 import "./Sidebar.scss";
+import images from "../../assets/images";
 
-const Sidebar = ({ onSelectItem, selectedItem }) => {
+const Sidebar = () => {
+  // const user = JSON.parse(localStorage.getItem('user'));
+
   return (
     <div className="sidebar">
-      <div className="logo-app">Hired hub</div>
+      <div className="logo-app">
+        <img src={images.hiredHubLogoNoPadding} alt="Logo" />
+      </div>
 
       <div className="user-section">
         <div className="user-info">
           <div className="user-icon" />
-          <span className="user-name">Xin chào User</span>
-          {/* <span className="user-type">Free</span> */}
+          <span className="user-name">Hi 
+            {/* {user.lastName} */}
+            </span>
         </div>
       </div>
 
       <nav>
         <ul className="nav-list">
           <li className="nav-item">
-            <a
-              href="#"
-              // className="nav-link active"
-              className={`nav-link ${
-                selectedItem === "dashboard" ? "active" : ""
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectItem("dashboard");
-              }}
+            <NavLink
+              to="/business/dashboard"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
             >
               <LayoutDashboard size={20} />
               <span>Bảng tin</span>
-            </a>
+            </NavLink>
           </li>
           <li className="nav-item">
-            <a
-              href="#"
-              className={`nav-link ${
-                selectedItem === "PostingJob" ? "active" : ""
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectItem("PostingJob");
-              }}
+            <NavLink
+              to="/business/posting-job"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
             >
               <LibraryBig size={20} />
               <span>Tin tuyển dụng</span>
-            </a>
+            </NavLink>
           </li>
           <li className="nav-item">
-            <a
-              href="#"
-              className={`nav-link ${
-                selectedItem === "ManageCandidate" ? "active" : ""
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectItem("ManageCandidate");
-              }}
+            <NavLink
+              to="/business/manage-candidate"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
             >
               <User size={20} />
               <span>Quản lý ứng viên</span>
-            </a>
+            </NavLink>
           </li>
           <li className="nav-item">
-            <a
-              href="#"
-              className={`nav-link ${
-                selectedItem === "PostingStat" ? "active" : ""
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectItem("PostingStat");
-              }}
+            <NavLink
+              to="/business/posting-stat"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
             >
               <ChartBarIcon size={20} />
               <span>Báo cáo tuyển dụng</span>
-            </a>
+            </NavLink>
           </li>
           <li className="nav-item">
-            <a
-              href="#"
-              className={`nav-link ${
-                selectedItem === "Notification" ? "active" : ""
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectItem("Notification");
-              }}
-            >
-              <Package size={20} />
-              <span>Thông báo</span>
-              <span className="badge">+8</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="/logout" className="nav-link">
+            <NavLink to="/business/logout" className="nav-link">
               <LogOut size={20} />
               <span>Đăng xuất</span>
-            </a>
+            </NavLink>
           </li>
         </ul>
       </nav>

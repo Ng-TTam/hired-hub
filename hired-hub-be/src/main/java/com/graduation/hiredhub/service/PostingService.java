@@ -9,44 +9,49 @@ import com.graduation.hiredhub.dto.request.PostingStatusRequest;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
-import com.graduation.hiredhub.entity.Account;
-import com.graduation.hiredhub.entity.Employer;
-import com.graduation.hiredhub.entity.Posting;
-import com.graduation.hiredhub.entity.User;
+import com.graduation.hiredhub.entity.*;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
+import com.graduation.hiredhub.mapper.JobDescriptionMapper;
 import com.graduation.hiredhub.mapper.PostingMapper;
-import com.graduation.hiredhub.repository.AccountRepository;
-import com.graduation.hiredhub.repository.EmployerRepository;
-import com.graduation.hiredhub.repository.PostingRepository;
+import com.graduation.hiredhub.mapper.WorkAddressMapper;
+import com.graduation.hiredhub.repository.*;
 import com.graduation.hiredhub.repository.specification.PostingSpecifications;
 import com.graduation.hiredhub.service.util.PageUtils;
-import com.graduation.hiredhub.service.util.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostingService {
     PostingRepository postingRepository;
     EmployerRepository employerRepository;
+    JobDescriptionRepository descriptionRepository;
+    WorkAddressRepository workAddressRepository;
     PostingMapper postingMapper;
-    AccountService accountService;
+    JobDescriptionMapper jobDescriptionMapper;
+    WorkAddressMapper workAddressMapper;
     ObjectMapper objectMapper;
+    AccountService accountService;
 
     StringRedisTemplate stringRedisTemplate;
 
@@ -60,17 +65,41 @@ public class PostingService {
      * @param postingRequest posting to create
      * @return posting
      */
+    @Transactional
     @PreAuthorize("hasRole('EMPLOYER')")
-    public PostingDetailResponse createPosting(PostingRequest postingRequest){
+    public PostingDetailResponse createPosting(PostingRequest postingRequest) {
+        Employer employer = getEmployerByAccount();
+        if(employer.getAccount().getStatus() == Status.PENDING)
+            throw new AppException(ErrorCode.EMPLOYER_PENDING);
+
         Posting posting = postingMapper.toPosting(postingRequest);
-        posting.setEmployer(getEmployerByAccount());
+        posting.setEmployer(employer);
         posting.setStatus(Status.PENDING);
-        try{
-            postingRepository.save(posting);
-        }catch (Exception e){
-            throw  new AppException(ErrorCode.INTERNAL_ERROR);
+
+        try {
+            JobDescription jobDescription = jobDescriptionMapper.toJobDescription(postingRequest.getJobDescription());
+            jobDescription = descriptionRepository.save(jobDescription);
+
+            //set jd id in list wa
+            JobDescription finalJobDescription = jobDescription;
+            List<WorkAddress> workAddresses = postingRequest
+                    .getJobDescription()
+                    .getWorkAddress()
+                    .stream()
+                    .map(workAddressMapper::toWorkAddress)
+                    .peek(wa -> wa.setJobDescription(finalJobDescription))
+                    .toList();
+            workAddresses = workAddressRepository.saveAll(workAddresses);
+
+            jobDescription.setWorkAddress(workAddresses);
+            posting.setJobDescription(jobDescription);
+
+            posting = postingRepository.save(posting);
+            return postingMapper.toPostingDetailResponse(posting);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
-        return postingMapper.toPostingDetailResponse(posting);
     }
 
     /**
@@ -132,7 +161,12 @@ public class PostingService {
                 throw new AppException(ErrorCode.ERROR_PARSING_JSON);
             }
         } else {
-            Pageable pageable = PageRequest.of(page - 1, size);
+            Pageable pageable = PageRequest.of(page - 1, size,
+                    Sort.by(
+                            Sort.Order.asc("title"),
+                            Sort.Order.desc("createdAt")
+                    )
+            );
             Page<Posting> pageData = postingRepository.findAll(pageable);
 
             pageResponse = PageResponse.<PostingResponse>builder()
@@ -262,18 +296,20 @@ public class PostingService {
         return PageUtils.toPageResponse(page);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or @postingSecurity.isPostingOwner(#postingId,  authentication.name)")
+    @PreAuthorize("hasRole('ADMIN') or @postingSecurity.isPostingOwner(#postingStatusRequest.postingId,  authentication.name)")
     public void updatePostingStatus(PostingStatusRequest postingStatusRequest) {
         Posting posting = postingRepository.findById(postingStatusRequest.getPostingId())
                 .orElseThrow(() -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
-        Account account = accountRepository.findById(SecurityUtils.getCurrentUserLogin().get())
+        Account account = accountRepository.findById(SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getName())
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
-        if (account.getRole().equals(Role.JOB_SEEKER)
-                && !postingStatusRequest.getStatus().equals(Status.PENDING)
-                && !posting.getStatus().equals(Status.PENDING)) {
-            posting.setStatus(postingStatusRequest.getStatus());
-            postingRepository.save(posting);
-            return;
+
+        if (account.getRole().equals(Role.EMPLOYER)
+                && postingStatusRequest.getStatus().equals(Status.PENDING)
+                && posting.getStatus().equals(Status.PENDING)) {
+            throw new AppException(ErrorCode.POSTING_PENDING);
         }
         posting.setStatus(postingStatusRequest.getStatus());
         postingRepository.save(posting);

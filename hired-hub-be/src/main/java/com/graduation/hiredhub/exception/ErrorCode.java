@@ -42,25 +42,27 @@ public enum ErrorCode {
     BLANK_POSITION_EMPLOYER("BLANK_017", "Position of employer is required", HttpStatus.BAD_REQUEST),
     BLANK_TAX_CODE("BLANK_018", "Tax code is required", HttpStatus.BAD_REQUEST),
     BLANK_WEBSITE("BLANK_019", "Link website of company is required", HttpStatus.BAD_REQUEST),
+    BLANK_EXPIRE("BLANK_019", "Expire date of post is required", HttpStatus.BAD_REQUEST),
 
     WRONG_CURRENT_PASS("WRONG_PASS", "Current password is wrong", HttpStatus.BAD_REQUEST),
     DOB_FUTURE("DOB_FUTURE", "Date of birth must be in the past", HttpStatus.BAD_REQUEST),
+    EXPIRED_PAST("EXPIRED_PAST", "Expire date must be in the future", HttpStatus.BAD_REQUEST),
 
     USER_NOT_PENDING("ERROR_USER_001", "User is not in PENDING status", HttpStatus.BAD_REQUEST),
     POSTING_NOT_PENDING("ERROR_POST_001","Post is not in PENDING status",HttpStatus.BAD_REQUEST),
     POSTING_NOT_SAVED("ERROR_POST_002","Post is not saved",HttpStatus.BAD_REQUEST),
+    POSTING_PENDING("ERROR_POST_003","Post is in PENDING",HttpStatus.BAD_REQUEST),
+    EMPLOYER_PENDING("ERROR_USER_002","Employer is in PENDING",HttpStatus.BAD_REQUEST),
 
     USER_NOT_EXISTED("EXISTED_001", "User not existed", HttpStatus.NOT_FOUND),
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),
     KEY_NOT_EXISTED("EXISTED_003", "Key token is not existed", HttpStatus.NOT_FOUND),
-    CV_NOT_EXISTED("EXISTED_101","CV is not exist", HttpStatus.NOT_FOUND),
-    COMPANY_NOT_EXISTED("EXISTED_113", "Company not existed", HttpStatus.NOT_FOUND),
-
-    CV_NOT_FOUND("NOT_FOUND", "CV not found", HttpStatus.NOT_FOUND),
     POSTING_NOT_EXISTED("EXISTED_004", "Posting is not existed", HttpStatus.NOT_FOUND),
     APPLICATION_NOT_EXISTED("EXISTED_005", "Application is not existed", HttpStatus.NOT_FOUND),
-
-    EMAIL_EXISTED("EXISTED_004", "Email is existed", HttpStatus.BAD_REQUEST),
+    EMAIL_EXISTED("EXISTED_006", "Email is existed", HttpStatus.BAD_REQUEST),
+    CV_NOT_EXISTED("EXISTED_101","CV is not exist", HttpStatus.NOT_FOUND),
+    COMPANY_NOT_EXISTED("EXISTED_113", "Company not existed", HttpStatus.NOT_FOUND),
+    CV_NOT_FOUND("NOT_FOUND", "CV not found", HttpStatus.NOT_FOUND),
 
     APPLICATION_ALREADY_EXISTS("ALREADY_001", "application already exists",HttpStatus.BAD_REQUEST),
 

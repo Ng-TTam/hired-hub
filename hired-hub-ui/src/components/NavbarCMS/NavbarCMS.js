@@ -1,55 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
 import {
-  Bell,
-  Settings,
-  Search,
-  User2,
-  LucideInfo,
-  LogOutIcon,
-  Settings2,
   KeySquare,
-  Circle,
+  LogOutIcon,
+  LucideInfo,
+  Search,
+  Settings,
+  User2,
 } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import "./NavbarCMS.scss";
+import NotificationBadge from '../NotificationBadge';
+
 
 const NavbarCMS = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isNotification, setIsNotification] = useState(false);
   const popupRef = useRef(null);
   const notificationRef = useRef(null);
-
-  const notifications = [
-    "Thông báo 1",
-    "Thông báo 2",
-    "Thông báo 3",
-    "Thông báo 4",
-    "Thông báo 5",
-    "Thông báo 6",
-    "Thông báo 7",
-    "Thông báo 8",
-    "Thông báo 9",
-    "Thông báo 10",
-    "Thông báo 1",
-    "Thông báo 2",
-    "Thông báo 3",
-    "Thông báo 4",
-    "Thông báo 5",
-    "Thông báo 6",
-    "Thông báo 7",
-    "Thông báo 8",
-    "Thông báo 9",
-    "Thông báo 10",
-    "Thông báo 1",
-    "Thông báo 2",
-    "Thông báo 3",
-    "Thông báo 4",
-    "Thông báo 5",
-    "Thông báo 6",
-    "Thông báo 7",
-    "Thông báo 8",
-    "Thông báo 9",
-    "Thông báo 10",
-  ];
 
   const togglePopup = () => {
     setIsOpen(!isOpen);
@@ -87,15 +53,7 @@ const NavbarCMS = () => {
         </div>
 
         <div className="right-section">
-          <button
-            className={`icon-button notification-button ${
-              isNotification ? "icon-button-active" : ""
-            }`}
-            onClick={toggleNotification}
-          >
-            <Bell size={20} />
-            <span className="notification-dot"></span>
-          </button>
+          <NotificationBadge />
           <button
             className={`icon-button ${isOpen ? "icon-button-active" : ""}`}
             onClick={togglePopup}
@@ -111,7 +69,7 @@ const NavbarCMS = () => {
         <div className="user-menu-popup" ref={popupRef}>
           <ul>
             <li>
-              <User2 size={20} /> &nbsp;&nbsp;&nbsp; Người dùng hệ thống
+              <User2 size={20} /> &nbsp;&nbsp;&nbsp; Cập nhật thông tin
             </li>
             <li>
               <LucideInfo size={20} /> &nbsp;&nbsp;&nbsp; Thông tin của tôi
@@ -120,35 +78,12 @@ const NavbarCMS = () => {
               <KeySquare size={20} /> &nbsp;&nbsp;&nbsp; Đổi mật khẩu
             </li>
             <li>
-              <Settings2 size={20} /> &nbsp;&nbsp;&nbsp; Cài đặt hệ thống
-            </li>
-            <li>
               <LogOutIcon size={20} /> &nbsp;&nbsp;&nbsp; Đăng xuất
             </li>
           </ul>
         </div>
       )}
 
-      {isNotification && (
-        <div
-          className="user-menu-popup notification-popup"
-          ref={notificationRef}
-        >
-          <span style={{ fontSize: "20 px" }}>Thông báo</span>
-          <span>
-            <a className="notification-seen" href="#">
-              Đã đọc
-            </a>
-          </span>
-          <ul>
-            {notifications.map((notification, index) => (
-              <li key={index}>
-                <Circle size={20} /> &nbsp;&nbsp;&nbsp; {notification}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </>
   );
 };

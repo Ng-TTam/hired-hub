@@ -40,7 +40,7 @@ function NotificationBadge({ className }) {
                 delay={[500, 300]}
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
-                        <PopperWrapper>
+                        <PopperWrapper className={cx('on-top')}>
                             <div className={cx('content')}>
                                 {notifications && notifications.length > 0 ? (
                                     <>

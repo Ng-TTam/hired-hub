@@ -1,22 +1,20 @@
 package com.graduation.hiredhub.dto.request;
 
+import com.graduation.hiredhub.dto.reqResp.JobDescriptionDTO;
 import com.graduation.hiredhub.entity.JobCategory;
-import com.graduation.hiredhub.entity.JobDescription;
 import com.graduation.hiredhub.entity.PositionCategory;
 import com.graduation.hiredhub.entity.enumeration.CurrencyUnit;
 import com.graduation.hiredhub.entity.enumeration.ExperienceRequire;
 import com.graduation.hiredhub.entity.enumeration.Gender;
 import com.graduation.hiredhub.entity.enumeration.JobType;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -40,8 +38,12 @@ public class PostingRequest {
     @NotNull(message = "BLANK_JOB_TYPE")
     JobType jobType;
 
+    @NotNull(message = "BLANK_EXPIRE")
+    @Future(message = "EXPIRED_PAST")
+    Instant expiredAt;
+
     @NotNull(message = "BLANK_JOB_DESCRIPTION")
-    JobDescription jobDescription;
+    JobDescriptionDTO jobDescription;
 
     @NotNull(message = "BLANK_MAIN_JOB")
     JobCategory mainJob;

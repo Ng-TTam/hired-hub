@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PostingInfoBase from './PostingInfoBase/PostingInfoBase';
 import PostingInfoDetail from './PostingInfoDetail/PostingInfoDetail';
 import PostingInfoGeneral from './PostingInfoGeneral/PostingInfoGeneral';
@@ -7,42 +7,54 @@ import PostingInfoReceiveCV from './PostingInfoReceiveCV/PostingInfoReceiveCV';
 import styles from './ProgressStep.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPosting } from '../../redux/postingSlice';
+import { useNavigate } from 'react-router-dom';
+import { LoaderCircleIcon } from 'lucide-react';
 
 const cx = classNames.bind(styles);
 
 const ProgressSteps = () => {
     const dispatch = useDispatch();
-    const posting = useSelector((state) => state.postings.posting);
+    const navigate = useNavigate();
+    const { posting, success, loading, error } = useSelector((state) => state.postings);
 
     const [currentStep, setCurrentStep] = useState(1);
+    const validateFunctions = useRef([]);
 
     const handleSubmit = () => {
-        const revertWorkAddress = () => {
-            const areas = posting.areas;
-            const addressList = areas.flatMap((area) =>
-                area.addresses.map((address) => ({
-                    province: area.province,
-                    district: address.district,
-                    location: address.location,
-                })),
-            );
-            return addressList;
-        };
-        const { areas, salaryType, ...postingRequest } = posting;
-        postingRequest.jobDescription = {
-            ...postingRequest.jobDescription,
-            workAddress: revertWorkAddress(),
-        };
-        console.log(postingRequest);
-        dispatch(createPosting(postingRequest));
+        const isValid = validateFunctions.current[currentStep]?.();
+        if (isValid) {
+            const revertWorkAddress = () => {
+                const areas = posting.areas;
+                const addressList = areas.flatMap((area) =>
+                    area.addresses.map((address) => ({
+                        province: area.province,
+                        district: address.district,
+                        location: address.location,
+                    })),
+                );
+                return addressList;
+            };
+            const { areas, salaryType, ...postingRequest } = posting;
+            postingRequest.jobDescription = {
+                ...postingRequest.jobDescription,
+                workAddress: revertWorkAddress(),
+            };
+            dispatch(createPosting(postingRequest));
+        }
     };
+
+    useEffect(() => {
+        if ( success ) {
+            navigate('/business/posting-job');
+        }
+    }, [success, navigate]);
 
     const steps = [
         {
             title: 'Thông tin cơ bản',
             content: (
                 <div className={cx('step-content')}>
-                    <PostingInfoBase />
+                    <PostingInfoBase validate={(validateFn) => (validateFunctions.current[1] = validateFn)} />
                 </div>
             ),
         },
@@ -50,7 +62,7 @@ const ProgressSteps = () => {
             title: 'Thông tin chung',
             content: (
                 <div className={cx('step-content')}>
-                    <PostingInfoGeneral />
+                    <PostingInfoGeneral validate={(validateFn) => (validateFunctions.current[2] = validateFn)} />
                 </div>
             ),
         },
@@ -58,7 +70,7 @@ const ProgressSteps = () => {
             title: 'Chi tiết',
             content: (
                 <div className={cx('step-content')}>
-                    <PostingInfoDetail />
+                    <PostingInfoDetail validate={(validateFn) => (validateFunctions.current[3] = validateFn)} />
                 </div>
             ),
         },
@@ -66,21 +78,22 @@ const ProgressSteps = () => {
             title: 'Thông tin nhận CV',
             content: (
                 <div className={cx('step-content')}>
-                    <PostingInfoReceiveCV />
+                    <PostingInfoReceiveCV validate={(validateFn) => (validateFunctions.current[4] = validateFn)} />
                 </div>
             ),
         },
     ];
 
     const handleNext = () => {
-        setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+        const isValid = validateFunctions.current[currentStep]?.();
+        if (isValid) {
+            setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+        }
     };
 
     const handlePrev = () => {
         setCurrentStep((prev) => Math.max(prev - 1, 1));
     };
-
-    const handleSendPosting = () => {};
 
     return (
         <div className={cx('wizard-container')}>
@@ -112,7 +125,7 @@ const ProgressSteps = () => {
 
                         {currentStep === steps.length ? (
                             <button className={cx('nav-button')} onClick={handleSubmit}>
-                                Gửi
+                                {loading ? <LoaderCircleIcon /> : 'Gửi' }
                             </button>
                         ) : (
                             <button className={cx('nav-button')} onClick={handleNext}>

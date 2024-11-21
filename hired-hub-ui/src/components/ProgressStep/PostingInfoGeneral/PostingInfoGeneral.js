@@ -9,12 +9,13 @@ import { fetchProvinces } from '../../../redux/provinceSlice';
 import '../PostingInfoBase/PostingInfoBase.scss';
 import FormAddress from './FormAddress';
 import './PostingInfoGeneral.scss';
+import { Typography } from 'antd';
 
 const jobTypes = Object.values(constants.JobTypes);
 const genders = [{ id: null, name: 'Không yêu cầu' }, ...Object.values(constants.GenderRequire)];
 const expOptions = Object.values(constants.ExperienceRequire);
 
-const PostingInfoGeneral = () => {
+const PostingInfoGeneral = ({ validate }) => {
     const dispatch = useDispatch();
     const positions = useSelector((state) => state.positionCategories.list);
     const posting = useSelector((state) => state.postings.posting);
@@ -28,20 +29,8 @@ const PostingInfoGeneral = () => {
     const [salaryType, setSalaryType] = useState(posting?.salaryType || '');
     const [minimumSalary, setMinimumSalary] = useState(posting?.minimumSalary || '');
     const [maximumSalary, setMaximumSalary] = useState(posting?.maximumSalary || '');
-
-    // useEffect(() => {
-    //     if (posting) {
-    //         setNumberOfPosition(posting.numberOfPosition || '');
-    //         setJobType(posting.jobType || '');
-    //         setGenderRequire(posting.genderRequire || '');
-    //         setPosition(posting.position || {});
-    //         setExperienceRequire(posting.experienceRequire || '');
-    //         setCurrencyUnit(posting.currencyUnit || {});
-    //         setSalaryType(posting.salaryType || '');
-    //         setMinimumSalary(posting.minimumSalary || '');
-    //         setMaximumSalary(posting.maximumSalary || '');
-    //     }
-    // }, [posting]);
+    const [errors, setErrors] = useState('');
+    const { Text } = Typography;
 
     useEffect(() => {
         dispatch(fetchPostions());
@@ -75,10 +64,45 @@ const PostingInfoGeneral = () => {
         dispatch,
     ]);
 
+    useEffect(() => {
+        if (validate) {
+            validate(() => {
+                const newErrors = {};
+                if (!numberOfPosition) {
+                    newErrors.numberOfPosition = 'Vui lòng nhập số lượng tuyển!';
+                }
+                if (!jobType) {
+                    newErrors.jobType = 'Vui lòng chọn loại công việc!';
+                }
+                if (!position) {
+                    newErrors.position = 'Vui lòng nhập vị trí tuyển dụng!';
+                }
+                if (!experienceRequire) {
+                    newErrors.experienceRequire = 'Vui lòng chọn kinh nghiệm yêu cầu!';
+                }
+                if (!currencyUnit) {
+                    newErrors.currencyUnit = 'Vui lòng chọn đơn vị tiền tệ!';
+                }
+                if ((salaryType === 'from' || salaryType === 'between') && !minimumSalary) {
+                    newErrors.minimumSalary = 'Vui lòng nhập lương tối thiểu!';
+                }
+                if ((salaryType === 'to' || salaryType === 'between') && !maximumSalary) {
+                    newErrors.maximumSalary = 'Vui lòng nhập lương tối đa!';
+                }
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            });
+        }
+    }, [validate, numberOfPosition, jobType, position, experienceRequire, currencyUnit, salaryType, minimumSalary, maximumSalary]);
+
     const handleOnChangePosition = (e) => {
-        const newPosition = positions.find((item) => item.id == e.target.value);
-        if (newPosition) {
-            dispatch(setPosting({ position: newPosition }));
+        const selectedId = e.target.value; // Lấy id từ option được chọn
+        if (selectedId) {
+            const newPosition = positions.find((item) => item.id == e.target.value);
+            if (newPosition) {
+                dispatch(setPosting({ position: newPosition }));
+                setPosition(newPosition);
+            }
         }
     };
 
@@ -123,16 +147,21 @@ const PostingInfoGeneral = () => {
                             />
                             <div className="underline" />
                         </div>
+                        {errors.numberOfPosition && <Text type="danger">{errors.numberOfPosition}</Text>}
                     </div>
                     <div className="select-container">
                         <span>Loại công việc</span>
                         <select id="select-job-type" value={jobType} onChange={(e) => setJobType(e.target.value)}>
+                            <option value="" disabled>
+                                -- Chọn loại công việc --
+                            </option>
                             {jobTypes.map((item) => (
                                 <option key={item.id} value={item.id}>
                                     {item.name}
                                 </option>
                             ))}
                         </select>
+                        {errors.jobType && <Text type="danger">{errors.jobType}</Text>}
                     </div>
                 </div>
 
@@ -144,6 +173,9 @@ const PostingInfoGeneral = () => {
                             value={genderRequire}
                             onChange={(e) => setGenderRequire(e.target.value)}
                         >
+                            <option value="" disabled>
+                                -- Chọn giới tính --
+                            </option>
                             {genders.map((item) => (
                                 <option key={item.id} value={item.id}>
                                     {item.name}
@@ -153,13 +185,17 @@ const PostingInfoGeneral = () => {
                     </div>
                     <div className="select-container">
                         <span>Cấp bậc</span>
-                        <select id="select-position" value={position.id} onChange={handleOnChangePosition}>
+                        <select id="select-position" value={position?.id || ""} onChange={handleOnChangePosition}>
+                            <option value="" disabled>
+                                -- Chọn cấp bậc --
+                            </option>
                             {positions.map((item) => (
                                 <option key={item.id} value={item.id}>
                                     {item.name}
                                 </option>
                             ))}
                         </select>
+                        {errors.position && <Text type="danger">{errors.position}</Text>}
                     </div>
                     <div className="select-container">
                         <span>Kinh nghiệm</span>
@@ -168,12 +204,16 @@ const PostingInfoGeneral = () => {
                             value={experienceRequire}
                             onChange={(e) => setExperienceRequire(e.target.value)}
                         >
+                            <option value="" disabled>
+                                -- Chọn kinh nghiệm --
+                            </option>
                             {expOptions.map((item) => (
                                 <option key={item.id} value={item.id}>
                                     {item.name}
                                 </option>
                             ))}
                         </select>
+                        {errors.experienceRequire && <Text type="danger">{errors.experienceRequire}</Text>}
                     </div>
                 </div>
 
@@ -186,9 +226,13 @@ const PostingInfoGeneral = () => {
                             value={currencyUnit}
                             onChange={(e) => setCurrencyUnit(e.target.value)}
                         >
+                            <option value="" disabled>
+                                -- Chọn loại tiền tệ --
+                            </option>
                             <option value="VND">VND</option>
                             <option value="USD">USD</option>
                         </select>
+                        {errors.currencyUnit && <Text type="danger">{errors.currencyUnit}</Text>}
                     </div>
                     <div className="select-container">
                         <span>Kiểu lương</span>
@@ -217,6 +261,7 @@ const PostingInfoGeneral = () => {
                                 />
                                 <div className="underline" />
                             </div>
+                            {errors.minimumSalary && <Text type="danger">{errors.minimumSalary}</Text>}
                         </div>
                     ) : (
                         <></>
@@ -235,13 +280,14 @@ const PostingInfoGeneral = () => {
                                 />
                                 <div className="underline" />
                             </div>
+                            {errors.maximumSalary && <Text type="danger">{errors.maximumSalary}</Text>}
                         </div>
                     ) : (
                         <></>
                     )}
                 </div>
                 <h4>Khu vực làm việc</h4>
-                <FormAddress />
+                <FormAddress validate={validate}/>
             </div>
         </div>
     );

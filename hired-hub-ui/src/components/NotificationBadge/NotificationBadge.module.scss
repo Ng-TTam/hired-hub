@@ -2,6 +2,10 @@
     padding: 20px 16px 24px 20px;
 }
 
+.on-top {
+    z-index: 100;
+}
+
 .actions {
     display: flex;
     justify-content: flex-end;

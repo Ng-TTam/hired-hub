@@ -3,22 +3,37 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosting } from '../../../redux/postingSlice';
 import '../PostingInfoBase/PostingInfoBase.scss';
+import { Typography } from 'antd';
 
-const PostingInfoReceiveCV = () => {
+const PostingInfoReceiveCV = ({ validate }) => {
     const dispath = useDispatch();
     const posting = useSelector((state) => state.postings.posting);
 
-    const [expiredDate, setExpriedDate] = useState(posting?.expiredDate || '');
-
-    console.log(posting);
+    const [expiredAt, setExpriedDate] = useState(posting?.expiredAt || '');
+    const [errors, setErrors] = useState('');
+    const { Text } = Typography;
+    const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
         dispath(
             setPosting({
-                expiredDate,
+                expiredAt: `${expiredAt}${'T23:59:59Z'}`,
             }),
         );
-    }, [expiredDate]);
+    }, [expiredAt]);
+
+    useEffect(() => {
+        if (validate) {
+            validate(() => {
+                const newErrors = {};
+                if (!expiredAt) {
+                    newErrors.expiredAt = 'Vui lòng nhập thời gian hết hạn!';
+                }
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            });
+        }
+    }, [validate, expiredAt]);
 
     return (
         <div className="field-container">
@@ -36,7 +51,7 @@ const PostingInfoReceiveCV = () => {
                             <input
                                 type="date"
                                 id="expiryDate"
-                                value={expiredDate}
+                                value={expiredAt}
                                 placeholder="yyyy-mm-dd"
                                 pattern="\d{4}/\d{2}/\d{2}"
                                 onChange={(e) => setExpriedDate(e.target.value)}
@@ -44,6 +59,7 @@ const PostingInfoReceiveCV = () => {
                             />
                             <div className="underline" />
                         </div>
+                        {errors.expiredAt && <Text type="danger">{errors.expiredAt}</Text>}
                     </div>
                 </div>
                 <h4>Thông tin người nhận CV</h4>
@@ -51,21 +67,21 @@ const PostingInfoReceiveCV = () => {
                     <div className="select-container">
                         <span>Họ tên</span>
                         <div className="input-container">
-                            <input type="text" id="name" placeholder="Nhập họ tên" required />
+                            <input type="text" id="name" value={user.firstName + ' ' + user.lastName} placeholder="Nhập họ tên" required disabled />
                             <div className="underline" />
                         </div>
                     </div>
                     <div className="select-container">
                         <span>Số điện thoại</span>
                         <div className="input-container">
-                            <input type="text" id="phoneNumber" placeholder="Nhập số điện thoại" required />
+                            <input type="text" id="phoneNumber" value={user.phoneNumber} placeholder="Nhập số điện thoại" required disabled/>
                             <div className="underline" />
                         </div>
                     </div>
                     <div className="select-container">
                         <span>Email</span>
                         <div className="input-container">
-                            <input type="text" id="email" placeholder="Nhập email" required />
+                            <input type="text" id="email" value={user.email} placeholder="Nhập email" required disabled/>
                             <div className="underline" />
                         </div>
                     </div>

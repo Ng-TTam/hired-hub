@@ -18,6 +18,24 @@ export const fetchPostings = createAsyncThunk(
     },
 );
 
+export const fetchEmployerPostings = createAsyncThunk(
+    'postings/fetchEmployerPostings',
+    async ( { page, size }, { rejectWithValue }) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.get(`${apiUrl}/self`, {
+                params: { page, size },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data.data || error.message);
+        }
+    },
+);
+
 export const fetchCompanyPostings = createAsyncThunk(
     'postings/fetchCompanyPostings',
     async ({ id, criteria, pageable }, { rejectWithValue }) => {
@@ -81,6 +99,7 @@ const postingSlice = createSlice({
         totalPages: 0,
         totalElements: 0,
         error: null,
+        success: false,
     },
     reducers: {
         setPosting: (state, action) => {
@@ -98,6 +117,37 @@ const postingSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(createPosting.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(createPosting.fulfilled, (state) => {
+                state.loading = false;
+                state.success = true;
+            })
+            .addCase(createPosting.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            //fetch employer posting
+            .addCase(fetchEmployerPostings.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+                state.postings = [];
+            })
+            .addCase(fetchEmployerPostings.fulfilled, (state, action) => {
+                state.loading = false;
+                state.postings = action.payload.data.data;
+                state.totalPages = action.payload.data.totalPages;
+                state.totalElements = action.payload.data.totalElements;
+            })
+            .addCase(fetchEmployerPostings.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
             .addCase(fetchPostings.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -112,6 +162,7 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            
             .addCase(fetchPosting.pending, (state) => {
                 state.loading = true;
                 state.error = null;

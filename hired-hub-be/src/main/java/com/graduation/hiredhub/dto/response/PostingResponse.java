@@ -4,6 +4,7 @@ import com.graduation.hiredhub.dto.reqResp.JobCategoryDTO;
 import com.graduation.hiredhub.dto.reqResp.PositionCategoryDTO;
 import com.graduation.hiredhub.entity.enumeration.CurrencyUnit;
 import com.graduation.hiredhub.entity.enumeration.JobType;
+import com.graduation.hiredhub.entity.enumeration.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -28,4 +29,5 @@ public class PostingResponse {
     CurrencyUnit currencyUnit;
     Integer minimumSalary;
     Integer maximumSalary;
+    Status status;
 }
