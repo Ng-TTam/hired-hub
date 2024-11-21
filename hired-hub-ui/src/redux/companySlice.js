@@ -19,7 +19,7 @@ export const fetchAllCompanies = createAsyncThunk(
             });
             return response.data.data;
         } catch (error) {
-            return rejectWithValue(error.response.message);
+            return rejectWithValue(error.response.data.message);
         }
     },
 );
@@ -32,6 +32,20 @@ export const fetchCompany = createAsyncThunk('companies/fetchCompany', async (id
         return rejectWithValue(error.response.message);
     }
 });
+
+export const fetchFilterCompanies = createAsyncThunk(
+    'companies/fetchFilter',
+    async ({ criteria, pageable }, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${apiURL}/all`, {
+                params: { ...criteria, ...pageable },
+            });
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.reponse.data);
+        }
+    },
+);
 
 export const createCompany = createAsyncThunk('companies/createCompany', async (company, { rejectWithValue }) => {
     try {
@@ -95,6 +109,20 @@ const companySlice = createSlice({
             .addCase(fetchCompany.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(fetchFilterCompanies.pending, (state) => {
+                state.companies = [];
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchFilterCompanies.fulfilled, (state, action) => {
+                state.loading = false;
+                state.companies = action.payload.data;
+                state.totalPages = action.payload.totalPages;
+            })
+            .addCase(fetchFilterCompanies.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
             });
     },
 });

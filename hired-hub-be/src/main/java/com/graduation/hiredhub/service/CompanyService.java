@@ -1,6 +1,7 @@
 package com.graduation.hiredhub.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graduation.hiredhub.dto.request.AdminCompanyFilterCriteria;
 import com.graduation.hiredhub.dto.request.CompanyCreationRequest;
 import com.graduation.hiredhub.dto.response.CompanyDetailResponse;
 import com.graduation.hiredhub.dto.response.CompanyResponse;
@@ -13,6 +14,8 @@ import com.graduation.hiredhub.mapper.CompanyMapper;
 import com.graduation.hiredhub.repository.CompanyRepository;
 import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.SubscriptionRepository;
+import com.graduation.hiredhub.repository.specification.CompanySpecifications;
+import com.graduation.hiredhub.service.util.PageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -124,5 +128,16 @@ public class CompanyService {
 //        }
 
         return pageResponse;
+    }
+
+    public PageResponse<CompanyResponse> filter(AdminCompanyFilterCriteria criteria, Pageable pageable) {
+        Specification<Company> spec = Specification.where(
+                CompanySpecifications.isActive(criteria.getIsActive() == null || criteria.getIsActive())
+        );
+        if (criteria.getName() != null) {
+            spec = spec.and(CompanySpecifications.hasName(criteria.getName()));
+        }
+        Page<CompanyResponse> page = companyRepository.findAll(spec, pageable).map(companyMapper::toCompanyResponse);
+        return PageUtils.toPageResponse(page);
     }
 }

@@ -35,6 +35,10 @@ const store = configureStore({
         statistics: statisticsReducer,
         scaleCategories: scaleCategoryReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
 });
 
 export default store;

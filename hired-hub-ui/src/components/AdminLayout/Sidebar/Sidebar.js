@@ -1,6 +1,8 @@
-import { AppstoreOutlined, FileAddOutlined, FileTextOutlined } from '@ant-design/icons';
+import { AppstoreAddOutlined, AppstoreOutlined, FileAddOutlined, FileTextOutlined } from '@ant-design/icons';
 import {
     faArrowRightFromBracket,
+    faBuilding,
+    faBuildingShield,
     faGears,
     faUserGroup,
     faUserPlus,
@@ -11,7 +13,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout, Menu } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import UserCard from './UserCard';
 
 const { Sider } = Layout;
 
@@ -53,6 +54,23 @@ const Sidebar = () => {
                     key: 'all-job-seekers',
                     icon: <FontAwesomeIcon icon={faUserGroup} />,
                     label: <Link to="/admin/dashboard/users">Người tìm việc</Link>,
+                },
+            ],
+        },
+        {
+            key: 'companies',
+            icon: <FontAwesomeIcon icon={faBuilding} />,
+            label: 'Quản lý doanh nghiệp',
+            children: [
+                {
+                    key: 'new-companies',
+                    icon: <AppstoreAddOutlined />,
+                    label: <Link to="/admin/dashboard/companies/pending">Chờ duyệt</Link>,
+                },
+                {
+                    key: 'all-companies',
+                    icon: <FontAwesomeIcon icon={faBuildingShield} />,
+                    label: <Link to="/admin/dashboard/companies">Danh sách công ty</Link>,
                 },
             ],
         },

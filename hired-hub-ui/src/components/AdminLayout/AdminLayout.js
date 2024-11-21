@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { Route, Routes } from 'react-router-dom';
+import { CompanyDetail, default as CompanyManagement } from '../CompanyManagement';
 import JobCategoryManagement from '../JobCategoryManagement';
 import PositionCategoryManagement from '../PositionCategoryManagement';
 import { PendingPosts, PostingDetail, Postings } from '../PostingManagement';
@@ -23,6 +24,10 @@ function AdminLayout() {
                     <Route path="/employers/pending" element={<PendingEmployers />} />
                     <Route path="/employers" element={<Employers />} />
                     <Route path="/users/:id" element={<UserDetail />} />
+
+                    <Route path="/companies/pending" element={<CompanyManagement key={'pending'} />} />
+                    <Route path="/companies" element={<CompanyManagement key={'all'} isActive />} />
+                    <Route path="/companies/:id" element={<CompanyDetail />} />
 
                     <Route path="/job-categories" element={<JobCategoryManagement />} />
                     <Route path="/positions" element={<PositionCategoryManagement />} />

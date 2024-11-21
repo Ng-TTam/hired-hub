@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.request.AdminCompanyFilterCriteria;
 import com.graduation.hiredhub.dto.request.CompanyCreationRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.CompanyDetailResponse;
@@ -9,6 +10,7 @@ import com.graduation.hiredhub.service.CompanyService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,6 +41,14 @@ public class CompanyController {
     public ApiResponse<CompanyResponse> create(@ModelAttribute CompanyCreationRequest companyCreationRequest){
         return ApiResponse.<CompanyResponse>builder()
                 .data(companyService.createCompany(companyCreationRequest))
+                .build();
+    }
+
+    @GetMapping("/all")
+    public ApiResponse<PageResponse<CompanyResponse>> filter(
+            AdminCompanyFilterCriteria criteria, Pageable pageable) {
+        return ApiResponse.<PageResponse<CompanyResponse>>builder()
+                .data(companyService.filter(criteria, pageable))
                 .build();
     }
 }
