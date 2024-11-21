@@ -1,0 +1,37 @@
+.wrapper {
+    background-color: var(--white-color);
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    margin: 24px;
+}
+
+.tab-header__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 16px;
+    padding: 0 24px;
+}
+
+.tab-header__title {
+    display: flex;
+    flex-direction: column;
+
+    span:first-child {
+        font-weight: 500;
+    }
+    span:last-child {
+        font-size: 0.85rem;
+        color: gray;
+    }
+}
+
+.active-icon {
+    visibility: hidden;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.active-icon.visible {
+    visibility: visible;
+}

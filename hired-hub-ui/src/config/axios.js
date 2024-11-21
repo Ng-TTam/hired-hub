@@ -59,9 +59,9 @@ instance.interceptors.response.use(
             if (refreshToken) {
                 try {
                     const response = await axios.post(`${baseURL}auth/refresh-token`, {
-                        token: refreshToken,
+                        refreshToken,
                     });
-                    const newAccessToken = response.data.token;
+                    const newAccessToken = response.data.data.token;
 
                     localStorage.setItem('token', newAccessToken);
                     processQueue(null, newAccessToken);

@@ -81,7 +81,7 @@ function Postings() {
             title: 'Tiêu đề',
             dataIndex: 'title',
             key: 'title',
-            render: (text, record) => <Link to={`/admin/dashboard/posting/${record.id}`}>{text}</Link>,
+            render: (text, record) => <Link to={`/admin/dashboard/postings/${record.id}`}>{text}</Link>,
         },
         {
             title: 'Công ty',
@@ -147,7 +147,7 @@ function Postings() {
                             </>
                         ) : (
                             <Button
-                                href={`/admin/dashboard/posting/${record.id}`}
+                                href={`/admin/dashboard/postings/${record.id}`}
                                 icon={<FontAwesomeIcon icon={faEye} />}
                             >
                                 Xem chi tiết

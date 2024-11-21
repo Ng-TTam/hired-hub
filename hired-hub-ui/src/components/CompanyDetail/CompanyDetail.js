@@ -8,6 +8,7 @@ import { Link, useParams } from 'react-router-dom';
 import images from '../../assets/images';
 import { fetchCompany } from '../../redux/companySlice';
 import { convertScaleCategory } from '../../utils';
+import HtmlRenderer from '../HtmlRenderer';
 import Image from '../Image';
 import styles from './CompanyDetail.module.scss';
 import CompanyPosting from './CompanyPosting';
@@ -32,12 +33,13 @@ function CompanyDetail() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('company-cover', 'content-box')}>
-                <div className={cx('cover-wrapper')}>
-                    <Image src={company.coverImage} alt={company.name} fallback={images.defaultCompanyCover} />
-                </div>
-                <div className={cx('company-logo')}>
-                    <Image src={company.logo} fallback={images.logoDefault} />
-                </div>
+                <Image
+                    className={cx('cover-wrapper')}
+                    src={company.coverImage}
+                    alt={company.name}
+                    fallback={images.defaultCompanyCover}
+                />
+                <Image className={cx('company-logo')} src={company.logo} fallback={images.logoDefault} />
                 <div className={cx('comapny-overview')}>
                     <div className={cx('box-detail')}>
                         <h2 className={cx('company-name')}>{company.name}</h2>
@@ -52,8 +54,8 @@ function CompanyDetail() {
                                 <FontAwesomeIcon icon={faBuilding} />
                                 <p>
                                     {convertScaleCategory(
-                                        company.scaleCategory.minEmployee,
-                                        company.scaleCategory.maxEmployee,
+                                        company.scaleCategory?.minEmployee,
+                                        company.scaleCategory?.maxEmployee,
                                     )}
                                 </p>
                             </span>
@@ -70,7 +72,7 @@ function CompanyDetail() {
                 <div className={cx('content-left')}>
                     <div className={cx('section-introduce', 'content-box')}>
                         <div className={cx('content-box__title')}>Giới thiệu công ty</div>
-                        <div className={cx('section-content')}>{company.description}</div>
+                        <HtmlRenderer className={cx('section-content')} content={company.description} />
                     </div>
                     <div className={cx('content-box')}>
                         <div className={cx('content-box__title')}>Tuyển dụng</div>

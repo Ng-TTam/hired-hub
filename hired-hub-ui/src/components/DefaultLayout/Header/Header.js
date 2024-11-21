@@ -5,7 +5,7 @@ import { faBriefcase } from '@fortawesome/free-solid-svg-icons/faBriefcase';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import images from '../../../assets/images';
 import AccountIcon from '../../AccountIcon';
 import Button from '../../Button';
@@ -43,7 +43,6 @@ const MENU_ITEMS = [
         title: 'Đăng xuất',
         to: '/logout',
     },
-    
 ];
 
 function Header() {
@@ -52,7 +51,14 @@ function Header() {
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <img src={images.hiredHubLogo} alt="Hired-hub-logo" title="Logo của TopCV" className={cx('logo')} />
+                <Link to={'/'} className={cx('logo')}>
+                    <img
+                        src={images.hiredHubLogo}
+                        alt="Hired-hub-logo"
+                        title="Logo của HiredHub"
+                        className={cx('logo')}
+                    />
+                </Link>
                 <div className={cx('nav-bar')}>
                     <ul className={cx('nav-list')}>
                         <li className={cx('nav-list__item')}>

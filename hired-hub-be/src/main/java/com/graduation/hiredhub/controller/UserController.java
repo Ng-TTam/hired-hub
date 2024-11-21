@@ -1,5 +1,7 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.request.EmployerCompanyUpdateRequest;
+import com.graduation.hiredhub.dto.request.UserFilterCriteria;
 import com.graduation.hiredhub.dto.request.UserRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
@@ -11,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,19 +29,26 @@ public class UserController {
     @PostMapping("/update-profile")
     ApiResponse<UserResponse> updateProfile(@ModelAttribute @Valid UserRequest userRequest) {
         return ApiResponse.<UserResponse>builder()
-                    .data(userService.updateUserProfile(userRequest))
-                    .build();
+                .data(userService.updateUserProfile(userRequest))
+                .build();
     }
 
     @GetMapping
-    ApiResponse<UserResponse> getInfo(){
+    ApiResponse<UserResponse> getInfo() {
         return ApiResponse.<UserResponse>builder()
                 .data(userService.getUser())
                 .build();
     }
 
+    @GetMapping("/{id}")
+    ApiResponse<Object> findById(@PathVariable("id") String id) {
+        return ApiResponse.builder()
+                .data(userService.findById(id))
+                .build();
+    }
+
     @GetMapping("/jobSeeker/applications")
-    ApiResponse<List<ApplicationResponse>> getApplicationsByJobSeeker(){
+    ApiResponse<List<ApplicationResponse>> getApplicationsByJobSeeker() {
         List<ApplicationResponse> applications = applicationService.getApplicationsByJobSeeker();
         return ApiResponse.<List<ApplicationResponse>>builder()
                 .data(applications)
@@ -48,16 +58,31 @@ public class UserController {
     @GetMapping("/pending")
     ApiResponse<PageResponse<UserResponse>> getPendingUsers(
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page){
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         return ApiResponse.<PageResponse<UserResponse>>builder()
                 .data(userService.getUsersPending(page, size))
                 .build();
     }
 
     @PostMapping("/{userId}/approve")
-    ApiResponse<UserResponse> getApprovedEmployer(@PathVariable String userId){
+    ApiResponse<UserResponse> getApprovedEmployer(@PathVariable String userId) {
         return ApiResponse.<UserResponse>builder()
                 .data(userService.approveEmployer(userId))
+                .build();
+    }
+
+    @PostMapping("/update-company-info")
+    ApiResponse<Void> updateEmployerCompany(@RequestBody EmployerCompanyUpdateRequest employerCompanyUpdateRequest) {
+        userService.updateEmployerCompany(employerCompanyUpdateRequest);
+        return ApiResponse.<Void>builder().build();
+    }
+
+    @GetMapping("all")
+    ApiResponse<PageResponse<UserResponse>> getAllUsers(
+            UserFilterCriteria criteria, Pageable pageable
+    ) {
+        return ApiResponse.<PageResponse<UserResponse>>builder()
+                .data(userService.filter(criteria, pageable))
                 .build();
     }
 }

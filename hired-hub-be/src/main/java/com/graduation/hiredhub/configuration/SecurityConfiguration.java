@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/position-category").permitAll()
                         .requestMatchers(HttpMethod.GET, "/job-category").permitAll()
                         .requestMatchers(HttpMethod.GET, "/company/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/scale-category").permitAll()
                         .requestMatchers("/web-socket/**").permitAll()
                         .anyRequest().authenticated());
 

@@ -1,0 +1,143 @@
+.company-form {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-1 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group-1 label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group-1 input,
+.form-group-1 select,
+.form-group-1 textarea {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group-1 input::placeholder,
+.form-group-1 textarea::placeholder {
+    color: #999;
+}
+
+.form-group-1 input:focus,
+.form-group-1 select:focus,
+.form-group-1 textarea:focus {
+    outline: none;
+    border-color: #28a745;
+}
+
+.upload-section {
+    height: 358px;
+    width: 100%;
+    margin: 24px auto 48px;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    background: linear-gradient(90deg, #212f3f, #00b14f);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cover-upload-container {
+    width: 100%;
+    position: relative;
+}
+
+.logo-upload-container {
+    position: absolute;
+    left: 42px;
+    bottom: 16px;
+}
+
+.cover-preview-container {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 225px;
+}
+
+.logo-preview-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: 1px solid var(--gray-99, #e9eaec);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.change-logo-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    bottom: 32px;
+    right: 8px;
+}
+
+.description-group {
+    min-height: 100px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    resize: vertical;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.submit-btn {
+    padding: 8px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

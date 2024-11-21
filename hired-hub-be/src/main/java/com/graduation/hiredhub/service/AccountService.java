@@ -1,11 +1,10 @@
 package com.graduation.hiredhub.service;
 
+import com.graduation.hiredhub.dto.request.AccountStatusRequest;
+import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
-import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
-import com.graduation.hiredhub.dto.response.EmployerResponse;
-import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.entity.Account;
 import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.JobSeeker;
@@ -65,8 +64,8 @@ public class AccountService {
      * @return access token and refresh token
      */
     @Transactional
-    public AuthenticationResponse signUp(UserAccountCreationRequest userAccountCreationRequest){
-        if(accountRepository.existsByEmail(userAccountCreationRequest.getAccount().getEmail()))
+    public AuthenticationResponse signUp(UserAccountCreationRequest userAccountCreationRequest) {
+        if (accountRepository.existsByEmail(userAccountCreationRequest.getAccount().getEmail()))
             throw new AppException(ErrorCode.EMAIL_EXISTED);
 
         Account account = Account.builder()
@@ -82,7 +81,7 @@ public class AccountService {
             JobSeeker jobSeeker = userMapper.toJobSeeker(userAccountCreationRequest.getUser());
             jobSeeker.setAccount(account);
             jobSeekerRepository.save(jobSeeker);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
 
@@ -108,8 +107,8 @@ public class AccountService {
      * @return access token and refresh token
      */
     @Transactional
-    public AuthenticationResponse employerSignUp(EmployerAccountCreationRequest employerAccountCreationRequest){
-        if(accountRepository.existsByEmail(employerAccountCreationRequest.getAccount().getEmail()))
+    public AuthenticationResponse employerSignUp(EmployerAccountCreationRequest employerAccountCreationRequest) {
+        if (accountRepository.existsByEmail(employerAccountCreationRequest.getAccount().getEmail()))
             throw new AppException(ErrorCode.EMAIL_EXISTED);
 
         Account account = Account.builder()
@@ -126,7 +125,7 @@ public class AccountService {
             employer.setPosition(employerAccountCreationRequest.getPosition());
             employer.setAccount(account);
             employerRepository.save(employer);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
 
@@ -145,7 +144,7 @@ public class AccountService {
      * Can resend otp if created account
      */
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
-    public void resendOtpSignUp(){
+    public void resendOtpSignUp() {
         otpService.send(SIGNUP_OTP, getAccountInContext().getEmail());
     }
 
@@ -155,9 +154,10 @@ public class AccountService {
      */
     /**
      * Send otp to reset password
+     *
      * @param authResetPassRequest
      */
-    public void otpResetPassword(AuthResetPassRequest authResetPassRequest){
+    public void otpResetPassword(AuthResetPassRequest authResetPassRequest) {
         var account = accountRepository.findByEmail(authResetPassRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
 
@@ -169,18 +169,18 @@ public class AccountService {
      * Key store in cache by form: TOKEN_RESET_PASS_token: accountId
      *
      * @param authResetPassRequest account contain new pass
-     * @param otp: code to verify
+     * @param otp:                 code to verify
      * @return key
      */
-    public String verifyOtpResetPassword(AuthResetPassRequest authResetPassRequest, String otp){
-        if(!otpService.verify(RESET_OTP, authResetPassRequest.getEmail(), otp))
+    public String verifyOtpResetPassword(AuthResetPassRequest authResetPassRequest, String otp) {
+        if (!otpService.verify(RESET_OTP, authResetPassRequest.getEmail(), otp))
             throw new AppException(ErrorCode.INVALID_OTP);
 
         var account = accountRepository.findByEmail(authResetPassRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
 
         String key = UUID.randomUUID().toString();
-        try{
+        try {
             stringRedisTemplate.opsForValue().set(PRE_RESET_PASS + key, account.getId());
             stringRedisTemplate.expire(PRE_RESET_PASS + key, Duration.ofMinutes(TTL_TOKEN_RESET_CACHE));
             return key;
@@ -197,18 +197,18 @@ public class AccountService {
      */
     @Transactional
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
-    public String verifyOtp(String otp){
+    public String verifyOtp(String otp) {
         Account account = getAccountInContext();
 
-        if(!account.getStatus().equals(Status.PENDING)) throw new AppException(ErrorCode.USER_NOT_PENDING);
+        if (!account.getStatus().equals(Status.PENDING)) throw new AppException(ErrorCode.USER_NOT_PENDING);
 
-        if(!otpService.verify(SIGNUP_OTP, account.getEmail(), otp))
+        if (!otpService.verify(SIGNUP_OTP, account.getEmail(), otp))
             throw new AppException(ErrorCode.INVALID_OTP);
 
         try {
             account.setStatus(Status.ACTIVATE);
             accountRepository.save(account);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
 
@@ -219,14 +219,14 @@ public class AccountService {
      * Reset password of account in db, can not authenticate
      *
      * @param authChangePassRequest: account pass to reset
-     * @param key: token save in redis to check
+     * @param key:                   token save in redis to check
      * @return boolean
      */
     @Transactional
-    public boolean resetPassword(AuthResetPassRequest authChangePassRequest, String key){
+    public boolean resetPassword(AuthResetPassRequest authChangePassRequest, String key) {
         String accountId = stringRedisTemplate.opsForValue().get(PRE_RESET_PASS + key);
 
-        if(accountId == null)
+        if (accountId == null)
             throw new AppException(ErrorCode.KEY_NOT_EXISTED);
 
         var account = accountRepository.findById(accountId)
@@ -235,7 +235,7 @@ public class AccountService {
         account.setPassword(passwordEncoder.encode(authChangePassRequest.getNewPassword()));
         try {
             accountRepository.save(account);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
         return true;
@@ -246,12 +246,23 @@ public class AccountService {
      *
      * @return account in context
      */
-    public Account getAccountInContext(){
+    public Account getAccountInContext() {
         var context = SecurityContextHolder.getContext();
         var accountId = context.getAuthentication().getName();
 
         return accountRepository.findById(accountId).orElseThrow(
                 () -> new AppException(ErrorCode.EMAIL_NOT_EXISTED)
         );
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateStatus(AccountStatusRequest accountStatusRequest) {
+        accountRepository.findById(accountStatusRequest.getAccountId())
+                .map(existingAccount -> {
+                    existingAccount.setStatus(accountStatusRequest.getStatus());
+                    return existingAccount;
+                })
+                .map(accountRepository::save)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXISTED));
     }
 }

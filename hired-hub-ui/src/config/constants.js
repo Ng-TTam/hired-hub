@@ -19,10 +19,17 @@ export const GenderRequire = Object.freeze({
     FEMALE: { id: 'FEMALE', name: 'Nữ' },
 });
 
+export const Status = Object.freeze({
+    ACTIVATE: { id: 'ACTIVATE', name: 'ACTIVATE' },
+    DEACTIVATE: { id: 'DEACTIVATE', name: 'DEACTIVATE' },
+    PENDING: { id: 'PENDING', name: 'PENDING' },
+});
+
 const constants = {
     ExperienceRequire,
     JobTypes,
     GenderRequire,
+    Status,
 };
 
 export default constants;

@@ -22,6 +22,7 @@ public class PostingResponse {
     String title;
     JobType jobType;
     Instant createdAt;
+    Instant updatedAt;
     Instant expiredAt;
     JobCategoryDTO mainJob;
     List<JobCategoryDTO> subJobs;

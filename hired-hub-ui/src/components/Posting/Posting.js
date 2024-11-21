@@ -29,6 +29,7 @@ import '@fortawesome/free-solid-svg-icons';
 import CreateApplication from '../Application/CreateApplication/CreateApplication';
 import GetApplication from '../Application/GetApplication/GetApplication';
 import { savePosting, savePostingStatus, unsavePosting } from '../../redux/savedPostingSlice';
+import HtmlRenderer from '../HtmlRenderer';
 
 const cx = classNames.bind(styles);
 
@@ -36,7 +37,7 @@ function Posting({ className }) {
     const { id } = useParams();
     const { application } = useSelector((state) => state.application);
     const posting = useSelector((state) => state.postings.posting);
-    const savedStatus = useSelector((state) => state.savedPosting.savedStatus)
+    const savedStatus = useSelector((state) => state.savedPosting.savedStatus);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showApplication, setShowApplication] = useState(false);
@@ -107,16 +108,16 @@ function Posting({ className }) {
             setIsModalOpen(true);
         }
     };
-    const handSavePost = async () =>{
-        const saved ={postId: id};
-        if (savedStatus){
+    const handSavePost = async () => {
+        const saved = { postId: id };
+        if (savedStatus) {
             await dispatch(unsavePosting(saved)).unwrap();
             window.location.reload();
-        }else{
+        } else {
             await dispatch(savePosting(saved)).unwrap();
             window.location.reload();
         }
-    }
+    };
 
     if (!posting) {
         return <div></div>;
@@ -158,17 +159,27 @@ function Posting({ className }) {
                         >
                             {application ? 'Đã ứng tuyển' : 'Ứng tuyển ngay'}
                         </Button>
-                        <Button className={cx('btn-save')} outline leftIcon={<FontAwesomeIcon icon={faHeart} />}
-                        onClick={handSavePost}>
-                            {savedStatus? "Đã lưu" : "Lưu tin"}
+                        <Button
+                            className={cx('btn-save')}
+                            outline
+                            leftIcon={<FontAwesomeIcon icon={faHeart} />}
+                            onClick={handSavePost}
+                        >
+                            {savedStatus ? 'Đã lưu' : 'Lưu tin'}
                         </Button>
                     </div>
                 </div>
                 <div className={cx('content-left__detail', 'box')}>
                     <span className={cx('content-left__title')}>Chi tiết tin tuyển dụng</span>
-                    <ContentBox title="Mô tả công việc">{posting.jobDescription.description}</ContentBox>
-                    <ContentBox title="Yêu cầu ứng viên">{posting.jobDescription.requirement}</ContentBox>
-                    <ContentBox title="Quyền lợi">{posting.jobDescription.benefit}</ContentBox>
+                    <ContentBox title="Mô tả công việc">
+                        {<HtmlRenderer content={posting.jobDescription.description} />}
+                    </ContentBox>
+                    <ContentBox title="Yêu cầu ứng viên">
+                        {<HtmlRenderer content={posting.jobDescription.requirement} />}
+                    </ContentBox>
+                    <ContentBox title="Quyền lợi">
+                        {<HtmlRenderer content={posting.jobDescription.benefit} />}
+                    </ContentBox>
                     <ContentBox title="Địa điểm làm việc">
                         {convertWorkAddressDetail(posting.jobDescription.workAddress)}
                     </ContentBox>

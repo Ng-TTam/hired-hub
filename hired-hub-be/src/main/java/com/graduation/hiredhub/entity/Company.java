@@ -42,6 +42,7 @@ public class Company {
 
     String coverImage;
 
+    @Lob
     String description;
 
     @CreatedDate

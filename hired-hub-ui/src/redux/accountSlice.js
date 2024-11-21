@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { baseURL } from '../config/axios';
+import axiosPro, { baseURL } from '../config/axios';
+import { notification } from 'antd';
 
 const apiURL = `${baseURL}account/`;
 
@@ -78,6 +79,26 @@ export const forgotPass = createAsyncThunk(
     },
 );
 
+export const updateStatus = createAsyncThunk(
+    'account/updateStatus',
+    async ({ accountId, status }, { rejectWithValue }) => {
+        try {
+            const response = await axiosPro.post(`${apiURL}update-status`, { accountId, status });
+            notification.success({
+                message: 'Thành công',
+                description: 'Cập nhật trạng thái thành công',
+            });
+            return response.data;
+        } catch (error) {
+            notification.error({
+                message: 'Thất bại',
+                description: `Cập nhật trạng thái thất bại - ${error.response.data.message}`,
+            });
+            return rejectWithValue(error.response.data);
+        }
+    },
+);
+
 // Redux Slice
 const accountSlice = createSlice({
     name: 'account',
@@ -96,6 +117,7 @@ const accountSlice = createSlice({
         resetPassLoading: false,
         resetPassSuccess: false,
         resetPassError: null,
+        updateSuccess: false,
     },
     reducers: {
         clearAccountState: (state) => {
@@ -215,6 +237,15 @@ const accountSlice = createSlice({
             .addCase(forgotPass.rejected, (state, action) => {
                 state.resetPassLoading = false;
                 state.resetPassError = action.payload;
+            });
+
+        builder
+            .addCase(updateStatus.pending, (state) => {
+                state.loading = true;
+                state.updateSuccess = false;
+            })
+            .addCase(updateStatus.fulfilled, (state) => {
+                state.updateSuccess = true;
             });
     },
 });

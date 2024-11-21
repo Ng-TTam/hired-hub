@@ -11,10 +11,11 @@ import notificationReducer from './notificationSlice';
 import postingReducer from './postingSlice';
 import positionCategoryReducer from './postionCategorySlice';
 import provinceReducer from './provinceSlice';
+import savedPostingReducer from './savedPostingSlice';
+import scaleCategoryReducer from './scaleCategorySlice';
 import statisticsReducer from './statisticsSlice';
 import subscriptionReducer from './subscriptionSlice';
 import userReducer from './userSlice';
-import savedPostingReducer from './savedPostingSlice';
 
 const store = configureStore({
     reducer: {
@@ -34,7 +35,12 @@ const store = configureStore({
         account: accountReducer,
         statistics: statisticsReducer,
         savedPosting: savedPostingReducer,
+        scaleCategories: scaleCategoryReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
 });
 
 export default store;

@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.controller;
 
+import com.graduation.hiredhub.dto.request.AccountStatusRequest;
 import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
@@ -72,5 +73,11 @@ public class AccountController {
         return ApiResponse.<AuthenticationResponse>builder()
                 .data(accountService.employerSignUp(employerAccountCreationRequest))
                 .build();
+    }
+
+    @PostMapping("update-status")
+    ApiResponse<Void> updateAccountStatus(@RequestBody AccountStatusRequest accountStatusRequest) {
+        accountService.updateStatus(accountStatusRequest);
+        return ApiResponse.<Void>builder().build();
     }
 }

@@ -11,6 +11,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployerResponse extends UserResponse {
-    String companyName;
+    CompanyResponse company;
     String position;
 }

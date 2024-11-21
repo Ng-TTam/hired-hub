@@ -21,6 +21,7 @@ public interface UserMapper {
     @Mapping(target = "avatar", ignore = true)
     Employer toEmployer(UserRequest userRequest);
 
+    @Mapping(target = "company", source = "company")
     EmployerResponse toEmployerResponse(Employer employer);
 
     @Mapping(target = "avatar", ignore = true)

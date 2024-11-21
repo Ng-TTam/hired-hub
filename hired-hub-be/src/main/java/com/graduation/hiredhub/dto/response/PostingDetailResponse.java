@@ -25,6 +25,7 @@ public class PostingDetailResponse {
     Integer numberOfPosition;
     JobType jobType;
     Instant createdAt;
+    Instant updatedAt;
     Instant expiredAt;
     JobDescriptionDTO jobDescription;
     JobCategoryDTO mainJob;
