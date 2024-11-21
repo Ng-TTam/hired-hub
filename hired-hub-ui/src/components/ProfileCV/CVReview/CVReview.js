@@ -1,39 +1,37 @@
 import React, { useEffect } from 'react';
-import './CV.scss';
+import './CVReview.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserInformation } from '../../../redux/userSlice';
 import images from '../../../assets/images';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useParams } from 'react-router-dom';
-import { fetchCV } from '../../../redux/cvSlice';
+import { fetchApplication, resetApplication } from '../../../redux/applicationSlice';
 import Image from '../../Image';
 
-const CV = () => {
-
-    const { cvId } = useParams();
-
-    const email = localStorage.getItem('email');
+const CVReview = () => {
+    const { applicationId } = useParams();
     const dispatch = useDispatch();
-    const { user, loading, error } = useSelector(state => state.user);
-    const {cv:cv} = useSelector(state => state.cv)
+    const application = useSelector(state => state.application.application);
 
     useEffect(() => {
-        dispatch(fetchUserInformation());
-        dispatch(fetchCV(cvId));
-    }, [dispatch, cvId]);
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+        dispatch(fetchApplication(applicationId));
+        return () => {
+            dispatch(resetApplication());
+        };
+    }, [dispatch, applicationId]);
+    const cv = application?.cv;
+    const email = application?.email;
+    const user = application?.cv?.jobSeeker;
 
     return (
         <div className="cv-review">
             <div className='header'>
-                <div className="left_header">
+                <div className="left_header" style={{ marginLeft:"20px" , marginRight:"auto"}}>
                     <Image className='img-cv-1'
-                        src={user?.avatar || images.cvAvatarDefault}
+                        src={application?.cv?.jobSeeker?.avatar || images.cvAvatarDefault}
                         alt="User avatar"
                         fallback={ images.cvAvatarDefault}
-                        style={{maxWidth: "85%", maxHeight: "85%%", objectFit:"cover", marginLeft:"auto" , marginRight:"auto"}}
+                        style={{maxWidth: "85%", maxHeight: "85%", objectFit:"cover", marginLeft:"auto" , marginRight:"auto"}}
                     />
                     
                 </div>
@@ -145,4 +143,4 @@ const CV = () => {
     );
 };
 
-export default CV;
+export default CVReview;

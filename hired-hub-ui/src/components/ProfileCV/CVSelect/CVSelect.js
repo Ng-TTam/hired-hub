@@ -36,7 +36,7 @@ const CVSelect = ({ onCVSelect }) => {
                         >
                             <div className="box-info-1">
                                 <h4 className="description-cv-1">
-                                    <NavLink to={`../xem-cv/${cv.id}`} className="select-cv">
+                                    <NavLink to={`../../job-seeker/cv-review/${cv.id}`} className="select-cv">
                                         {cv.description}
                                     </NavLink>
                                 </h4>

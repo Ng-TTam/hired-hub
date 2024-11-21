@@ -1,0 +1,124 @@
+.sp-item{
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex; /* Sử dụng flexbox để chia cột */
+    gap: 30px; /* Khoảng cách giữa các cột */
+    font-family: Inter, sans-serif;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 3px solid #f4f4f4;
+    .sp-avatar{
+        flex: 1; 
+        border-radius: 10px;
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        height: 100%;
+    }
+    .sp-data{
+        flex: 8; /* Chiếm 1 phần của chiều rộng */
+        border-radius: 10px;
+        display: inline-grid;
+        gap: 12px;
+        width: 100%;
+        
+        .sp-title-block{
+            height: auto;
+            font-size: 16px;
+            align-items: baseline;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+
+            .sp-posting-title{
+                color: #212f3f;
+                display: -webkit-box;
+                flex: 1;
+                margin-bottom: 4px;
+                margin-right: 24px;
+                margin-top: 0;
+                overflow: hidden;
+                overflow-wrap: break-word;
+                text-overflow: ellipsis;
+                cursor: pointer;
+                &:hover {
+                    color: #00b14f;
+                }
+            }
+            .sp-money{
+                align-items: center;
+                color: #00b14f;
+                display: flex;
+                font-size: 14px;
+                font-weight: 600;
+                justify-content: flex-end;
+                line-height: 20px;
+                margin-bottom: 0;
+                margin-top: 0;
+                white-space: nowrap;
+            }
+        }
+
+        .sp-comany-name{
+            width: fit-content;
+            height: 20px;
+            font-size: 14px;
+            color: #424e5c;
+            cursor: pointer;
+            &:hover {
+                color: #00b14f;
+            }
+        }
+
+        .sp-time-save{
+            height: 20px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: #424e5c;
+        }
+
+        .sp-infor{
+            height: 28px;
+            display: flex;
+            justify-content: space-between;
+            .sp-infor-time{
+                height: 100%;
+                background: #e9eaec;
+                border-radius: 3px;
+                color: #212f3f;
+                font-size: 12px;
+                font-weight: 400;
+                line-height: 16px;
+                margin-bottom: 0;
+                margin-top: 0;
+                padding: 4px 8px;
+            }
+            .sp-action{
+                height: 100%;
+                padding: 0px 8px;
+                margin: 0 5px;
+                cursor: pointer;
+                border-radius: 5px;
+                font-size: 12px;
+                border: 1px solid #28a745;
+                background-color: white;
+                border-color: #28a745;
+                color: #28a745;
+
+                align-items: center;
+                background: #e9eaec;
+                color: #424e5c;
+                display: inline-flex;
+                width: auto;
+                &:hover {
+                    opacity: 0.7;
+                    }
+            }
+            
+        }
+    }
+    &:hover {
+        background-color: #f4f4f4;
+        }
+}

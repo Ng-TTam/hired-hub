@@ -1,4 +1,3 @@
-import { faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import {
     faBriefcaseClock,
     faClock,
@@ -15,45 +14,27 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constants';
-import { resetAndSetDistrict, resetAndSetJobCategory, resetAndSetProvince } from '../../redux/filterSlice';
-import { fetchPosting } from '../../redux/postingSlice';
-import { convertSalary, convertWorkAddressDetail, convertWorkAddressSumary, formatDate } from '../../utils';
-import Button from '../Button';
-import CompanyInfo from './CompanyInfo';
-import ContentBox from './ContentBox';
-import ContentIcon from './ContentIcon';
-import styles from './Posting.module.scss';
-import { fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
+import { ExperienceRequire, GenderRequire, JobTypes } from '../../../config/constants';
+import { resetAndSetDistrict, resetAndSetJobCategory, resetAndSetProvince } from '../../../redux/filterSlice';
+import { fetchPosting } from '../../../redux/postingSlice';
+import { convertSalary, convertWorkAddressDetail, convertWorkAddressSumary, formatDate } from '../../../utils';
+import CompanyInfo from '../../Posting/CompanyInfo';
+import ContentBox from '../../Posting/ContentBox';
+import ContentIcon from '../../Posting/ContentIcon';
+import styles from '../../Posting/Posting.module.scss';
 import '@fortawesome/free-solid-svg-icons';
-import CreateApplication from '../Application/CreateApplication/CreateApplication';
-import GetApplication from '../Application/GetApplication/GetApplication';
-import { savePosting, savePostingStatus, unsavePosting } from '../../redux/savedPostingSlice';
 
 const cx = classNames.bind(styles);
 
-function Posting({ className }) {
+function PostingReview({ className }) {
     const { id } = useParams();
-    const { application } = useSelector((state) => state.application);
     const posting = useSelector((state) => state.postings.posting);
-    const savedStatus = useSelector((state) => state.savedPosting.savedStatus)
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [showApplication, setShowApplication] = useState(false);
-    const [showCreateApplication, setShowCreateApplication] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    var selectApplication = queryParams.get('selectApplication') === 'true';
-    const [createAgain, setCreateAgain] = useState(false);
 
     useEffect(() => {
         dispatch(fetchPosting(id));
-        dispatch(fetchApplicationInPosting(id));
-        dispatch(savePostingStatus(id));
-        return () => {
-            dispatch(resetApplication());
-        };
     }, [dispatch, id]);
 
     const handleSearchByProvince = (province) => {
@@ -70,61 +51,12 @@ function Posting({ className }) {
         dispatch(resetAndSetJobCategory(jobCategory.id));
         navigate('/');
     };
-
-    const handleClickApplication = () => {
-        setIsModalOpen(true);
-        if (application) {
-            setShowApplication(true);
-        } else {
-            setShowCreateApplication(true);
-        }
-    };
-    useEffect(() => {
-        const hasViewed = sessionStorage.getItem('hasViewedApplicationModal');
-        if (!hasViewed && selectApplication) {
-            handleClickApplication();
-            sessionStorage.setItem('hasViewedApplicationModal', 'true');
-        }
-    }, [selectApplication]);
-
-    const handleApplication = (reload) => {
-        setShowCreateApplication(false);
-        setShowApplication(false);
-        setIsModalOpen(false);
-        dispatch(fetchApplicationInPosting(id));
-        if (reload) {
-            window.location.reload();
-        }
-    };
-    const handApplicationAgain = (reload) => {
-        setShowCreateApplication(false);
-        setShowApplication(false);
-        setIsModalOpen(false);
-        dispatch(fetchApplicationInPosting(id));
-        if (reload) {
-            setCreateAgain(true);
-            setShowCreateApplication(true);
-            setIsModalOpen(true);
-        }
-    };
-    const handSavePost = async () =>{
-        const saved ={postId: id};
-        if (savedStatus){
-            await dispatch(unsavePosting(saved)).unwrap();
-            window.location.reload();
-        }else{
-            await dispatch(savePosting(saved)).unwrap();
-            window.location.reload();
-        }
-    }
-
     if (!posting) {
         return <div></div>;
     }
 
     return (
         <div className={cx('wrapper', className)}>
-            {isModalOpen && <div className="overlay"></div>}
             <div className={cx('content__left')}>
                 <div className={cx('content-left__header', 'box')}>
                     <h3 className={cx('post__title')}>{posting.title}</h3>
@@ -148,20 +80,6 @@ function Posting({ className }) {
                     <div className={cx('label-section')}>
                         <FontAwesomeIcon icon={faClock} />
                         <span>Hạn nộp hồ sơ: {formatDate(posting.expiredAt)}</span>
-                    </div>
-                    <div className={cx('actions')}>
-                        <Button
-                            className={cx('btn-apply')}
-                            primary
-                            leftIcon={<FontAwesomeIcon icon={faPaperPlane} />}
-                            onClick={handleClickApplication}
-                        >
-                            {application ? 'Đã ứng tuyển' : 'Ứng tuyển ngay'}
-                        </Button>
-                        <Button className={cx('btn-save')} outline leftIcon={<FontAwesomeIcon icon={faHeart} />}
-                        onClick={handSavePost}>
-                            {savedStatus? "Đã lưu" : "Lưu tin"}
-                        </Button>
                     </div>
                 </div>
                 <div className={cx('content-left__detail', 'box')}>
@@ -250,17 +168,8 @@ function Posting({ className }) {
                     </div>
                 </div>
             </div>
-
-            {showApplication && <GetApplication postingSelect={posting} onApplicationAgain={handApplicationAgain} />}
-            {showCreateApplication && (
-                <CreateApplication
-                    postingSelect={posting}
-                    applicationId={application ? application.id : null}
-                    onApplication={handleApplication}
-                />
-            )}
         </div>
     );
 }
 
-export default Posting;
+export default PostingReview;

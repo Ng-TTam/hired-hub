@@ -2,6 +2,7 @@ package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.request.ApplicationRequest;
+import com.graduation.hiredhub.dto.request.ApplicationStatusRequest;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.dto.response.ApplicationStatisticsResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
@@ -139,6 +140,7 @@ public class ApplicationService {
             String email = application.getCv().getJobSeeker().getAccount().getEmail();
             ApplicationResponse applicationResponse = applicationMapper.toApplicationResponse(application);
             applicationResponse.setEmail(email);
+            applicationResponse.setCvUpdateAt(application.getCv().getUpdatedAt());
             applicationResponses.add(applicationResponse);
         }
         return applicationResponses;
@@ -193,15 +195,35 @@ public class ApplicationService {
         return applicationMapper.toApplicationDTO(application);
     }
 
-    @PreAuthorize("hasRole('JOB_SEEKER')")
+    @PreAuthorize("hasRole('EMPLOYER')")
     public ApplicationResponse getApplicationByJobSeeker(Integer applicationId) {
         Application application = applicationRepository.findById(applicationId).orElseThrow(
                 () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
         );
-        if (!application.getCv().getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
-            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
+        ApplicationResponse applicationResponse = applicationMapper.toApplicationResponse(application);
+        applicationResponse.setEmail(application.getCv().getJobSeeker().getAccount().getEmail());
+        return applicationResponse;
+    }
+
+    
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ApplicationResponse setApplicationStatus(ApplicationStatusRequest applicationStatusRequest, Integer applicationId) {
+        Application application = applicationRepository.findById(applicationId).orElseThrow(
+                () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
+        );
+        if(applicationStatusRequest.getApplicationStatus().equals("APPROVED")){
+            application.setStatus(ApplicationStatus.APPROVED);
+        }else if(applicationStatusRequest.getApplicationStatus().equals("REJECTED")){
+            application.setStatus(ApplicationStatus.REJECTED);
+        }else application.setStatus(ApplicationStatus.PENDING);
+        try {
+            applicationRepository.save(application);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
-        return applicationMapper.toApplicationResponse(application);
+        ApplicationResponse applicationResponse = applicationMapper.toApplicationResponse(application);
+        applicationResponse.setEmail(application.getCv().getJobSeeker().getAccount().getEmail());
+        return applicationResponse;
     }
 
     @PreAuthorize("hasRole('JOB_SEEKER')")

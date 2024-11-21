@@ -49,7 +49,7 @@ const GetApplication = ({postingSelect, onApplicationAgain}) => {
                     style={{border:'none', color : '#00b14f', cursor:'auto'}}>
                         <div className="box-info-1">
                             <h4 className="description-cv-1">
-                                <NavLink to={`../xem-cv/${application.cv.id}`} className="select-cv">
+                                <NavLink to={`../../job-seeker/cv-review/${application.cv.id}`} className="select-cv">
                                     {application.cv.description}
                                 </NavLink>
                             </h4>

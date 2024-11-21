@@ -26,8 +26,8 @@ public class SavedPostController {
                 .build();
     }
 
-    @GetMapping("check-status")
-    public ApiResponse<SavedPostStatusResponse> checkSavedStatus(@RequestParam("postingId") String postingId) {
+    @GetMapping("check-status/{postingId}")
+    public ApiResponse<SavedPostStatusResponse> checkSavedStatus(@PathVariable String postingId) {
         return ApiResponse.<SavedPostStatusResponse>builder()
                 .data(savedPostService.checkSavedStatus(postingId))
                 .build();

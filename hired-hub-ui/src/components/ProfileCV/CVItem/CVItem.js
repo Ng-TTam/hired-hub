@@ -8,7 +8,7 @@ function CVItem({ cvId, titleBox, onDelete }) {
     const navigate = useNavigate();
 
     const handEdit = () => {
-        navigate(`../edit-cv/${cvId}`);
+        navigate(`../../job-seeker/cv-edit/${cvId}`);
     };
 
     const handleDelete = async () => {
@@ -34,7 +34,7 @@ function CVItem({ cvId, titleBox, onDelete }) {
                 <div className="box-bg">
                     <div className="box-info">
                         <h4 className="description-cv">
-                            <NavLink to={`../xem-cv/${cvId}`} className="select-cv">
+                            <NavLink to={`../../job-seeker/cv-review/${cvId}`} className="select-cv">
                                 {titleBox}
                             </NavLink>
                         </h4>

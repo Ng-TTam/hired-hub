@@ -1,25 +1,59 @@
 import { useDispatch, useSelector } from 'react-redux';
-import '../../assets/css/Table.scss';
-import images from '../../assets/images/index';
-import { fetchApplications, resetApplication } from '../../redux/applicationSlice';
+import { Dropdown, Menu, Button } from 'antd'; // Import Ant Design components
+import { fetchApplications, resetApplication, setApplicationStatus } from '../../redux/applicationSlice';
 import { useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import './ManageCandidate.scss';
+import Image from '../Image';
+import images from '../../assets/images/index';
 
 const ManageCandidate = () => {
     const dispatch = useDispatch();
-    const {applications} = useSelector(state => state.application);
+    const { applications } = useSelector((state) => state.application);
 
     useEffect(() => {
         dispatch(fetchApplications());
-        console.log("appli", applications);
         return () => {
             dispatch(resetApplication());
         };
     }, [dispatch]);
 
+    const handCV = (application) => {
+        window.open(`../business/cv-review/${application.id}`, '_blank');
+    };
+
+    const handPosting = (application) => {
+        window.open(`../business/posting/${application.posting.id}`, '_blank');
+    };
+
+    const handApproved = async (applicationId) => {
+        const applicationStatus = { applicationStatus: 'APPROVED' };
+        await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
+        dispatch(fetchApplications());
+    };
+
+    const handRejected = async (applicationId) => {
+        const applicationStatus = { applicationStatus: 'REJECTED' };
+        await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
+        dispatch(fetchApplications());
+    };
+
+    const handPending = async (applicationId) => {
+        const applicationStatus = { applicationStatus: 'PENDING' };
+        await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
+        dispatch(fetchApplications());
+    };
+
+    const statusMenu = (applicationId) => (
+        <Menu>
+            <Menu.Item onClick={() => handApproved(applicationId)}>Approve</Menu.Item>
+            <Menu.Item onClick={() => handRejected(applicationId)}>Reject</Menu.Item>
+        </Menu>
+    );
+
     return (
-        <table className='custom-table' style={{ padding: "20px" }}>
+        <table className="custom-table" style={{ margin: '20px' }}>
             <thead>
                 <tr>
                     <th>Ứng viên</th>
@@ -30,46 +64,67 @@ const ManageCandidate = () => {
                 </tr>
             </thead>
             <tbody>
-                {applications?.map(application => (
+                {applications?.map((application) => (
                     <tr key={application?.id}>
-                        <td>
-                            <div className="cv-manage-image" style={{ display:"flex", justifyContent:"center",}}>
-                                <img src={ application? application.cv.jobSeeker.avatar :images.avatarDefault} alt="avatar" 
-                                style={{width:"70px", height:"70px", borderRadius:"50%"}}
+                        <td className="candidate-info">
+                            <div className="cv-manage-image">
+                                <Image
+                                    src={application?.cv?.jobSeeker?.avatar}
+                                    alt={application?.cv.id}
+                                    fallback={images.avatarDefault}
+                                    className="avatar"
                                 />
                             </div>
-                            <div className="cv-manage-name" style={{ display:"flex", justifyContent:"center",}}>
-                                <div>
-                                    {application?.cv?.jobSeeker?.firstName} {application?.cv?.jobSeeker?.lastName || "Nguyễn Văn A"}
-                                </div>
+                            <div className="cv-manage-name">
+                                {application?.cv?.jobSeeker?.firstName}{' '}
+                                {application?.cv?.jobSeeker?.lastName || 'Nguyễn Văn A'}
                             </div>
                         </td>
-                        <td>
-                            <div>
-                                {application?.cv?.description || "CV Description"}
+                        <td style={{ verticalAlign: 'middle' }}>
+                            <div className="cv-description" onClick={() => handCV(application)}>
+                                {application?.cv?.description || 'CV Description'}
                             </div>
-                            {/* <div>
-                                {application?.updatedAt ? formatDistanceToNow(new Date(application.updatedAt)) : "Vừa xong"}
-                            </div> */}
-                            <div>
-                                   Cập nhật: {application?.updatedAt ? `${formatDistanceToNow(new Date(application.updatedAt), { locale: vi })} trước` : "Vừa xong"}
-                            </div>
-                        </td>
-                        <td>{application?.posting?.title || "Title"}</td>
-                        <td>
-                            <div>
-                                {application?.email || "email@example.com"}
-                            </div>
-                            <div>
-                                {application?.cv?.jobSeeker?.phoneNumber || "01234567890"}
+                            <div className="cv-update-time">
+                                Cập nhật:{' '}
+                                {application?.cv.updatedAt
+                                    ? `${formatDistanceToNow(new Date(application.cv.updatedAt), { locale: vi })} trước`
+                                    : 'Vừa xong'}
                             </div>
                         </td>
-                        <td>{application?.status || "None"}</td>
+                        <td style={{ verticalAlign: 'middle' }}>
+                            <div className="posting-title-appli" onClick={() => handPosting(application)}>
+                                {application?.posting?.title || 'Title'}
+                            </div>
+                        </td>
+                        <td style={{ verticalAlign: 'middle' }}>
+                            <div className="contact-info">{application?.email || 'email@example.com'}</div>
+                            <div className="contact-info">
+                                {application?.cv?.jobSeeker?.phoneNumber || '01234567890'}
+                            </div>
+                        </td>
+                        <td style={{ verticalAlign: 'middle' }}>
+                            {application?.status === 'PENDING' ? (
+                                <Dropdown overlay={statusMenu(application?.id)} trigger={['hover']}>
+                                    <Button className="status-button" style={{ width: '99.4px' }}>
+                                        {application?.status || 'None'}
+                                    </Button>
+                                </Dropdown>
+                            ) : (
+                                <button
+                                    className={`status-button ${
+                                        application?.status === 'APPROVED' ? 'active' : 'deactive'
+                                    }`}
+                                    onClick={() => handPending(application?.id)}
+                                >
+                                    {application?.status || 'None'}
+                                </button>
+                            )}
+                        </td>
                     </tr>
                 ))}
             </tbody>
         </table>
     );
-}
+};
 
 export default ManageCandidate;

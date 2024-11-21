@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { fetchEmployerPostings } from '../../redux/postingSlice';
+import { formatDateTime } from '../../utils';
 
 const PostingJob = () => {
     const dispatch = useDispatch();
@@ -49,10 +50,14 @@ const PostingJob = () => {
                                 <tr key={posting.id}>
                                     <td>{posting.title}</td>
                                     <td>{posting.mainJob.name}</td>
-                                    <td>{posting.subJobs.map((subJob) => (<Tag color='blue'>{subJob.name}</Tag>))}</td>
+                                    <td>
+                                        {posting.subJobs.map((subJob) => (
+                                            <Tag color="blue">{subJob.name}</Tag>
+                                        ))}
+                                    </td>
                                     <td>{posting.position.name}</td>
-                                    <td>{posting.createdAt}</td>
-                                    <td>{posting.expiredAt}</td>
+                                    <td>{formatDateTime(posting.createdAt)}</td>
+                                    <td>{formatDateTime(posting.expiredAt)}</td>
                                     <td>
                                         <Tag
                                             color={
@@ -73,10 +78,10 @@ const PostingJob = () => {
                                     <td>
                                         {Date.parse(posting.expiredAt) > Date.now() && (
                                             <div style={{ display: 'flex', gap: '10px' }}>
-                                                <Button color='primary' variant="outlined">
+                                                <Button color="primary" variant="outlined">
                                                     <PenBox size={20} />
                                                 </Button>
-                                                <Button color='danger' variant="outlined">
+                                                <Button color="danger" variant="outlined">
                                                     <Pause size={20} />
                                                 </Button>
                                             </div>
@@ -86,11 +91,7 @@ const PostingJob = () => {
                             ))}
                         </tbody>
                     </table>
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handleOnPageChange}
-                    />
+                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handleOnPageChange} />
                 </div>
             ) : (
                 <div className="posting-nil">

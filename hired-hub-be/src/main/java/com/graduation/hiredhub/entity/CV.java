@@ -1,5 +1,9 @@
 package com.graduation.hiredhub.entity;
 
+import java.time.Instant;
+
+import org.springframework.data.annotation.LastModifiedDate;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -30,6 +34,9 @@ public class CV {
     String skill;
 
     String others;
+
+    @LastModifiedDate
+    Instant updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "job_seeker_id", nullable = false)

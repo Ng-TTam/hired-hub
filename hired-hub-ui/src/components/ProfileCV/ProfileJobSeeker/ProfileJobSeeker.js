@@ -2,15 +2,22 @@ import React, { useEffect } from "react";
 import images from "../../../assets/images";
 import './ProfileJobSeeker.scss'
 import { useSelector } from "react-redux";
+import Image from '../../Image'
 
 const ProfileJobSeeker = () =>  {
     const email = localStorage.getItem('email');
     const user = useSelector((state) => state.user.user);
 
     return(
-        <div className="turn-on-job_header">
+        <div className="turn-on-job_header" 
+        style={{padding: "20px"}}>
             <div className="profile-avatar">
-                <img src={images.avatarDefault} alt="avt"/>
+                <Image className='img-cv-1'
+                    src={user?.avatar? user?.avatar : images.avatarDefault}
+                    alt="User avatar"
+                    fallback={ images.avatarDefault}
+                    style={{maxWidth: "60%", maxHeight: "60%", aspectRatio: "1 / 1", objectFit:"cover",borderRadius: "50%" , marginLeft:"auto" , marginRight:"auto"}}
+                />
                 
             </div>
             <div className="turn-on-job__header-info">
@@ -18,13 +25,9 @@ const ProfileJobSeeker = () =>  {
                 <h4 className="profile-fullname">{user? `${user.firstName} ${user.lastName}` : "Nguyễn Văn A"}</h4>
                 <div className="account-type vip">
                     <span>{email? email : "email@example.com"}</span>
+                    
                 </div>
-                <div className="box-footer">
-                    <a href="#" class="btn btn-sm btn-upgrade">
-                        <i className="fa-solid fa-circle-arrow-up"></i>
-                        <span>Nâng cấp tài khoản</span>
-                    </a>
-                </div>
+                <span style={{marginTop: "8px"}}>{user? user.phoneNumber : "091283647"}</span>
             </div>
         </div>
 

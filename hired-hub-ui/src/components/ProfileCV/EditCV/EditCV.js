@@ -6,6 +6,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Await, useNavigate, useParams } from 'react-router-dom';
 import { fetchCV, updateCV } from '../../../redux/cvSlice';
 import './EditCV.scss'
+import Image from '../../Image';
 
 const EditCV = () => {
     const email = localStorage.getItem('email');
@@ -61,12 +62,12 @@ const EditCV = () => {
                 <div className="cv-review">
                     <div className='header'>
                         <div className="left_header">
-                            <img className='img-cv'
-                                src={images.cvAvatarDefault}
+                            <Image className='img-cv-1'
+                                src={user?.avatar || images.cvAvatarDefault}
                                 alt="User avatar"
-                                data-v-88ff76e4=""
+                                fallback={ images.cvAvatarDefault}
+                                style={{maxWidth: "85%", maxHeight: "85%", objectFit:"cover", marginLeft:"auto" , marginRight:"auto"}}
                             />
-                            
                         </div>
                         <div className="right_header">
                             <div className='top-name'/>

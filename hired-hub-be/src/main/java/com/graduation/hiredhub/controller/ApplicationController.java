@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.graduation.hiredhub.dto.reqResp.ApplicationDTO;
 import com.graduation.hiredhub.dto.request.ApplicationRequest;
+import com.graduation.hiredhub.dto.request.ApplicationStatusRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.dto.response.ApplicationStatisticsResponse;
@@ -37,6 +38,15 @@ public class ApplicationController {
         ApiResponse<ApplicationResponse> getApplicationJobSeeker(@PathVariable Integer applicationId){
                 return ApiResponse.<ApplicationResponse>builder()
                         .data(applicationService.getApplicationByJobSeeker(applicationId))
+                        .message("Successfully")
+                        .build();
+        }
+
+        @PutMapping("applications/{applicationId}")
+        ApiResponse<ApplicationResponse> setApplicationStatus(@RequestBody @Valid ApplicationStatusRequest applicationStatusRequest
+                ,@PathVariable Integer applicationId){
+                return ApiResponse.<ApplicationResponse>builder()
+                        .data(applicationService.setApplicationStatus(applicationStatusRequest, applicationId))
                         .message("Successfully")
                         .build();
         }

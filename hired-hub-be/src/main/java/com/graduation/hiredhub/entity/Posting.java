@@ -52,7 +52,7 @@ public class Posting {
     @OneToMany(mappedBy = "posting", cascade = CascadeType.ALL)
     List<Application> applications;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "job_description_id")
     JobDescription jobDescription;
 

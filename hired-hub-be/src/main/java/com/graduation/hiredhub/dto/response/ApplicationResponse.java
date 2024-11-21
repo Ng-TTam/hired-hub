@@ -1,8 +1,5 @@
 package com.graduation.hiredhub.dto.response;
 
-import com.graduation.hiredhub.dto.reqResp.JobSeekerDTO;
-import com.graduation.hiredhub.entity.CV;
-import com.graduation.hiredhub.entity.Posting;
 import com.graduation.hiredhub.entity.enumeration.ApplicationStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,8 +18,9 @@ public class ApplicationResponse {
     ApplicationStatus status;
     String message;
     CVResponse cv;
-    PostingResponse posting;
+    PostingDetailResponse posting;
     Instant createdAt;
     Instant updatedAt;
     String email;
+    Instant cvUpdateAt;
 }

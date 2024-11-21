@@ -1,0 +1,101 @@
+.pa-container {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex; /* Sử dụng flexbox để chia cột */
+    gap: 30px; /* Khoảng cách giữa các cột */
+    font-family: Inter, sans-serif;
+    padding-top: 20px;
+
+    
+    .pa-data {
+        padding: 16px;
+        flex: 3; /* Chiếm 3 phần của chiều rộng (tỉ lệ 3:1) */
+        background-color: white; /* Màu nền cho dễ phân biệt */
+        border-radius: 10px; /* Bo góc */
+        .pa-header{
+            height: 40px;
+            background: white;
+            color: black;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            .pa-header-title{
+                flex: 2;
+                justify-content: center; 
+                padding-left: 20px;
+            }
+            .pa-header-select{
+                background-color: white;
+                flex: 1;
+                font-size: 16px;
+                max-width: 210px;
+                height: 40px;
+                padding: 0px;
+                .pa-filter-dropdown{
+                    background-color: white;
+                    width: 100%;
+                    height: 100%;
+                    border: 1px solid #28a745;
+                    border-radius: 10px;
+                }
+                .pa-custom-dropdown{
+                    margin-top: 30px !important;
+                }
+            }
+        }
+        .pa-list{
+            padding: 20px 16px;
+        }
+        .no-pa-list{
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Căn giữa theo chiều ngang */
+        justify-content: center; /* Căn giữa theo chiều dọc */
+        height: 100%; /* Hoặc sử dụng một giá trị cụ thể như 500px */
+        text-align: center; /* Căn giữa văn bản */
+        .no-pa-image img {
+            max-width: 100%;
+            height: auto;
+            padding-bottom: 30px;
+        }
+
+        .no-pa-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 16px; 
+        }
+
+        .no-pa-des{
+            padding-bottom: 22px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .no-pa-button button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .no-pa-button button:hover {
+            background-color: #28a746d4;
+        }
+
+        }
+    }
+
+    .pa-profile {
+        flex: 1; /* Chiếm 1 phần của chiều rộng */
+        background-color: white;
+        border-radius: 10px;
+        height: fit-content;
+    }
+}
