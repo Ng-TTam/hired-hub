@@ -19,6 +19,7 @@ import styles from './Filter.module.scss';
 import { fetchPostions } from '../../../redux/postionCategorySlice';
 import { fetchJobCategories } from '../../../redux/jobCategorySlice';
 import { setCriteria } from '../../../redux/filterSlice';
+import { Input } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -136,17 +137,15 @@ function Filter() {
         <div className={cx('wrapper')}>
             <div className={cx('search-container')}>
                 <div className={cx('group-search')}>
-                    <FontAwesomeIcon className={cx('search-icon')} icon={faMagnifyingGlass} />
-                    <input
+                    <Input
                         className={cx('search-text')}
-                        placeholder="Vị trí tuyển dụng, tên công ty "
-                        spellCheck={false}
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
+                        onPressEnter={handleSearch}
+                        placeholder="Vị trí tuyển dụng, tên công ty"
+                        prefix={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                        allowClear
                     />
-                    <button className={cx('clear-btn')} onClick={() => setSearchText('')}>
-                        <FontAwesomeIcon icon={faXmark} />
-                    </button>
                     <div className={cx('search-location')}>
                         <DropdownButton
                             items={provinces}

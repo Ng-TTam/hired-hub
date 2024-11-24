@@ -18,7 +18,7 @@ function PostingFilter() {
 
     useEffect(() => {
         dispatch(fetchPostings({ criteria: criteria, pageable: { sort: 'createdAt,desc', ...pagination } }));
-    }, [criteria, pagination]);
+    }, [dispatch, criteria, pagination]);
 
     const handleOnPageChange = (page) => {
         dispatch(setCurrentPage(page - 1));
