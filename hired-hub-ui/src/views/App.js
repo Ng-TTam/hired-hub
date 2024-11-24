@@ -4,6 +4,7 @@ import CMSRoutes from '../routes/CMSRoutes';
 import BussinessRoutes from '../routes/BussinessRoutes';
 import JobSeekerRoutes from '../routes/JobSeekerRoutes';
 import GuessRoutes from '../routes/GuessRoutes';
+import ProgressSteps from '../components/ProgressStep';
 
 function App() {
     const role = localStorage.getItem('role');

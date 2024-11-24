@@ -37,19 +37,19 @@ const NavbarCMS = () => {
     return (
         <>
             <nav className="navbar">
-                <div className="search-container">
+                {/* <div className="search-container">
                     <Search className="search-icon" size={20} />
                     <input type="text" className="search-box" placeholder="Search" />
-                </div>
+                </div> */}
 
                 <div className="right-section">
                     <NotificationBadge />
                     <button className={`icon-button ${isOpen ? 'icon-button-active' : ''}`} onClick={togglePopup}>
                         <Settings size={20} />
                     </button>
-                    <div className="avatar">
+                    {/* <div className="avatar">
                         <img src="/api/placeholder/36/36" alt="User avatar" />
-                    </div>
+                    </div> */}
                 </div>
             </nav>
             {isOpen && (

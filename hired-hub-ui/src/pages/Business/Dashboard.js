@@ -15,12 +15,12 @@ const Dashboard = () => {
             <Sidebar />
             <div className="topNav" style={{ flex: 1 }}>
                 <NavbarCMS />
-                <div className="content">
+                <div className="content" style={{ maxWidth: '100%', flex: 1 }}>
                     <Routes>
                         <Route path="/dashboard" element={<DashboardDefault />} />
                         <Route path="/posting-job" element={<PostingJob />} />
                         <Route path="/manage-candidate" element={<ManageCandidate />} />
-                        <Route path="/posting-stat" element={<PostingStat />} />
+                        {/* <Route path="/posting-stat" element={<PostingStat />} /> */}
                         <Route path="/create-post" element={<ProgressSteps />} />
                         <Route path="/company/create" element={<CreateCompanyForm />} />
                     </Routes>

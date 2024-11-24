@@ -94,9 +94,9 @@ const LoginForm = () => {
                         Đăng ký
                     </a>
                 </p>
-                <p className="p line">Hoặc với</p>
+                {/* <p className="p line">Hoặc với</p> */}
 
-                <div className="flex-row">
+                {/* <div className="flex-row">
                     <button className="btn google">
                         <img src={gLogo} className="logo" alt="logo" />
                         Google
@@ -127,7 +127,7 @@ const LoginForm = () => {
                         </svg>
                         Apple
                     </button>
-                </div>
+                </div> */}
             </div>
         </div>
     );

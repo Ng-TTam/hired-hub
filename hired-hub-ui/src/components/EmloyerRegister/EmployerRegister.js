@@ -179,6 +179,7 @@ const EmployerRegister = () => {
                     gender: user.gender,
                 },
                 companyName: user.companyName,
+                position: 'HR',
             };
             // console.log('Form Data:', formData);
             dispatch(registerEmployer(formData));
@@ -190,7 +191,7 @@ const EmployerRegister = () => {
 
         return () => {
             dispatch(clearRegisterState());
-            if (success) navigate('/dashboard');
+            if (success) navigate('/business/dashboard');
         };
     }, [dispatch, success, navigate]);
 

@@ -52,7 +52,7 @@ const Sidebar = () => {
                             <span>Quản lý ứng viên</span>
                         </NavLink>
                     </li>
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                         <NavLink
                             to="/business/posting-stat"
                             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
@@ -60,7 +60,7 @@ const Sidebar = () => {
                             <ChartBarIcon size={20} />
                             <span>Báo cáo tuyển dụng</span>
                         </NavLink>
-                    </li>
+                    </li> */}
                     <li className="nav-item">
                         <NavLink to="/logout" className="nav-link">
                             <LogOut size={20} />

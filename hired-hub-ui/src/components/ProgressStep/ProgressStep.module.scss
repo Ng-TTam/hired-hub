@@ -1,4 +1,4 @@
-.wizard-container{
+.wizard-container {
     flex: 1;
 }
 
@@ -6,6 +6,7 @@
     display: flex;
     max-width: 100%;
     padding: 10px 10px;
+    flex-wrap: wrap;
     margin: 0 auto;
     background-color: white;
 }

@@ -16,8 +16,8 @@ function PostingCard({ posting }) {
         <div className={cx('wrapper')}>
             <Image
                 className={cx('logo')}
-                alt={posting.company.name}
-                src={posting.company.logo}
+                alt={posting?.company?.name}
+                src={posting?.company?.logo}
                 fallback={images.logoDefault}
             />
             <div className={cx('posting-info')}>
