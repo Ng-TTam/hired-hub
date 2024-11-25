@@ -1,10 +1,4 @@
-.content{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.posting-nil{
+.posting-nil {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,36 +6,35 @@
     height: 15em;
     width: 35em;
     border-radius: 15px;
-    margin-top: 20px;
-    padding: 20px;
     background-color: white;
+    padding: 20px;
+    margin: auto;
 }
 
-.posting-nil h1{
+.posting-nil h1 {
     margin-top: 0;
     font-size: 28px;
 }
 
-.posting-nil span{
+.posting-nil span {
     display: flex;
     justify-content: center;
-    text-align: center; 
+    text-align: center;
     width: 25em;
     color: #4b5563;
 }
 
-.post-button{
+.post-button {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     width: 7em;
     border-radius: 5px;
     padding: 10px;
-    margin-top: 20px;
     font-size: 18px;
     background-color: #00b14f;
 }
 
-.post-button a{
+.post-button a {
     color: white;
     text-decoration: none;
 }

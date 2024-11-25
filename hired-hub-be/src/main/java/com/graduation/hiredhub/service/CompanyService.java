@@ -30,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.StringJoiner;
 
 @Slf4j
@@ -62,6 +63,14 @@ public class CompanyService {
     @Transactional
     @PreAuthorize("hasRole('EMPLOYER')")
     public CompanyResponse createCompany(CompanyCreationRequest companyCreationRequest) {
+        String accountId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employer employer = employerRepository.findByAccountId(accountId).orElseThrow(
+                () -> new AppException(ErrorCode.UNAUTHENTICATED)
+        );
+        if (employer.getCompany() != null) {
+            throw new AppException(ErrorCode.EMPLOYER_COMPANY_ALREADY_EXISTS);
+        }
+
         Company company = companyMapper.toCompany(companyCreationRequest);
         if (companyCreationRequest.getLogo() != null) {
             company.setLogo(minioService.uploadFile(companyCreationRequest.getLogo(), FOLDER_UPLOAD_LOGO));
@@ -69,10 +78,6 @@ public class CompanyService {
         if (companyCreationRequest.getCoverImage() != null) {
             company.setCoverImage(minioService.uploadFile(companyCreationRequest.getCoverImage(), FOLDER_UPLOAD_COVER));
         }
-        String accountId = SecurityContextHolder.getContext().getAuthentication().getName();
-        Employer employer = employerRepository.findByAccountId(accountId).orElseThrow(
-                () -> new AppException(ErrorCode.UNAUTHENTICATED)
-        );
         try {
             company.setIsActive(false);
             companyRepository.save(company);
@@ -139,5 +144,15 @@ public class CompanyService {
         }
         Page<CompanyResponse> page = companyRepository.findAll(spec, pageable).map(companyMapper::toCompanyResponse);
         return PageUtils.toPageResponse(page);
+    }
+
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public CompanyResponse findByCurrentUserLogin() {
+        String accountId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employer employer = employerRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return Optional.ofNullable(employer.getCompany())
+                .map(companyMapper::toCompanyResponse)
+                .orElseThrow(() -> new AppException(ErrorCode.EMPLOYER_COMPANY_NOT_EXISTS));
     }
 }

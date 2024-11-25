@@ -1,9 +1,9 @@
-.header-candidate{
+.header-candidate {
     width: 100%;
     background-color: white;
     border-bottom: 1px solid #ddd;
-    margin-bottom: 10px;
-    .text-candidate{
+
+    .text-candidate {
         display: flex;
         height: 50px;
         align-items: center;
@@ -11,16 +11,16 @@
         padding-right: 20px;
         border-bottom: 1px solid #e8edf2;
     }
-    .select-candidate{
+    .select-candidate {
         width: 100%;
         display: flex;
-        .text-header-select-posting{
+        .text-header-select-posting {
             display: flex;
             margin-left: auto;
             align-items: center;
         }
 
-        .pa-header-select-posting{
+        .pa-header-select-posting {
             display: flex;
             align-items: center;
             background-color: white;
@@ -30,7 +30,7 @@
             max-width: 210px;
             height: 45px;
             padding: 0px;
-            .pa-filter-dropdown-status{
+            .pa-filter-dropdown-status {
                 background-color: white;
                 width: 100%;
                 height: 70%;
@@ -43,16 +43,16 @@
                 align-items: center;
                 border-radius: 5px;
             }
-            .pa-custom-dropdown-status{
+            .pa-custom-dropdown-status {
                 margin-top: 30px !important;
             }
         }
-        .text-header-select-status{
+        .text-header-select-status {
             display: flex;
             margin-left: 10%;
             align-items: center;
         }
-        .pa-header-select-status{
+        .pa-header-select-status {
             display: flex;
             align-items: center;
             background-color: white;
@@ -62,7 +62,7 @@
             max-width: 210px;
             height: 45px;
             padding: 0px;
-            .pa-filter-dropdown-status{
+            .pa-filter-dropdown-status {
                 background-color: white;
                 width: 100%;
                 height: 70%;
@@ -75,20 +75,16 @@
                 align-items: center;
                 border-radius: 5px;
             }
-            .pa-custom-dropdown-status{
+            .pa-custom-dropdown-status {
                 margin-top: 30px !important;
             }
         }
     }
 }
 .custom-table-candidate {
-    width: 90%;
+    width: 100%;
     border-collapse: collapse;
-    padding: 20px;
     background-color: white;
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
 
     th,
     td {
@@ -207,17 +203,17 @@
     }
 }
 
-.no-application-table{
-    width: 90%;
-    margin: 40px;
-    border-collapse: collapse;
+.no-application-table {
+    width: 100%;
+    margin-top: 10px;
     padding: 20px;
+    border-collapse: collapse;
     background-color: white;
-    .no-pa-image-appli{
+    .no-pa-image-appli {
         text-align: center;
     }
-    .no-pa-message-appli{
-        font-family: "Inter", sans-serif;
+    .no-pa-message-appli {
+        font-family: 'Inter', sans-serif;
         text-align: center;
         font-size: 14px;
     }

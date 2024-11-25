@@ -210,7 +210,8 @@ public class PostingService {
     }
 
     public PageResponse<PostingDetailResponse> filter(PostingFilterCriteria criteria, Pageable pageable) {
-        Specification<Posting> spec = Specification.where(null);
+        Specification<Posting> spec = Specification
+                .where(PostingSpecifications.hasStatus(PostingStatus.ACTIVATE));
 
         if (criteria.getSearchValue() != null) {
             spec = spec.and(PostingSpecifications.withSearchText(criteria.getSearchValue()));

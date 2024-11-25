@@ -71,6 +71,18 @@ export const createCompany = createAsyncThunk('companies/createCompany', async (
     }
 });
 
+export const fetchByCurrentUserLogin = createAsyncThunk(
+    'companies/fetchByCurrentUserLogin',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosPro.get(`${apiURL}/self`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    },
+);
+
 const companySlice = createSlice({
     name: 'companies',
     initialState: {
@@ -121,6 +133,19 @@ const companySlice = createSlice({
                 state.totalPages = action.payload.totalPages;
             })
             .addCase(fetchFilterCompanies.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+            })
+            .addCase(fetchByCurrentUserLogin.pending, (state) => {
+                state.loading = true;
+                state.company = null;
+                state.error = null;
+            })
+            .addCase(fetchByCurrentUserLogin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.company = action.payload.data;
+            })
+            .addCase(fetchByCurrentUserLogin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             });

@@ -1,16 +1,33 @@
 import { faCircleCheck, faCirclePlus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Tabs } from 'antd';
-import React, { useState } from 'react';
-import CreateCompanyForm from '../CreateCompanyForm/CreateCompanyForm';
-import styles from './UpdateEmployerCompany.module.scss';
 import classNames from 'classnames/bind';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchByCurrentUserLogin } from '../../redux/companySlice';
+import CreateCompanyForm from '../CreateCompanyForm/CreateCompanyForm';
 import CompanyList from './CompanyList';
+import EmployerCompany from './EmployerCompany';
+import styles from './UpdateEmployerCompany.module.scss';
 
 const cx = classNames.bind(styles);
 
 function UpdateEmployerCompany() {
+    const dispatch = useDispatch();
+    const { company } = useSelector((state) => state.companies);
+    const { success } = useSelector((state) => state.employer);
+
     const [activeTab, setActiveTab] = useState('1');
+
+    useEffect(() => {
+        dispatch(fetchByCurrentUserLogin());
+    }, []);
+
+    useEffect(() => {
+        if (success) {
+            dispatch(fetchByCurrentUserLogin());
+        }
+    }, [success]);
 
     const handleTabChange = (key) => {
         setActiveTab(key);
@@ -49,6 +66,10 @@ function UpdateEmployerCompany() {
             children: <CreateCompanyForm />,
         },
     ];
+
+    if (company) {
+        return <EmployerCompany company={company} />;
+    }
 
     return (
         <Tabs

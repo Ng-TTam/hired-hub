@@ -1,0 +1,33 @@
+.wrapper {
+    padding: 24px;
+    background: var(--white-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.company-name__container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.company-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.company-name__sectioin {
+    h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    span {
+        color: #666;
+        font-size: 14px;
+    }
+}

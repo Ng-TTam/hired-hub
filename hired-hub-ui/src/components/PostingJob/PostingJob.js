@@ -33,11 +33,11 @@ const PostingJob = () => {
             {loading ? (
                 <div className="loading">Đang tải...</div>
             ) : postings.length > 0 ? (
-                <div style={{ flex: 1, padding: '0px 20px' }}>
+                <div style={{ flex: 1 }}>
                     <div className="post-button" style={{ fontSize: '16px' }}>
                         <Link to="/business/create-post">Đăng tuyển</Link>
                     </div>
-                    <table className="custom-table" style={{ marginTop: '20px' }}>
+                    <table className="custom-table" style={{ marginTop: '10px' }}>
                         <thead>
                             <tr>
                                 <th>Tin tuyển dụng</th>
@@ -81,8 +81,7 @@ const PostingJob = () => {
                                                 ? 'Activate'
                                                 : posting.status === 'DEACTIVATE'
                                                 ? 'Deactivate'
-                                                : 'Rejected'
-                                            }
+                                                : 'Rejected'}
                                         </Tag>
                                     </td>
                                     <td>

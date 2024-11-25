@@ -38,7 +38,7 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ApiResponse<CompanyResponse> create(@ModelAttribute CompanyCreationRequest companyCreationRequest){
+    public ApiResponse<CompanyResponse> create(@ModelAttribute CompanyCreationRequest companyCreationRequest) {
         return ApiResponse.<CompanyResponse>builder()
                 .data(companyService.createCompany(companyCreationRequest))
                 .build();
@@ -49,6 +49,13 @@ public class CompanyController {
             AdminCompanyFilterCriteria criteria, Pageable pageable) {
         return ApiResponse.<PageResponse<CompanyResponse>>builder()
                 .data(companyService.filter(criteria, pageable))
+                .build();
+    }
+
+    @GetMapping("/self")
+    public ApiResponse<CompanyResponse> getByCurrentUserLogin() {
+        return ApiResponse.<CompanyResponse>builder()
+                .data(companyService.findByCurrentUserLogin())
                 .build();
     }
 }

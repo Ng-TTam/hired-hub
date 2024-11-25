@@ -23,7 +23,7 @@ function CompanyList() {
     }, [pagination]);
 
     const handleSearch = () => {
-        dispatch(fetchAllCompanies({ companyName, page: pagination.page, size: pagination.size }));
+        setPagination((prev) => ({ ...prev, page: 1 }));
     };
 
     return (
@@ -34,9 +34,7 @@ function CompanyList() {
                     onChange={(e) => setCompanyName(e.target.value)}
                     onPressEnter={handleSearch}
                     placeholder="Tên công ty"
-                    prefix={
-                        <FontAwesomeIcon icon={faMagnifyingGlass} onChange={(e) => setCompanyName(e.target.value)} />
-                    }
+                    prefix={<FontAwesomeIcon icon={faMagnifyingGlass} />}
                     allowClear
                 />
                 <Button type="primary" onClick={handleSearch}>

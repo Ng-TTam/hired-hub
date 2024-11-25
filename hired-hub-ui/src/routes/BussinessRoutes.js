@@ -10,7 +10,6 @@ const BussinessRoutes = () => {
             <Route path="/*" element={<Dashboard />} />
             <Route path="cv-review/:applicationId" element={<CVReview />} />
             <Route path="/posting/:id" element={<PostingReview />} />
-            <Route path="/update-company" element={<UpdateEmployerCompany />} />
         </Routes>
     );
 };
