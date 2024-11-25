@@ -1,6 +1,6 @@
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Space, Table, Tag, notification } from 'antd';
+import { Button, Space, Table, Tag, Modal } from 'antd';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,32 +14,18 @@ const cx = classNames.bind(styles);
 
 function PendingPosts() {
     const dispatch = useDispatch();
-    const { postings, totalPages, loading } = useSelector((state) => state.postings);
+    const { postings, totalPages, loading, success } = useSelector((state) => state.postings);
 
     const [criteria, setCriteria] = useState({ status: 'PENDING' });
     const [pageable, setPageable] = useState({ page: 0, size: 10, sort: 'createdAt,desc' });
-    const [notificationData, setNotificationData] = useState(null);
 
     useEffect(() => {
         dispatch(fetchAdminPostings({ criteria, pageable }));
     }, [criteria, pageable]);
 
     useEffect(() => {
-        if (notificationData) {
-            if (notificationData.type === 'error') {
-                notification.error({
-                    message: notificationData.message,
-                    description: notificationData.description,
-                });
-            } else if (notificationData.type === 'success') {
-                notification.success({
-                    message: notificationData.message,
-                    description: notificationData.description,
-                });
-            }
-            setNotificationData(null);
-        }
-    }, [notificationData]);
+        if (success) dispatch(fetchAdminPostings({ criteria, pageable }));
+    }, [success]);
 
     const handleTableChange = (pagination, filters, sorter) => {
         if (sorter.field) {
@@ -50,24 +36,16 @@ function PendingPosts() {
         }
     };
 
-    const handleChangeStatus = async ({ postingId, status }) => {
-        const resultAction = await dispatch(updateStatus({ postingId, status }));
-
-        if (updateStatus.rejected.match(resultAction)) {
-            const error = resultAction.payload;
-            setNotificationData({
-                type: 'error',
-                message: 'Lỗi',
-                description: error?.message || 'Đã có lỗi xảy ra.',
-            });
-        } else {
-            dispatch(fetchAdminPostings({ criteria, pageable }));
-            setNotificationData({
-                type: 'success',
-                message: 'Thành công',
-                description: 'Cập nhật thành công!',
-            });
-        }
+    const handleShowConfirm = ({ postingId, status }) => {
+        Modal.confirm({
+            title: 'Bạn có chắc chắn?',
+            content: 'Bạn có chắc chắn muốn cập nhật không?',
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk() {
+                dispatch(updateStatus({ postingId, status }));
+            },
+        });
     };
 
     const columns = [
@@ -86,7 +64,7 @@ function PendingPosts() {
             title: 'Công ty',
             dataIndex: ['company', 'name'],
             key: 'companyName',
-            render: (text, record) => <Link to={`/company/${record.company.id}`}>{text}</Link>,
+            render: (text, record) => <Link to={`/company/${record?.company?.id}`}>{text}</Link>,
         },
         {
             title: 'Ngày tạo',
@@ -102,7 +80,17 @@ function PendingPosts() {
             render: (text, record) => {
                 const status = record.status;
                 return (
-                    <Tag color={status === 'ACTIVATE' ? 'green' : status === 'PENDING' ? 'orange' : 'red'}>
+                    <Tag
+                        color={
+                            status === 'ACTIVATE'
+                                ? 'green'
+                                : status === 'PENDING'
+                                ? 'orange'
+                                : status === 'DEACTIVATE'
+                                ? 'red'
+                                : 'purple'
+                        }
+                    >
                         {status}
                     </Tag>
                 );
@@ -120,7 +108,7 @@ function PendingPosts() {
                             type="primary"
                             icon={<FontAwesomeIcon icon={faCheck} />}
                             onClick={() =>
-                                handleChangeStatus({
+                                handleShowConfirm({
                                     postingId: record.id,
                                     status: 'ACTIVATE',
                                 })
@@ -133,9 +121,9 @@ function PendingPosts() {
                             danger
                             icon={<FontAwesomeIcon icon={faBan} />}
                             onClick={() =>
-                                handleChangeStatus({
+                                handleShowConfirm({
                                     postingId: record.id,
-                                    status: 'DEACTIVATE',
+                                    status: 'REJECTED',
                                 })
                             }
                         >

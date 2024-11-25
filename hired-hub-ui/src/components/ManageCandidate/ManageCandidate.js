@@ -274,9 +274,7 @@ const ManageCandidate = () => {
                             ))}
                         </tbody>
                     </table>
-                    {filteredApplications?.length > ITEMS_PER_PAGE && (
-                        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-                    )}
+                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                 </div>
             ) : (
                 <div className="no-application-table">

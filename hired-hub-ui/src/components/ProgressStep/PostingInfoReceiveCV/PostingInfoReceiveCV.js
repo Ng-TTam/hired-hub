@@ -12,7 +12,7 @@ const PostingInfoReceiveCV = ({ validate }) => {
     const [expiredAt, setExpriedDate] = useState(posting?.expiredAt || '');
     const [errors, setErrors] = useState('');
     const { Text } = Typography;
-    const user = JSON.parse(localStorage.getItem('user'));
+    const { user } = useSelector((state) => state.user);
 
     useEffect(() => {
         if (expiredAt) {

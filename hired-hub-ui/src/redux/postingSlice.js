@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import axiosPro, { baseURL } from '../config/axios';
+import { notification } from 'antd';
 
 const apiUrl = `${baseURL}posting`;
 
@@ -20,7 +21,7 @@ export const fetchPostings = createAsyncThunk(
 
 export const fetchEmployerPostings = createAsyncThunk(
     'postings/fetchEmployerPostings',
-    async ( { page, size }, { rejectWithValue }) => {
+    async ({ page, size }, { rejectWithValue }) => {
         const token = localStorage.getItem('token');
         try {
             const response = await axios.get(`${apiUrl}/self`, {
@@ -88,12 +89,22 @@ export const updatePosting = createAsyncThunk('postings/updatePosting', async (p
 });
 
 export const updateStatus = createAsyncThunk(
-    'postings/updateStatus', async ({ postingId, status }, { rejectWithValue }) => {
-        status === 'ACTIVATE' ? status = 'DEACTIVATE' : status = 'ACTIVATE';
+    'postings/updateStatus',
+    async ({ postingId, status }, { rejectWithValue }) => {
         try {
             const response = await axiosPro.put(`${apiUrl}/update-status`, { postingId, status });
+            notification.success({
+                message: 'Thành công',
+                description: 'Cập nhật thành công',
+            });
             return response.data;
         } catch (error) {
+            notification.error({
+                message: 'Thất bại',
+                description: `Cập nhật thất bại - ${
+                    error.response.data.message || error.response.data || 'lỗi bất định'
+                }`,
+            });
             return rejectWithValue(error.response.data);
         }
     },
@@ -176,7 +187,7 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            
+
             .addCase(fetchPosting.pending, (state) => {
                 state.loading = true;
                 state.error = null;

@@ -14,7 +14,7 @@ const cx = classNames.bind(styles);
 
 function UpdateEmployerCompany() {
     const dispatch = useDispatch();
-    const { company } = useSelector((state) => state.companies);
+    const { company, success: created } = useSelector((state) => state.companies);
     const { success } = useSelector((state) => state.employer);
 
     const [activeTab, setActiveTab] = useState('1');
@@ -24,10 +24,10 @@ function UpdateEmployerCompany() {
     }, []);
 
     useEffect(() => {
-        if (success) {
+        if (success || created) {
             dispatch(fetchByCurrentUserLogin());
         }
-    }, [success]);
+    }, [success, created]);
 
     const handleTabChange = (key) => {
         setActiveTab(key);

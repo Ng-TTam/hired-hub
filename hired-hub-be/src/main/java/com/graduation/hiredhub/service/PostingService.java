@@ -285,8 +285,8 @@ public class PostingService {
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
         if (account.getRole().equals(Role.EMPLOYER)
-                && (postingStatusRequest.getStatus().equals(Status.PENDING)
-                || posting.getStatus().equals(Status.PENDING))) {
+                && (postingStatusRequest.getStatus().equals(PostingStatus.PENDING)
+                || posting.getStatus().equals(PostingStatus.PENDING))) {
             throw new AppException(ErrorCode.POSTING_PENDING);
         }
         posting.setStatus(postingStatusRequest.getStatus());

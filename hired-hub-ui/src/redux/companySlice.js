@@ -91,6 +91,7 @@ const companySlice = createSlice({
         totalPages: 0,
         loading: false,
         error: null,
+        success: false,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -146,6 +147,19 @@ const companySlice = createSlice({
                 state.company = action.payload.data;
             })
             .addCase(fetchByCurrentUserLogin.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+            })
+            .addCase(createCompany.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(createCompany.fulfilled, (state, action) => {
+                state.loading = false;
+                state.success = true;
+            })
+            .addCase(createCompany.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             });

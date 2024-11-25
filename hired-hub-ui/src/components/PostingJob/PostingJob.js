@@ -8,10 +8,11 @@ import { Button, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { fetchEmployerPostings, updateStatus } from '../../redux/postingSlice';
 import { formatDateTime } from '../../utils';
+import { getStatusClassNames } from 'antd/es/_util/statusUtils';
 
 const PostingJob = () => {
     const dispatch = useDispatch();
-    const { postings, totalPages, loading } = useSelector((state) => state.postings);
+    const { postings, totalPages, loading, success } = useSelector((state) => state.postings);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
 
@@ -19,13 +20,18 @@ const PostingJob = () => {
         dispatch(fetchEmployerPostings({ page: currentPage, size: pageSize }));
     }, [dispatch, currentPage]);
 
+    useEffect(() => {
+        if (success) {
+            dispatch(fetchEmployerPostings({ page: currentPage, size: pageSize }));
+        }
+    }, [success]);
+
     const handleOnPageChange = (page) => {
         setCurrentPage(page);
     };
 
-    const handleSubmitStatusChange = async (posting) => {
-        await dispatch(updateStatus({ postingId: posting.id, status: posting.status }));
-        dispatch(fetchEmployerPostings({ page: currentPage, size: pageSize }));
+    const handleSubmitStatusChange = (postingId, status) => {
+        dispatch(updateStatus({ postingId, status }));
     };
 
     return (
@@ -88,14 +94,15 @@ const PostingJob = () => {
                                         {Date.parse(posting.expiredAt) > Date.now() && (
                                             <div style={{ display: 'flex', gap: '10px' }}>
                                                 <Link to={`/business/update-post/${posting.id}`}>
-                                                    <Button color="primary" variant="outlined">
+                                                    <Button color="default" variant="outlined">
                                                         <PenBox size={20} />
                                                     </Button>
                                                 </Link>
                                                 {posting.status === 'DEACTIVATE' && (
                                                     <Button
                                                         variant="outlined"
-                                                        onClick={() => handleSubmitStatusChange(posting)}
+                                                        color="primary"
+                                                        onClick={() => handleSubmitStatusChange(posting.id, 'ACTIVATE')}
                                                     >
                                                         <StepForwardIcon size={20} />
                                                     </Button>
@@ -104,7 +111,9 @@ const PostingJob = () => {
                                                     <Button
                                                         color="danger"
                                                         variant="outlined"
-                                                        onClick={() => handleSubmitStatusChange(posting)}
+                                                        onClick={() =>
+                                                            handleSubmitStatusChange(posting.id, 'DEACTIVATE')
+                                                        }
                                                     >
                                                         <StopCircleIcon size={20} />
                                                     </Button>

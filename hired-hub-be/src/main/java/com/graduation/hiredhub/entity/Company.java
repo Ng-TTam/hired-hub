@@ -34,7 +34,7 @@ public class Company {
 
     String logo;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 150, nullable = false)
     String address;
 
     @Column(length = 50, nullable = false)
