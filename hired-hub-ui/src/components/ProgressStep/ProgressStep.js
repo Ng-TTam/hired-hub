@@ -1,14 +1,14 @@
 import classNames from 'classnames/bind';
+import { LoaderCircleIcon } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createPosting, fetchPosting, reset, updatePosting } from '../../redux/postingSlice';
 import PostingInfoBase from './PostingInfoBase/PostingInfoBase';
 import PostingInfoDetail from './PostingInfoDetail/PostingInfoDetail';
 import PostingInfoGeneral from './PostingInfoGeneral/PostingInfoGeneral';
 import PostingInfoReceiveCV from './PostingInfoReceiveCV/PostingInfoReceiveCV';
 import styles from './ProgressStep.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { createPosting, fetchPosting, reset, updatePosting } from '../../redux/postingSlice';
-import { useNavigate, useParams } from 'react-router-dom';
-import { LoaderCircleIcon } from 'lucide-react';
 
 const cx = classNames.bind(styles);
 
@@ -22,10 +22,6 @@ const ProgressSteps = () => {
     const validateFunctions = useRef([]);
 
     useEffect(() => {
-        console.log('posting', posting);
-    }, [posting]);
-
-    useEffect(() => {
         if (id) dispatch(fetchPosting(id));
         return () => {
             dispatch(reset());
@@ -35,22 +31,7 @@ const ProgressSteps = () => {
     const handleSubmit = () => {
         const isValid = validateFunctions.current[currentStep]?.();
         if (isValid) {
-            const revertWorkAddress = () => {
-                const areas = posting.areas;
-                const addressList = areas.flatMap((area) =>
-                    area.addresses.map((address) => ({
-                        province: area.province,
-                        district: address.district,
-                        location: address.location,
-                    })),
-                );
-                return addressList;
-            };
             const { areas, salaryType, ...postingRequest } = posting;
-            postingRequest.jobDescription = {
-                ...postingRequest.jobDescription,
-                workAddress: revertWorkAddress(),
-            };
             if (id) dispatch(updatePosting(postingRequest));
             else dispatch(createPosting(postingRequest));
         }
