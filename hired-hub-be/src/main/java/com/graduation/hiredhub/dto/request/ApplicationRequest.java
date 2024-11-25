@@ -10,14 +10,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
 
 @Getter
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationRequest {
-    @NotBlank(message = "BLANK MESSAGE")
     String message;
     CV cv;
     Posting posting;

@@ -18,8 +18,14 @@
             font: 125%/1.4 Inter,sans-serif;
             box-sizing: inherit;
             flex: 1;
-            .img-cv{
-                margin-left: 10px;
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center;    /* Căn giữa theo chiều dọc */
+
+            .img-cv-1 {
+                max-width: 85%;  
+                max-height: 85%;
+                object-fit: cover; 
             }
         }
         .right_header{
@@ -43,8 +49,8 @@
             box-sizing: inherit;
             flex: 1;
             width: 50%;
-            background-color: rgb(33, 47, 63);
-            color: rgb(255, 255, 255);
+            background-color:white;
+            color:black;
             .cv-mo-ta{
                 margin-top: 10px;
                 text-decoration: underline;
@@ -79,14 +85,15 @@
         
     }
     .cv-text{
-        margin-left: 10px;
+        // margin-left: 10px;
         margin-top: 10px;
         text-decoration: underline;
     }
     
-    .cv-data{
+    .cv-data-r{
         font-size: 20px;
-        margin-top: 20px;
+        margin-top: 10px;
+        padding: 10px;
     }
 }
 

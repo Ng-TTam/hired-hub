@@ -8,6 +8,7 @@ import com.graduation.hiredhub.dto.response.ApplicationStatisticsResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.entity.*;
 import com.graduation.hiredhub.entity.enumeration.ApplicationStatus;
+import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.ApplicationMapper;
@@ -151,18 +152,23 @@ public class ApplicationService {
         List<Posting> postings = postingRepository.findByEmployerId(getEmployerByAccount().getId());
         List<Application> applications = new ArrayList<>();
         
+        int posting_Active = 0;
         for (Posting posting : postings) {
             applications.addAll(applicationRepository.findByPosting(posting));
+            if(posting.getStatus() != null && posting.getStatus().toString().equals(Status.ACTIVATE.toString())){
+                posting_Active++;
+            }
         }
-        Integer posting_Count = postings.size();
+        Integer posting_Count = posting_Active;
+        // Integer posting_Count = postings.size();
         Integer cV_Pending = 0;
         Integer cV_Deactive = 0;
         Integer cV_Active = 0;
         
         for (Application application : applications) {
-            if (application.getStatus().toString().equals("ACTIVATE")) {
+            if (application.getStatus().toString().equals(ApplicationStatus.APPROVED.toString())) {
                 cV_Active++;
-            } else if (application.getStatus().toString().equals("DEACTIVATE")) {
+            } else if (application.getStatus().toString().equals(ApplicationStatus.REJECTED.toString())) {
                 cV_Deactive++;
             } else {
                 cV_Pending++;

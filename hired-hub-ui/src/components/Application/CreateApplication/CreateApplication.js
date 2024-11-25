@@ -12,7 +12,7 @@ const CreateApplication = ({postingSelect, applicationId, onApplication}) =>{
     const dispatch = useDispatch();
 
     const handleCVSelect = (cvId) => {
-        setSelectedCV(cvId); // Cập nhật ID của CV đã chọn
+        setSelectedCV(cvId);
     };
     const handleSubmit = () => {
         const reload = false;
@@ -28,7 +28,6 @@ const CreateApplication = ({postingSelect, applicationId, onApplication}) =>{
                 await dispatch(deleteApplication(applicationId)).unwrap();
             };
             await dispatch(createApplication(newApplication)).unwrap();
-            // console.log(id, selectedCV, message);
         } catch (error) {
             console.error('Lỗi khi ứng tuyển:', error);
         } finally {

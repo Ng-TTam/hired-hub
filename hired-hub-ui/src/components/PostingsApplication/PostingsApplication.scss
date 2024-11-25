@@ -28,18 +28,27 @@
                 padding-left: 20px;
             }
             .pa-header-select{
+                display: flex;
+                align-items: center;
                 background-color: white;
                 flex: 1;
+                margin-left: 10px;
                 font-size: 16px;
                 max-width: 210px;
-                height: 40px;
+                height: 45px;
                 padding: 0px;
                 .pa-filter-dropdown{
                     background-color: white;
                     width: 100%;
-                    height: 100%;
+                    height: 70%;
                     border: 1px solid #28a745;
-                    border-radius: 10px;
+                    display: flex;
+                    font-size: 14px;
+                    justify-content: space-between;
+                    padding-left: 10%;
+                    padding-right: 10%;
+                    align-items: center;
+                    border-radius: 5px;
                 }
                 .pa-custom-dropdown{
                     margin-top: 30px !important;
@@ -50,45 +59,67 @@
             padding: 20px 16px;
         }
         .no-pa-list{
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Căn giữa theo chiều ngang */
-        justify-content: center; /* Căn giữa theo chiều dọc */
-        height: 100%; /* Hoặc sử dụng một giá trị cụ thể như 500px */
-        text-align: center; /* Căn giữa văn bản */
-        .no-pa-image img {
-            max-width: 100%;
-            height: auto;
-            padding-bottom: 30px;
-        }
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Căn giữa theo chiều ngang */
+            justify-content: center; /* Căn giữa theo chiều dọc */
+            height: 100%; /* Hoặc sử dụng một giá trị cụ thể như 500px */
+            text-align: center; /* Căn giữa văn bản */
+            .no-pa-image img {
+                max-width: 100%;
+                height: auto;
+                padding-bottom: 30px;
+            }
 
-        .no-pa-title {
-            font-size: 15px;
-            font-weight: bold;
-            margin-bottom: 16px; 
-        }
+            .no-pa-title {
+                font-size: 15px;
+                font-weight: bold;
+                margin-bottom: 16px; 
+            }
 
-        .no-pa-des{
-            padding-bottom: 22px;
-            font-size: 15px;
-            line-height: 1.5;
-        }
+            .no-pa-des{
+                padding-bottom: 22px;
+                font-size: 15px;
+                line-height: 1.5;
+            }
 
-        .no-pa-button button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            .no-pa-button {
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .no-pa-button:hover {
+                background-color: #28a746d4;
+            }
+        }
+        .pa-pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pa-page-item {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background: #fff;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-
-        .no-pa-button button:hover {
-            background-color: #28a746d4;
+        
+        .pa-page-item.active {
+            background: #1890ff;
+            color: white;
+            border-color: #1890ff;
         }
-
+        
+        .pa-page-item:hover {
+            background: #f0f0f0;
         }
     }
 

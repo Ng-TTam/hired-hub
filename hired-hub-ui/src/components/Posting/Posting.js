@@ -46,7 +46,6 @@ function Posting({ className }) {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     var selectApplication = queryParams.get('selectApplication') === 'true';
-    const [createAgain, setCreateAgain] = useState(false);
 
     useEffect(() => {
         dispatch(fetchPosting(id));
@@ -83,10 +82,26 @@ function Posting({ className }) {
     useEffect(() => {
         const hasViewed = sessionStorage.getItem('hasViewedApplicationModal');
         if (!hasViewed && selectApplication) {
-            handleClickApplication();
+            const getData = async() =>{
+                try{
+                    const result = await dispatch(fetchApplicationInPosting(id)).unwrap();
+                    if (result) {
+                        setIsModalOpen(true);
+                        setShowApplication(true);
+                    } else {
+                        setIsModalOpen(true);
+                        setShowCreateApplication(true);
+                    }
+                }catch{
+                    setIsModalOpen(true);
+                    setShowCreateApplication(true);
+                }
+            };
+            getData();
             sessionStorage.setItem('hasViewedApplicationModal', 'true');
-        }
-    }, [selectApplication]);
+        };
+        
+    }, [selectApplication, dispatch]);
 
     const handleApplication = (reload) => {
         setShowCreateApplication(false);
@@ -103,7 +118,6 @@ function Posting({ className }) {
         setIsModalOpen(false);
         dispatch(fetchApplicationInPosting(id));
         if (reload) {
-            setCreateAgain(true);
             setShowCreateApplication(true);
             setIsModalOpen(true);
         }

@@ -65,7 +65,7 @@ export const fetchUserById = createAsyncThunk('user/fetchUserById', async (id, {
 const userSlice = createSlice({
     name: 'userSlice',
     initialState: {
-        user: /* JSON.parse(localStorage.getItem('user')) || */ null,
+        user: null,
         users: [],
         entity: null,
         totalPages: 0,
@@ -82,7 +82,6 @@ const userSlice = createSlice({
             })
             .addCase(fetchUserInformation.fulfilled, (state, action) => {
                 state.loading = false;
-                // localStorage.setItem('user', JSON.stringify(action.payload.data));
                 state.user = action.payload.data;
             })
             .addCase(fetchUserInformation.rejected, (state, action) => {
@@ -96,7 +95,6 @@ const userSlice = createSlice({
             })
             .addCase(updateInformation.fulfilled, (state, action) => {
                 state.loading = false;
-                // localStorage.setItem('user', JSON.stringify(action.payload.data));
                 state.user = action.payload.data;
             })
             .addCase(updateInformation.rejected, (state, action) => {

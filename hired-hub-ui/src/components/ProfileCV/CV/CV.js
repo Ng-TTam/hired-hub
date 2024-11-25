@@ -54,7 +54,7 @@ const CV = () => {
                             <strong >MÔ TẢ</strong>
                         </p>
                     </div>
-                    <div className='cv-data'>
+                    <div className='cv-data-r'>
                         <p>
                             <strong >{cv?.description}</strong>
                         </p>
@@ -96,7 +96,7 @@ const CV = () => {
                             <strong>HỌC VẤN</strong>
                         </p>
                     </div>
-                    <div className='cv-data'>
+                    <div className='cv-data-r'>
                         <p>
                             <strong >{cv?.education}</strong>
                         </p>
@@ -108,7 +108,7 @@ const CV = () => {
                             <strong>KINH NGHIỆM</strong>
                         </p>
                     </div>
-                    <div className='cv-data'>
+                    <div className='cv-data-r'>
                         <p>
                             <strong >{cv?.experience}</strong>
                         </p>
@@ -122,7 +122,7 @@ const CV = () => {
                             <strong>KỸ NĂNG</strong>
                         </p>
                     </div>
-                    <div className='cv-data'>
+                    <div className='cv-data-r'>
                         <p>
                             <strong >{cv?.skill}</strong>
                         </p>
@@ -134,7 +134,7 @@ const CV = () => {
                             <strong>KHÁC</strong>
                         </p>
                     </div>
-                    <div className='cv-data'>
+                    <div className='cv-data-r'>
                         <p>
                             <strong >{cv?.others}</strong>
                         </p>

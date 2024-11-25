@@ -35,4 +35,37 @@
         border-radius: 10px;
         height: fit-content;
     }
+    .no-sp-list{
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Căn giữa theo chiều ngang */
+        justify-content: center; /* Căn giữa theo chiều dọc */
+        height: 100%; /* Hoặc sử dụng một giá trị cụ thể như 500px */
+        text-align: center; /* Căn giữa văn bản */
+        .no-sp-image img {
+            max-width: 100%;
+            height: auto;
+            padding-bottom: 30px;
+        }
+
+        .no-sp-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 16px; 
+        }
+        .no-sp-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .no-sp-button:hover {
+            background-color: #28a746d4;
+        }
+    }
 }
