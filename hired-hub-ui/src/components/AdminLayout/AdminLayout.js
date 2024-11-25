@@ -7,6 +7,7 @@ import { PendingPosts, PostingDetail, Postings } from '../PostingManagement';
 import Users, { Employers, PendingEmployers, UserDetail } from '../UserManagement';
 import styles from './AdminLayout.module.scss';
 import Sidebar from './Sidebar';
+import UpdateEmployerCompany from '../UpdateEmployerCompany';
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +32,8 @@ function AdminLayout() {
 
                     <Route path="/job-categories" element={<JobCategoryManagement />} />
                     <Route path="/positions" element={<PositionCategoryManagement />} />
+
+                    <Route path="company-update" element={<UpdateEmployerCompany />} />
                 </Routes>
             </div>
         </div>

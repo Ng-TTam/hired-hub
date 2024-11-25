@@ -5,21 +5,20 @@ import {
     faLocationDot,
     faMagnifyingGlass,
     faStar,
-    faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Input } from 'antd';
 import config from '../../../config';
+import { setCriteria } from '../../../redux/filterSlice';
+import { fetchJobCategories } from '../../../redux/jobCategorySlice';
+import { fetchPostions } from '../../../redux/postionCategorySlice';
 import { fetchProvinces } from '../../../redux/provinceSlice';
 import Button, { DropdownButton } from '../../Button';
 import styles from './Filter.module.scss';
-import { fetchPostions } from '../../../redux/postionCategorySlice';
-import { fetchJobCategories } from '../../../redux/jobCategorySlice';
-import { setCriteria } from '../../../redux/filterSlice';
-import { Input } from 'antd';
 
 const cx = classNames.bind(styles);
 

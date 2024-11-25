@@ -8,6 +8,7 @@ import PostingJob from '../../components/PostingJob/PostingJob';
 import PostingStat from '../../components/PostingStat/PostingStat';
 import ProgressSteps from '../../components/ProgressStep';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import UpdateEmployerCompany from '../../components/UpdateEmployerCompany';
 
 const Dashboard = () => {
     return (
@@ -15,7 +16,7 @@ const Dashboard = () => {
             <Sidebar />
             <div className="topNav" style={{ flex: 1 }}>
                 <NavbarCMS />
-                <div className="content" style={{ maxWidth: '100%', flex: 1 }}>
+                <div className="content" style={{ flex: 1 }}>
                     <Routes>
                         <Route path="/dashboard" element={<DashboardDefault />} />
                         <Route path="/posting-job" element={<PostingJob />} />
@@ -23,6 +24,7 @@ const Dashboard = () => {
                         {/* <Route path="/posting-stat" element={<PostingStat />} /> */}
                         <Route path="/create-post" element={<ProgressSteps />} />
                         <Route path="/company/create" element={<CreateCompanyForm />} />
+                        <Route path="/update-company" element={<UpdateEmployerCompany />} />
                     </Routes>
                 </div>
             </div>

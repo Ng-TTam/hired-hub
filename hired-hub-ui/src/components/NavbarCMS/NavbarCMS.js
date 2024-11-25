@@ -56,7 +56,9 @@ const NavbarCMS = () => {
                 <div className="user-menu-popup" ref={popupRef}>
                     <ul>
                         <li>
-                            <User2 size={20} /> &nbsp;&nbsp;&nbsp; Cập nhật thông tin
+                            <Link to="/business/update-company">
+                                <User2 size={20} /> &nbsp;&nbsp;&nbsp; Cập nhật thông tin
+                            </Link>
                         </li>
                         <li>
                             <LucideInfo size={20} /> &nbsp;&nbsp;&nbsp; Thông tin của tôi

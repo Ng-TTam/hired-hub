@@ -70,6 +70,19 @@ const employerSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
                 state.success = false;
+            })
+            .addCase(updateEmployerCompany.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(updateEmployerCompany.fulfilled, (state, action) => {
+                state.loading = false;
+                state.success = true;
+            })
+            .addCase(updateEmployerCompany.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
             });
     },
 });
