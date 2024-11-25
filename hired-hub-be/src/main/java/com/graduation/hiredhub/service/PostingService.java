@@ -10,6 +10,7 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
 import com.graduation.hiredhub.entity.*;
+import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
@@ -35,6 +36,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -74,7 +77,7 @@ public class PostingService {
 
         Posting posting = postingMapper.toPosting(postingRequest);
         posting.setEmployer(employer);
-        posting.setStatus(Status.PENDING);
+        posting.setStatus(PostingStatus.PENDING);
 
         try {
             JobDescription jobDescription = jobDescriptionMapper.toJobDescription(postingRequest.getJobDescription());
@@ -114,9 +117,9 @@ public class PostingService {
     public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest){
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
-        //can not update posting when posting approve
-        if(posting.getStatus() != Status.PENDING)
-            throw new AppException(ErrorCode.POSTING_NOT_PENDING);
+
+        if(posting.getExpiredAt().isBefore(Instant.now()))
+            throw new AppException(ErrorCode.POSTING_EXPIRED);
 
         postingMapper.updatePosting(posting, postingRequest);
         try{
@@ -199,32 +202,6 @@ public class PostingService {
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
 
         return postingMapper.toPostingDetailResponse(posting);
-    }
-
-    /**
-     * Only admin is approved posting, set status post from pending -> active
-     *
-     * @param postingId: id posting
-     */
-    @PreAuthorize("hasRole('ADMIN')")
-    public void approvePosting(String postingId){
-        Posting posting = postingRepository.findById(postingId).orElseThrow(
-                () -> new AppException(ErrorCode.POSTING_NOT_EXISTED)
-        );
-
-        if(posting.getStatus() == Status.PENDING) {
-            posting.setStatus(Status.ACTIVATE);
-            postingRepository.save(posting);
-        }
-        else throw new AppException(ErrorCode.POSTING_NOT_PENDING);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<PostingResponse> getPostingPending(){
-        List<Posting> postings = postingRepository.findByStatus(Status.PENDING);
-        return postings.stream()
-                .map(postingMapper::toPostingResponse)
-                .toList();
     }
 
     private Employer getEmployerByAccount() {

@@ -3,6 +3,7 @@ package com.graduation.hiredhub.repository.specification;
 import com.graduation.hiredhub.entity.*;
 import com.graduation.hiredhub.entity.enumeration.ExperienceRequire;
 import com.graduation.hiredhub.entity.enumeration.JobType;
+import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -192,7 +193,7 @@ public class PostingSpecifications {
         };
     }
 
-    public static Specification<Posting> hasStatus(Status status) {
+    public static Specification<Posting> hasStatus(PostingStatus status) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("status"), status);
     }

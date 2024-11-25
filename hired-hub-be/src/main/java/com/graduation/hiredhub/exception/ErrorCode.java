@@ -53,6 +53,7 @@ public enum ErrorCode {
     POSTING_NOT_SAVED("ERROR_POST_002","Post is not saved",HttpStatus.BAD_REQUEST),
     POSTING_PENDING("ERROR_POST_003","Post is in PENDING",HttpStatus.BAD_REQUEST),
     EMPLOYER_PENDING("ERROR_USER_002","Employer is in PENDING",HttpStatus.BAD_REQUEST),
+    POSTING_EXPIRED("ERROR_POST_004", "Posting is expired",HttpStatus.BAD_REQUEST),
 
     USER_NOT_EXISTED("EXISTED_001", "User not existed", HttpStatus.NOT_FOUND),
     EMAIL_NOT_EXISTED("EXISTED_002","Email is not exist", HttpStatus.NOT_FOUND),

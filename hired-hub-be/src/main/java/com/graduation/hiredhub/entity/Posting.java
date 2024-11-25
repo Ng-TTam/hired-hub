@@ -79,7 +79,7 @@ public class Posting {
     Integer maximumSalary;
 
     @Enumerated(EnumType.STRING)
-    Status status;
+    PostingStatus status;
 
     @ManyToOne
     @JoinColumn(name = "employer_id", nullable = false)

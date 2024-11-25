@@ -6,8 +6,8 @@ import PostingInfoGeneral from './PostingInfoGeneral/PostingInfoGeneral';
 import PostingInfoReceiveCV from './PostingInfoReceiveCV/PostingInfoReceiveCV';
 import styles from './ProgressStep.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { createPosting } from '../../redux/postingSlice';
-import { useNavigate } from 'react-router-dom';
+import { createPosting, fetchPosting, reset, updatePosting } from '../../redux/postingSlice';
+import { useNavigate, useParams } from 'react-router-dom';
 import { LoaderCircleIcon } from 'lucide-react';
 
 const cx = classNames.bind(styles);
@@ -15,10 +15,22 @@ const cx = classNames.bind(styles);
 const ProgressSteps = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { posting, success, loading, error } = useSelector((state) => state.postings);
+    const { posting, success, loading } = useSelector((state) => state.postings);
+    const { id } = useParams();
 
     const [currentStep, setCurrentStep] = useState(1);
     const validateFunctions = useRef([]);
+
+    useEffect(() => {
+        console.log('posting', posting);
+    }, [posting]);
+
+    useEffect(() => {
+        if (id) dispatch(fetchPosting(id));
+        return () => {
+            dispatch(reset());
+        };
+    }, [dispatch, id]);
 
     const handleSubmit = () => {
         const isValid = validateFunctions.current[currentStep]?.();
@@ -39,12 +51,13 @@ const ProgressSteps = () => {
                 ...postingRequest.jobDescription,
                 workAddress: revertWorkAddress(),
             };
-            dispatch(createPosting(postingRequest));
+            if (id) dispatch(updatePosting(postingRequest));
+            else dispatch(createPosting(postingRequest));
         }
     };
 
     useEffect(() => {
-        if ( success ) {
+        if (success) {
             navigate('/business/posting-job');
         }
     }, [success, navigate]);
@@ -115,17 +128,19 @@ const ProgressSteps = () => {
                     <div className={cx('content-area')}>{steps[currentStep - 1].content}</div>
 
                     <div className={cx('button-container')}>
-                        <button
-                            className={cx('nav-button', { disabled: currentStep === 1 })}
-                            onClick={handlePrev}
-                            disabled={currentStep === 1}
-                        >
-                            Trước
-                        </button>
+                        {currentStep === 1 ? (
+                            <button className={cx('nav-button')} onClick={() => navigate('/business/posting-job')}>
+                                Trở lại
+                            </button>
+                        ) : (
+                            <button className={cx('nav-button')} onClick={handlePrev}>
+                                Trước
+                            </button>
+                        )}
 
                         {currentStep === steps.length ? (
                             <button className={cx('nav-button')} onClick={handleSubmit}>
-                                {loading ? <LoaderCircleIcon /> : 'Gửi' }
+                                {loading ? <LoaderCircleIcon /> : 'Gửi'}
                             </button>
                         ) : (
                             <button className={cx('nav-button')} onClick={handleNext}>

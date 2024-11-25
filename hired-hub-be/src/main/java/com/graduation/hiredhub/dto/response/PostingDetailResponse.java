@@ -35,5 +35,5 @@ public class PostingDetailResponse {
     Integer minimumSalary;
     Integer maximumSalary;
     CompanyResponse company;
-    Status status;
+    PostingStatus status;
 }

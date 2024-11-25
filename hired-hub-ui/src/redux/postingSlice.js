@@ -78,9 +78,18 @@ export const createPosting = createAsyncThunk('postings/createPosting', async (p
     }
 });
 
+export const updatePosting = createAsyncThunk('postings/updatePosting', async (posting, { rejectWithValue }) => {
+    try {
+        const response = await axiosPro.put(`${apiUrl}/${posting.id}`, posting);
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data);
+    }
+});
+
 export const updateStatus = createAsyncThunk(
-    'postings/updateStatus',
-    async ({ postingId, status }, { rejectWithValue }) => {
+    'postings/updateStatus', async ({ postingId, status }, { rejectWithValue }) => {
+        status === 'ACTIVATE' ? status = 'DEACTIVATE' : status = 'ACTIVATE';
         try {
             const response = await axiosPro.put(`${apiUrl}/update-status`, { postingId, status });
             return response.data;
@@ -114,6 +123,10 @@ const postingSlice = createSlice({
                 ...action.payload,
             };
         },
+        reset: (state) => {
+            state.posting = null;
+            state.loading = false;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -124,6 +137,7 @@ const postingSlice = createSlice({
             })
             .addCase(createPosting.fulfilled, (state) => {
                 state.loading = false;
+                // state.posting = null;
                 state.success = true;
             })
             .addCase(createPosting.rejected, (state, action) => {
@@ -147,7 +161,7 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-
+            //fetch postings
             .addCase(fetchPostings.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -191,7 +205,7 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(fetchAdminPostings.pending, (state, action) => {
+            .addCase(fetchAdminPostings.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
@@ -204,9 +218,23 @@ const postingSlice = createSlice({
             .addCase(fetchAdminPostings.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+            })
+            //update status
+            .addCase(updateStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(updateStatus.fulfilled, (state) => {
+                state.loading = false;
+                state.success = true;
+            })
+            .addCase(updateStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });
 
-export const { setPosting, setPostingJobDescription } = postingSlice.actions;
+export const { setPosting, setPostingJobDescription, reset } = postingSlice.actions;
 export default postingSlice.reducer;

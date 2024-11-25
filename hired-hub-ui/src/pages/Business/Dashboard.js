@@ -22,6 +22,7 @@ const Dashboard = () => {
                         <Route path="/manage-candidate" element={<ManageCandidate />} />
                         <Route path="/posting-stat" element={<PostingStat />} />
                         <Route path="/create-post" element={<ProgressSteps />} />
+                        <Route path="/update-post/:id" element={<ProgressSteps />} />
                         <Route path="/company/create" element={<CreateCompanyForm />} />
                     </Routes>
                 </div>

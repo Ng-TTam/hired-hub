@@ -1,6 +1,6 @@
 package com.graduation.hiredhub.dto.request;
 
-import com.graduation.hiredhub.entity.enumeration.Status;
+import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +13,5 @@ public class AdminPostingFilterCriteria {
     String searchValue;
     Integer provinceId;
     Integer jobCategoryId;
-    Status status;
+    PostingStatus status;
 }
