@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import '../../assets/css/Table.scss';
 import './PostingJob.scss';
 import Pagination from '../Pagination/Pagination';
-import { Pause, PenBox, PenBoxIcon } from 'lucide-react';
+import { PenBox, PenBoxIcon, StepForwardIcon, StopCircleIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Tag } from 'antd';
 import { Link } from 'react-router-dom';
-import { fetchEmployerPostings } from '../../redux/postingSlice';
+import { fetchEmployerPostings, updateStatus } from '../../redux/postingSlice';
 import { formatDateTime } from '../../utils';
 
 const PostingJob = () => {
     const dispatch = useDispatch();
     const { postings, totalPages, loading } = useSelector((state) => state.postings);
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 12;
+    const pageSize = 10;
 
     useEffect(() => {
         dispatch(fetchEmployerPostings({ page: currentPage, size: pageSize }));
@@ -21,6 +21,11 @@ const PostingJob = () => {
 
     const handleOnPageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    const handleSubmitStatusChange = async (posting) => {
+        await dispatch(updateStatus({ postingId: posting.id, status: posting.status }));
+        dispatch(fetchEmployerPostings({ page: currentPage, size: pageSize }));
     };
 
     return (
@@ -65,25 +70,46 @@ const PostingJob = () => {
                                                     ? 'gold'
                                                     : posting.status === 'ACTIVATE'
                                                     ? 'green'
-                                                    : 'red'
+                                                    : posting.status === 'DEACTIVATE'
+                                                    ? 'red'
+                                                    : 'purple'
                                             }
                                         >
                                             {posting.status === 'PENDING'
                                                 ? 'Pending'
                                                 : posting.status === 'ACTIVATE'
                                                 ? 'Activate'
-                                                : 'Inactivate'}
+                                                : posting.status === 'DEACTIVATE'
+                                                ? 'Deactivate'
+                                                : 'Rejected'
+                                            }
                                         </Tag>
                                     </td>
                                     <td>
                                         {Date.parse(posting.expiredAt) > Date.now() && (
                                             <div style={{ display: 'flex', gap: '10px' }}>
-                                                <Button color="primary" variant="outlined">
-                                                    <PenBox size={20} />
-                                                </Button>
-                                                <Button color="danger" variant="outlined">
-                                                    <Pause size={20} />
-                                                </Button>
+                                                <Link to={`/business/update-post/${posting.id}`}>
+                                                    <Button color="primary" variant="outlined">
+                                                        <PenBox size={20} />
+                                                    </Button>
+                                                </Link>
+                                                {posting.status === 'DEACTIVATE' && (
+                                                    <Button
+                                                        variant="outlined"
+                                                        onClick={() => handleSubmitStatusChange(posting)}
+                                                    >
+                                                        <StepForwardIcon size={20} />
+                                                    </Button>
+                                                )}
+                                                {posting.status === 'ACTIVATE' && (
+                                                    <Button
+                                                        color="danger"
+                                                        variant="outlined"
+                                                        onClick={() => handleSubmitStatusChange(posting)}
+                                                    >
+                                                        <StopCircleIcon size={20} />
+                                                    </Button>
+                                                )}
                                             </div>
                                         )}
                                     </td>

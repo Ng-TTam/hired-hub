@@ -1,6 +1,6 @@
 package com.graduation.hiredhub.dto.request;
 
-import com.graduation.hiredhub.entity.enumeration.Status;
+import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,5 +14,5 @@ public class PostingStatusRequest {
     @NotNull(message = "BLANK_ID")
     String postingId;
     @NotNull(message = "BLANK_STATUS")
-    Status status;
+    PostingStatus status;
 }

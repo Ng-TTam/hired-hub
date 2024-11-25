@@ -48,14 +48,6 @@ public class PostingController {
                 .build();
     }
 
-    @PostMapping("/{postingId}/approve")
-    ApiResponse<String> approvePosting(@PathVariable String postingId) {
-        postingService.approvePosting(postingId);
-        return ApiResponse.<String>builder()
-                .data("Approve successful!")
-                .build();
-    }
-
     @GetMapping("/self")
     ApiResponse<PageResponse<PostingResponse>> getPostingsByEmployer(
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
@@ -69,13 +61,6 @@ public class PostingController {
     ApiResponse<PostingDetailResponse> getPosting(@PathVariable String postingId) {
         return ApiResponse.<PostingDetailResponse>builder()
                 .data(postingService.getPostingDetail(postingId))
-                .build();
-    }
-
-    @GetMapping("/pending")
-    ApiResponse<List<PostingResponse>> getPostingsPending() {
-        return ApiResponse.<List<PostingResponse>>builder()
-                .data(postingService.getPostingPending())
                 .build();
     }
 
@@ -94,7 +79,7 @@ public class PostingController {
                 .build();
     }
 
-    @GetMapping("by-company/{companyId}")
+    @GetMapping("/by-company/{companyId}")
     public ApiResponse<PageResponse<PostingDetailResponse>> filterByCompany(
             @PathVariable("companyId") String companyId,
             @RequestParam(value = "searchText", required = false) String searchText,
@@ -107,7 +92,7 @@ public class PostingController {
                 .build();
     }
 
-    @GetMapping("admin")
+    @GetMapping("/admin")
     public ApiResponse<PageResponse<PostingDetailResponse>> adminFilter(
             AdminPostingFilterCriteria criteria,
             Pageable pageable
@@ -118,7 +103,7 @@ public class PostingController {
                 .build();
     }
 
-    @PutMapping("update-status")
+    @PutMapping("/update-status")
     public ApiResponse<Void> updatePostingStatus(@RequestBody PostingStatusRequest postingStatusRequest) {
         postingService.updatePostingStatus(postingStatusRequest);
         return ApiResponse.<Void>builder().build();

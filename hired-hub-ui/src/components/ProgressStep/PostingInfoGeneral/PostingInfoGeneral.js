@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import constants from '../../../config/constants';
-import { setPosting } from '../../../redux/postingSlice';
+import { setPosting, setPostingJobDescription } from '../../../redux/postingSlice';
 import { fetchPostions } from '../../../redux/postionCategorySlice';
 import { fetchProvinces } from '../../../redux/provinceSlice';
 import '../PostingInfoBase/PostingInfoBase.scss';
-import FormAddress from './FormAddress';
 import './PostingInfoGeneral.scss';
-import { Typography } from 'antd';
+import { Typography, Select, Input } from 'antd';
+import AddressInput from './AddressInput';
 
 const jobTypes = Object.values(constants.JobTypes);
 const genders = [{ id: null, name: 'Không yêu cầu' }, ...Object.values(constants.GenderRequire)];
@@ -19,6 +19,7 @@ const PostingInfoGeneral = ({ validate }) => {
     const dispatch = useDispatch();
     const positions = useSelector((state) => state.positionCategories.list);
     const posting = useSelector((state) => state.postings.posting);
+    const provinces = useSelector((state) => state.provinces.list);
 
     const [numberOfPosition, setNumberOfPosition] = useState(posting?.numberOfPosition || '');
     const [jobType, setJobType] = useState(posting?.jobType || '');
@@ -29,6 +30,8 @@ const PostingInfoGeneral = ({ validate }) => {
     const [salaryType, setSalaryType] = useState(posting?.salaryType || '');
     const [minimumSalary, setMinimumSalary] = useState(posting?.minimumSalary || '');
     const [maximumSalary, setMaximumSalary] = useState(posting?.maximumSalary || '');
+    const [workAddress, setWorkAddress] = useState(posting?.jobDescription?.workAddress || []);
+    const [provinceList, setProvinceList] = useState([]);
     const [errors, setErrors] = useState('');
     const { Text } = Typography;
 
@@ -36,6 +39,20 @@ const PostingInfoGeneral = ({ validate }) => {
         dispatch(fetchPostions());
         dispatch(fetchProvinces());
     }, []);
+
+    useEffect(() => {
+        const updatedProvinces = provinces.map((province) => ({
+            ...province,
+            value: province.id,
+            label: province.name,
+            districts: province.districts.map((district) => ({
+                ...district,
+                value: district.id,
+                label: district.name,
+            })),
+        }));
+        setProvinceList(updatedProvinces);
+    }, [provinces]);
 
     useEffect(() => {
         dispatch(
@@ -63,6 +80,32 @@ const PostingInfoGeneral = ({ validate }) => {
         maximumSalary,
         dispatch,
     ]);
+
+    useEffect(() => {
+        dispatch(
+            setPostingJobDescription({
+                workAddress,
+            }),
+        );
+    }, [workAddress]);
+
+    useEffect(() => {
+        setNumberOfPosition(posting.numberOfPosition || '');
+        setJobType(posting.jobType || '');
+        setGenderRequire(posting.genderRequire || '');
+        setPosition(posting.position || {});
+        setExperienceRequire(posting.experienceRequire || '');
+        setCurrencyUnit(posting.currencyUnit || '');
+        setSalaryType(posting.salaryType || '');
+        setMinimumSalary(posting.minimumSalary || '');
+        setMaximumSalary(posting.maximumSalary || '');
+        setWorkAddress(posting?.jobDescription?.workAddress || []);
+        if (!posting.salaryType)
+            if (posting.minimumSalary && posting.maximumSalary) setSalaryType('between');
+            else if (posting.minimumSalary && !posting.maximumSalary) setSalaryType('from');
+            else if (!posting.minimumSalary && posting.maximumSalary) setSalaryType('to');
+            else setSalaryType('negotiable');
+    }, [posting]);
 
     useEffect(() => {
         if (validate) {
@@ -93,10 +136,20 @@ const PostingInfoGeneral = ({ validate }) => {
                 return Object.keys(newErrors).length === 0;
             });
         }
-    }, [validate, numberOfPosition, jobType, position, experienceRequire, currencyUnit, salaryType, minimumSalary, maximumSalary]);
+    }, [
+        validate,
+        numberOfPosition,
+        jobType,
+        position,
+        experienceRequire,
+        currencyUnit,
+        salaryType,
+        minimumSalary,
+        maximumSalary,
+    ]);
 
     const handleOnChangePosition = (e) => {
-        const selectedId = e.target.value; // Lấy id từ option được chọn
+        const selectedId = e.target.value;
         if (selectedId) {
             const newPosition = positions.find((item) => item.id == e.target.value);
             if (newPosition) {
@@ -122,6 +175,18 @@ const PostingInfoGeneral = ({ validate }) => {
             }
         }
         setSalaryType(e.target.value);
+    };
+
+    const handleOnWorkAddressChange = ({ province, district, location }, index) => {
+        const updatedWorkAddresses = [...workAddress];
+        updatedWorkAddresses[index] = {
+            ...updatedWorkAddresses[index],
+            ...(province && { province }),
+            ...(district && { district }),
+            ...(location && { location }),
+        };
+
+        setWorkAddress(updatedWorkAddresses);
     };
 
     return (
@@ -185,7 +250,7 @@ const PostingInfoGeneral = ({ validate }) => {
                     </div>
                     <div className="select-container">
                         <span>Cấp bậc</span>
-                        <select id="select-position" value={position?.id || ""} onChange={handleOnChangePosition}>
+                        <select id="select-position" value={position?.id || ''} onChange={handleOnChangePosition}>
                             <option value="" disabled>
                                 -- Chọn cấp bậc --
                             </option>
@@ -286,8 +351,27 @@ const PostingInfoGeneral = ({ validate }) => {
                         <></>
                     )}
                 </div>
-                <h4>Khu vực làm việc</h4>
-                <FormAddress validate={validate}/>
+                <h4>Địa chỉ làm việc</h4>
+                <div className="area-container">
+                    {workAddress.map((wa, index) => (
+                        <AddressInput
+                            key={`address_input_${index}`}
+                            address={wa}
+                            provinces={provinceList}
+                            onChange={({ province, district, location }) =>
+                                handleOnWorkAddressChange({ province, district, location }, index)
+                            }
+                        />
+                    ))}
+                    <button
+                        className="button-success"
+                        onClick={() => {
+                            setWorkAddress((prev) => [...prev, {}]);
+                        }}
+                    >
+                        Thêm khu vực mới
+                    </button>
+                </div>
             </div>
         </div>
     );

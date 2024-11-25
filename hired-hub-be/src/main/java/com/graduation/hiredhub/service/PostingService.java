@@ -10,6 +10,7 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
 import com.graduation.hiredhub.entity.*;
+import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
@@ -35,6 +36,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -69,12 +71,12 @@ public class PostingService {
     @PreAuthorize("hasRole('EMPLOYER')")
     public PostingDetailResponse createPosting(PostingRequest postingRequest) {
         Employer employer = getEmployerByAccount();
-        if(employer.getAccount().getStatus() == Status.PENDING)
+        if (employer.getAccount().getStatus() == Status.PENDING)
             throw new AppException(ErrorCode.EMPLOYER_PENDING);
 
         Posting posting = postingMapper.toPosting(postingRequest);
         posting.setEmployer(employer);
-        posting.setStatus(Status.PENDING);
+        posting.setStatus(PostingStatus.PENDING);
 
         try {
             JobDescription jobDescription = jobDescriptionMapper.toJobDescription(postingRequest.getJobDescription());
@@ -106,23 +108,23 @@ public class PostingService {
      * Only employer posting can be update post
      * Posting have status is PENDING can update
      *
-     * @param postingId: id posting
+     * @param postingId:      id posting
      * @param postingRequest: posting field need update
      * @return posting
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
-    public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest){
+    public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest) {
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
-        //can not update posting when posting approve
-        if(posting.getStatus() != Status.PENDING)
-            throw new AppException(ErrorCode.POSTING_NOT_PENDING);
+
+        if (posting.getExpiredAt().isBefore(Instant.now()))
+            throw new AppException(ErrorCode.POSTING_EXPIRED);
 
         postingMapper.updatePosting(posting, postingRequest);
-        try{
+        try {
             postingRepository.save(posting);
-        }catch (Exception e){
-            throw  new AppException(ErrorCode.INTERNAL_ERROR);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
         return postingMapper.toPostingDetailResponse(posting);
     }
@@ -135,8 +137,8 @@ public class PostingService {
      * @return Page of posting response
      */
     @PreAuthorize("hasRole('EMPLOYER')")
-    public PageResponse<PostingResponse> getPostingsByEmployer(int page, int size){
-        Pageable pageable = PageRequest.of(page - 1,size);
+    public PageResponse<PostingResponse> getPostingsByEmployer(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
         var pageData = postingRepository.findByEmployer(getEmployerByAccount(), pageable);
         return PageResponse.<PostingResponse>builder()
                 .currentPage(page)
@@ -156,7 +158,8 @@ public class PostingService {
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
             try {
                 pageResponse = objectMapper.readValue(stringRedisTemplate.opsForValue().get(cacheKey),
-                        new TypeReference<PageResponse<PostingResponse>>() {});
+                        new TypeReference<PageResponse<PostingResponse>>() {
+                        });
             } catch (Exception e) {
                 throw new AppException(ErrorCode.ERROR_PARSING_JSON);
             }
@@ -193,38 +196,12 @@ public class PostingService {
 
 
     @PreAuthorize("permitAll()")
-    public PostingDetailResponse getPostingDetail(String postingId){
+    public PostingDetailResponse getPostingDetail(String postingId) {
 
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
 
         return postingMapper.toPostingDetailResponse(posting);
-    }
-
-    /**
-     * Only admin is approved posting, set status post from pending -> active
-     *
-     * @param postingId: id posting
-     */
-    @PreAuthorize("hasRole('ADMIN')")
-    public void approvePosting(String postingId){
-        Posting posting = postingRepository.findById(postingId).orElseThrow(
-                () -> new AppException(ErrorCode.POSTING_NOT_EXISTED)
-        );
-
-        if(posting.getStatus() == Status.PENDING) {
-            posting.setStatus(Status.ACTIVATE);
-            postingRepository.save(posting);
-        }
-        else throw new AppException(ErrorCode.POSTING_NOT_PENDING);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<PostingResponse> getPostingPending(){
-        List<Posting> postings = postingRepository.findByStatus(Status.PENDING);
-        return postings.stream()
-                .map(postingMapper::toPostingResponse)
-                .toList();
     }
 
     private Employer getEmployerByAccount() {
@@ -307,8 +284,8 @@ public class PostingService {
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
         if (account.getRole().equals(Role.EMPLOYER)
-                && postingStatusRequest.getStatus().equals(Status.PENDING)
-                && posting.getStatus().equals(Status.PENDING)) {
+                && (postingStatusRequest.getStatus().equals(Status.PENDING)
+                || posting.getStatus().equals(Status.PENDING))) {
             throw new AppException(ErrorCode.POSTING_PENDING);
         }
         posting.setStatus(postingStatusRequest.getStatus());

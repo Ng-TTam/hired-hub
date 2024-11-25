@@ -32,6 +32,12 @@ const PostingInfoBase = ({ validate }) => {
         );
     }, [title, mainJob, subJobs]);
 
+    useEffect(() =>{
+        setTitle(posting?.title || '');
+        setMainJob(posting?.mainJob || null);
+        setSubJobs(posting?.subJobs || []);
+    },[posting]);
+
     useEffect(() => {
         if (validate) {
             validate(() => {

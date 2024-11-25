@@ -15,11 +15,15 @@ const PostingInfoReceiveCV = ({ validate }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
-        dispath(
-            setPosting({
-                expiredAt: `${expiredAt}${'T23:59:59Z'}`,
-            }),
-        );
+        if (expiredAt) {
+            const date = new Date(expiredAt);
+            date.setHours(23, 59, 59, 999);
+            dispath(
+                setPosting({
+                    expiredAt: date.toISOString(),
+                }),
+            );
+        }
     }, [expiredAt]);
 
     useEffect(() => {
@@ -51,7 +55,7 @@ const PostingInfoReceiveCV = ({ validate }) => {
                             <input
                                 type="date"
                                 id="expiryDate"
-                                value={expiredAt}
+                                value={expiredAt ? expiredAt.split('T')[0] : ''}
                                 placeholder="yyyy-mm-dd"
                                 pattern="\d{4}/\d{2}/\d{2}"
                                 onChange={(e) => setExpriedDate(e.target.value)}
@@ -67,21 +71,42 @@ const PostingInfoReceiveCV = ({ validate }) => {
                     <div className="select-container">
                         <span>Họ tên</span>
                         <div className="input-container">
-                            <input type="text" id="name" value={user.firstName + ' ' + user.lastName} placeholder="Nhập họ tên" required disabled />
+                            <input
+                                type="text"
+                                id="name"
+                                value={user.firstName + ' ' + user.lastName}
+                                placeholder="Nhập họ tên"
+                                required
+                                disabled
+                            />
                             <div className="underline" />
                         </div>
                     </div>
                     <div className="select-container">
                         <span>Số điện thoại</span>
                         <div className="input-container">
-                            <input type="text" id="phoneNumber" value={user.phoneNumber} placeholder="Nhập số điện thoại" required disabled/>
+                            <input
+                                type="text"
+                                id="phoneNumber"
+                                value={user.phoneNumber}
+                                placeholder="Nhập số điện thoại"
+                                required
+                                disabled
+                            />
                             <div className="underline" />
                         </div>
                     </div>
                     <div className="select-container">
                         <span>Email</span>
                         <div className="input-container">
-                            <input type="text" id="email" value={user.email} placeholder="Nhập email" required disabled/>
+                            <input
+                                type="text"
+                                id="email"
+                                value={user.email}
+                                placeholder="Nhập email"
+                                required
+                                disabled
+                            />
                             <div className="underline" />
                         </div>
                     </div>

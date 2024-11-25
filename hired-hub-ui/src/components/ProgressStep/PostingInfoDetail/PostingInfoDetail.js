@@ -27,6 +27,12 @@ const PostingInfoDetail = ({ validate }) => {
     }, [description, requirement, benefit]);
 
     useEffect(() => {
+        setDescription(posting?.jobDescription?.description || '');
+        setRequirement(posting?.jobDescription?.requirement || '');
+        setBenefit(posting?.jobDescription?.benefit || '');
+    }, [posting]);
+
+    useEffect(() => {
         if (validate) {
             validate(() => {
                 const newErrors = {};
