@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserInformation } from '../../../redux/userSlice';
 import images from '../../../assets/images';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Await, useNavigate, useParams } from 'react-router-dom';
+import {useNavigate, useParams } from 'react-router-dom';
 import { fetchCV, updateCV } from '../../../redux/cvSlice';
 import './EditCV.scss'
 import Image from '../../Image';
@@ -37,7 +37,7 @@ const EditCV = () => {
         }
     }, [cv]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const updatedCV = {
             description,
@@ -47,8 +47,8 @@ const EditCV = () => {
             others,
         };
         try {
-            dispatch(updateCV({ cvId, updatedCV })).unwrap();
-        navigate(`../qly-cv`);
+            await dispatch(updateCV({ cvId, updatedCV })).unwrap();
+            navigate(`../cv-management`);
         } catch (error) {
             console.error("Lỗi khi xóa CV:", error);
             alert("Vui lòng nhập đầy đủ thông tin CV.");

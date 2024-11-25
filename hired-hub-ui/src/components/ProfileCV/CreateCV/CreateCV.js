@@ -24,7 +24,7 @@ const CreateCV = () => {
         dispatch(fetchUserInformation());
     }, [dispatch]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const newCV = {
             description,
@@ -34,12 +34,9 @@ const CreateCV = () => {
             others,
         };
         try {
-            // Dispatch action tạo CV
-            dispatch(createCV(newCV)).unwrap().then(() => {
-                // Sau khi tạo CV thành công, gọi lại action để cập nhật danh sách CV
-                dispatch(fetchCVs()); // fetchCVList là action để lấy lại danh sách CV từ server
-                // Điều hướng về trang '/qly-cv'
-                navigate(`../qly-cv`);
+            await dispatch(createCV(newCV)).unwrap().then(() => {
+                dispatch(fetchCVs()); 
+                navigate(`../cv-management`);
             });
         } catch (error) {
             console.error("Lỗi khi tạo CV:", error);

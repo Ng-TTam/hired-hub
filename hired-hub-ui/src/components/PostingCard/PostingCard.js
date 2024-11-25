@@ -16,8 +16,8 @@ function PostingCard({ posting }) {
         <div className={cx('wrapper')}>
             <Image
                 className={cx('logo')}
-                alt={posting.company.name}
-                src={posting.company.logo}
+                alt={posting.company?.name}
+                src={posting.company?.logo}
                 fallback={images.logoDefault}
             />
             <div className={cx('posting-info')}>
@@ -39,16 +39,16 @@ function PostingCard({ posting }) {
                         </Link>
                     </HeadlessTippy>
                 </div>
-                <Tippy content={posting.company.name} placement="bottom">
-                    <Link className={cx('company-name')} to={`/company/${posting.company.id}`}>
-                        {posting.company.name}
+                <Tippy content={posting.company?.name} placement="bottom">
+                    <Link className={cx('company-name')} to={`/company/${posting.company?.id}`}>
+                        {posting.company?.name}
                     </Link>
                 </Tippy>
                 <div className={cx('job-description')}>
                     <div className={cx('jd-item')}>{convertSalary(posting.minimumSalary, posting.maximumSalary)}</div>
-                    <Tippy content={convertWorkAddress(posting.jobDescription.workAddress)} placement="bottom">
+                    <Tippy content={convertWorkAddress(posting.jobDescription?.workAddress)} placement="bottom">
                         <div className={cx('jd-item')}>
-                            {convertWorkAddressSumary(posting.jobDescription.workAddress)}
+                            {convertWorkAddressSumary(posting.jobDescription?.workAddress)}
                         </div>
                     </Tippy>
                 </div>

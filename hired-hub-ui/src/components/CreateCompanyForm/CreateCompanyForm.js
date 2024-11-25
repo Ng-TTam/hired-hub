@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Form, Input, Select, Upload } from 'antd';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
-import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 import images from '../../assets/images';
 import { createCompany } from '../../redux/companySlice';

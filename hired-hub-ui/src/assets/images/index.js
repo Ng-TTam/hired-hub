@@ -11,6 +11,7 @@ const images = {
     hiredHubLogoNoPadding: require('./hired-hub-logo-nopadding.png'),
     recruitmentEmpty: require('./recruitment-empty.png'),
     emptyApllication : require('./emptyApplication.png'),
+    emptyCV : require('./empty-cv.png'),
 };
 
 export default images;

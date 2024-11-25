@@ -7,9 +7,6 @@ import constants from '../../../config/constants';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faLocationDot, faStar } from '@fortawesome/free-solid-svg-icons';
-import GetApplication from '../../Application/GetApplication/GetApplication';
-import CreateApplication from '../../Application/CreateApplication/CreateApplication';
-import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -23,13 +20,13 @@ function PostingPreview({ posting }) {
             <div className={cx('header')}>
                 <Image
                     className={cx('logo')}
-                    alt={posting.company.name}
-                    src={posting.company.logo}
+                    alt={posting.company?.name}
+                    src={posting.company?.logo}
                     fallback={images.logoDefault}
                 />
                 <div className={cx('header__content')}>
                     <h3 className={cx('title')}>{posting.title}</h3>
-                    <a className={cx('company-name')}>{posting.company.name}</a>
+                    <a className={cx('company-name')}>{posting.company?.name}</a>
                     <span className={cx('header-content__salary')}>
                         {convertSalary(posting.minimumSalary, posting.maximumSalary)}
                     </span>
@@ -39,7 +36,7 @@ function PostingPreview({ posting }) {
                 <div className={cx('sumary')}>
                     <span className={cx('sumary-item')}>
                         <FontAwesomeIcon icon={faLocationDot} />
-                        {convertWorkAddressSumary(posting.jobDescription.workAddress)}
+                        {convertWorkAddressSumary(posting.jobDescription?.workAddress)}
                     </span>
                     <span className={cx('sumary-item')}>
                         <FontAwesomeIcon icon={faStar} />
@@ -54,26 +51,26 @@ function PostingPreview({ posting }) {
                     <div>
                         <h3 className={cx('jd-item__title')}>Mô tả công việc</h3>
                     </div>
-                    <p className={cx('jd-item__content')}>{posting.jobDescription.description}</p>
+                    <p className={cx('jd-item__content')}>{posting.jobDescription?.description}</p>
                 </div>
                 <div className={cx('jd-item')}>
                     <div>
                         <h3 className={cx('jd-item__title')}>Yêu cầu ứng viên</h3>
                     </div>
-                    <p className={cx('jd-item__content')}>{posting.jobDescription.requirement}</p>
+                    <p className={cx('jd-item__content')}>{posting.jobDescription?.requirement}</p>
                 </div>
                 <div className={cx('jd-item')}>
                     <div>
                         <h3 className={cx('jd-item__title')}>Quyền lợi</h3>
                     </div>
-                    <p className={cx('jd-item__content')}>{posting.jobDescription.benefit}</p>
+                    <p className={cx('jd-item__content')}>{posting.jobDescription?.benefit}</p>
                 </div>
                 <div className={cx('jd-item')}>
                     <div>
                         <h3 className={cx('jd-item__title')}>Địa điểm làm việc</h3>
                     </div>
                     <p className={cx('jd-item__content')}>
-                        {convertWorkAddressDetail(posting.jobDescription.workAddress)}
+                        {convertWorkAddressDetail(posting.jobDescription?.workAddress)}
                     </p>
                 </div>
             </div>
