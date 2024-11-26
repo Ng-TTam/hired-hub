@@ -1,11 +1,11 @@
 import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Space, Table, Tag, Modal } from 'antd';
+import { Button, Input, Modal, Select, Space, Table, Tag } from 'antd';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchAdminPostings, updateStatus } from '../../redux/postingSlice';
 import { formatDateTime } from '../../utils';
 import Pagination from '../Pagination';
@@ -13,16 +13,27 @@ import styles from './PostingManagement.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Postings() {
+function Postings({ status }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { postings, totalPages, loading, success } = useSelector((state) => state.postings);
 
-    const [criteria, setCriteria] = useState();
+    const [criteria, setCriteria] = useState({ status });
     const [pageable, setPageable] = useState({ page: 0, size: 10, sort: 'createdAt,desc' });
+    const [searchValue, setSearchValue] = useState('');
+
+    useEffect(() => {
+        const actualStatus = status?.toUpperCase() || null;
+        setCriteria((prev) => ({ ...prev, status: actualStatus }));
+    }, [status]);
+
+    useEffect(() => {
+        setPageable((prev) => ({ ...prev, page: 0 }));
+    }, [criteria]);
 
     useEffect(() => {
         dispatch(fetchAdminPostings({ criteria, pageable }));
-    }, [criteria, pageable]);
+    }, [pageable]);
 
     useEffect(() => {
         if (success) dispatch(fetchAdminPostings({ criteria, pageable }));
@@ -65,7 +76,7 @@ function Postings() {
             title: 'Công ty',
             dataIndex: ['company', 'name'],
             key: 'companyName',
-            render: (text, record) => <Link to={`/company/${record.company.id}`}>{text}</Link>,
+            render: (text, record) => <Link to={`/admin/dashboard/companies/${record.company.id}`}>{text}</Link>,
         },
         {
             title: 'Ngày tạo',
@@ -135,8 +146,8 @@ function Postings() {
                             </>
                         ) : (
                             <Button
-                                href={`/admin/dashboard/postings/${record.id}`}
                                 icon={<FontAwesomeIcon icon={faEye} />}
+                                onClick={() => navigate(`/admin/dashboard/postings/${record.id}`)}
                             >
                                 Xem chi tiết
                             </Button>
@@ -149,6 +160,26 @@ function Postings() {
 
     return (
         <div className={cx('wrapper')}>
+            <div className={cx('filter')}>
+                <Input
+                    value={searchValue}
+                    placeholder="Tiêu đề, tên công ty"
+                    onChange={(e) => setSearchValue(e.target.value.trim())}
+                    onPressEnter={() => {
+                        setCriteria((prev) => ({ ...prev, searchValue }));
+                    }}
+                    allowClear
+                />
+                <Button
+                    type="primary"
+                    icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                    onClick={() => {
+                        setCriteria((prev) => ({ ...prev, searchValue }));
+                    }}
+                >
+                    Tìm kiếm
+                </Button>
+            </div>
             <Table
                 onChange={handleTableChange}
                 columns={columns}

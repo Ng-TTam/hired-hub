@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { baseURL } from '../config/axios';
-import axiosPro from '../config/axios';
 import { notification } from 'antd';
-import { is } from 'date-fns/locale';
+import axios from 'axios';
+import axiosPro, { baseURL } from '../config/axios';
 
 const apiURL = `${baseURL}company`;
 

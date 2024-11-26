@@ -3,11 +3,11 @@ import { Route, Routes } from 'react-router-dom';
 import { CompanyDetail, default as CompanyManagement } from '../CompanyManagement';
 import JobCategoryManagement from '../JobCategoryManagement';
 import PositionCategoryManagement from '../PositionCategoryManagement';
-import { PendingPosts, PostingDetail, Postings } from '../PostingManagement';
-import Users, { Employers, PendingEmployers, UserDetail } from '../UserManagement';
+import { PostingDetail, Postings } from '../PostingManagement';
+import UpdateEmployerCompany from '../UpdateEmployerCompany';
+import Users, { Employers, UserDetail } from '../UserManagement';
 import styles from './AdminLayout.module.scss';
 import Sidebar from './Sidebar';
-import UpdateEmployerCompany from '../UpdateEmployerCompany';
 
 const cx = classNames.bind(styles);
 
@@ -17,13 +17,16 @@ function AdminLayout() {
             <Sidebar />
             <div className={cx('content')}>
                 <Routes>
-                    <Route path="/postings/pending" element={<PendingPosts />} />
-                    <Route path="/postings" element={<Postings />} />
+                    <Route path="/postings/pending" key={'pending-posts'} element={<Postings status={'PENDING'} />} />
+                    <Route path="/postings" key={'posts'} element={<Postings />} />
                     <Route path="/postings/:id" element={<PostingDetail />} />
 
                     <Route path="/users" element={<Users />} />
-                    <Route path="/employers/pending" element={<PendingEmployers />} />
-                    <Route path="/employers" element={<Employers />} />
+                    <Route
+                        path="/employers/pending"
+                        element={<Employers key={'pending-employers'} status={'PENDING'} />}
+                    />
+                    <Route path="/employers" key={'employers'} element={<Employers />} />
                     <Route path="/users/:id" element={<UserDetail />} />
 
                     <Route path="/companies/pending" element={<CompanyManagement key={'pending'} />} />
