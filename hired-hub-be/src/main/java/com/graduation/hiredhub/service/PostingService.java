@@ -54,6 +54,7 @@ public class PostingService {
     WorkAddressMapper workAddressMapper;
     ObjectMapper objectMapper;
     AccountService accountService;
+    NotificationService notificationService;
 
     StringRedisTemplate stringRedisTemplate;
 
@@ -291,5 +292,9 @@ public class PostingService {
         }
         posting.setStatus(postingStatusRequest.getStatus());
         postingRepository.save(posting);
+
+        if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+            notificationService.onCompanyNewPost(posting);
+        }
     }
 }

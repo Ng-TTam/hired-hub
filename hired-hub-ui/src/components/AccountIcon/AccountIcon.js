@@ -20,7 +20,7 @@ function AccountIcon() {
     }, [dispatch]);
 
     return (
-        <div className={cx('wrapper')} onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+        <div className={cx('wrapper')} onClick={() => setIsOpen((prev) => !prev)}>
             <Image className={cx('avatar')} src={user?.avatar} alt={user?.firstName} fallback={images.avatarDefault} />
             <FontAwesomeIcon icon={faChevronUp} className={cx('icon', { rotate: isOpen })} />
         </div>

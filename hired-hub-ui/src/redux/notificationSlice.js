@@ -40,6 +40,7 @@ const notificationSlice = createSlice({
         totalPages: 0,
         totalElements: 0,
         error: null,
+        updated: false,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -59,12 +60,21 @@ const notificationSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            .addCase(markAsRead.pending, (state) => {
+                state.loading = true;
+                state.updated = false;
+            })
             .addCase(markAsRead.fulfilled, (state) => {
                 state.unreadCount = Math.max(state.unreadCount - 1, 0);
+                state.updated = true;
+            })
+            .addCase(markAsReadAll.pending, (state) => {
+                state.loading = true;
+                state.updated = false;
             })
             .addCase(markAsReadAll.fulfilled, (state) => {
                 state.unreadCount = 0;
-                state.error = null;
+                state.updated = true;
             });
     },
 });

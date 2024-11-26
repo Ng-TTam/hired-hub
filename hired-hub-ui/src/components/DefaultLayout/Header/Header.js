@@ -4,7 +4,7 @@ import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 import { faBriefcase } from '@fortawesome/free-solid-svg-icons/faBriefcase';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import images from '../../../assets/images';
 import AccountIcon from '../../AccountIcon';
@@ -48,6 +48,8 @@ const MENU_ITEMS = [
 function Header() {
     const isLogin = localStorage.getItem('isLogin');
 
+    const [openMenu, setOpenMenu] = useState(false);
+
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
@@ -77,15 +79,17 @@ function Header() {
                                 <HeadlessTippy
                                     interactive
                                     placement="bottom-end"
+                                    visible={openMenu}
+                                    onClickOutside={() => setOpenMenu(false)}
                                     render={(attrs) => (
                                         <div tabIndex="-1" {...attrs}>
                                             <PopperWrapper>
-                                                <Menu items={MENU_ITEMS} />
+                                                <Menu items={MENU_ITEMS} onClickItem={() => setOpenMenu(false)} />
                                             </PopperWrapper>
                                         </div>
                                     )}
                                 >
-                                    <div>
+                                    <div onClick={() => setOpenMenu((prev) => !prev)}>
                                         <AccountIcon />
                                     </div>
                                 </HeadlessTippy>
