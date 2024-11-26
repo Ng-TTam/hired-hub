@@ -1,12 +1,12 @@
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import { faCheck, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Input, Table, Tag } from 'antd';
+import { Button, Input, Modal, Table, Tag } from 'antd';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { fetchFilterCompanies } from '../../redux/companySlice';
+import { fetchFilterCompanies, updateStatus } from '../../redux/companySlice';
 import { formatDateTime } from '../../utils';
 import Pagination from '../Pagination';
 import styles from './CompanyManagement.module.scss';
@@ -16,7 +16,7 @@ const cx = classNames.bind(styles);
 function CompanyManagement({ isActive = false }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { companies, totalPages, loading } = useSelector((state) => state.companies);
+    const { companies, totalPages, loading, success } = useSelector((state) => state.companies);
 
     const [criteria, setCriteria] = useState({ isActive });
     const [pageable, setPageable] = useState({ page: 0, size: 10 });
@@ -25,11 +25,38 @@ function CompanyManagement({ isActive = false }) {
         dispatch(fetchFilterCompanies({ criteria, pageable }));
     }, [pageable]);
 
+    useEffect(() => {
+        if (success) {
+            dispatch(fetchFilterCompanies({ criteria, pageable }));
+        }
+    }, [success]);
+
     const handleSearch = () => {
         setPageable((prev) => ({
             ...prev,
             page: 0,
         }));
+    };
+
+    const handleTableChange = (pagination, filters, sorter) => {
+        if (sorter.field) {
+            setPageable((prev) => ({
+                ...prev,
+                sort: `${sorter.field},${sorter.order === 'ascend' ? 'asc' : 'desc'}`,
+            }));
+        }
+    };
+
+    const handleShowConfirm = (companyId, status) => {
+        Modal.confirm({
+            title: 'Bạn có chắc chắn?',
+            content: 'Bạn có chắc chắn muốn cập nhật không?',
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk() {
+                dispatch(updateStatus({ companyId, isActive: status }));
+            },
+        });
     };
 
     const columns = [
@@ -53,12 +80,14 @@ function CompanyManagement({ isActive = false }) {
             key: 'createAt',
             dataIndex: 'createdAt',
             title: 'Ngày tạo',
+            sorter: true,
             render: (text, record) => formatDateTime(record.createdAt),
         },
         {
             key: 'updatedAt',
             dataIndex: 'updatedAt',
             title: 'Cập nhật lần cuối',
+            sorter: true,
             render: (text, record) => formatDateTime(record.updatedAt),
         },
         {
@@ -83,7 +112,11 @@ function CompanyManagement({ isActive = false }) {
                         Xem chi tiết
                     </Button>
                 ) : (
-                    <Button type="primary" icon={<FontAwesomeIcon icon={faCheck} />}>
+                    <Button
+                        type="primary"
+                        icon={<FontAwesomeIcon icon={faCheck} />}
+                        onClick={() => handleShowConfirm(record.id, true)}
+                    >
                         Phê duyệt
                     </Button>
                 );
@@ -106,7 +139,14 @@ function CompanyManagement({ isActive = false }) {
                     Tìm kiếm
                 </Button>
             </div>
-            <Table columns={columns} dataSource={companies} rowKey="id" loading={loading} pagination={false} />
+            <Table
+                columns={columns}
+                dataSource={companies}
+                rowKey="id"
+                onChange={handleTableChange}
+                loading={loading}
+                pagination={false}
+            />
             <Pagination
                 currentPage={pageable.page + 1}
                 totalPages={totalPages}
