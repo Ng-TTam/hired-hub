@@ -17,9 +17,8 @@ const EditorContent = ({ value, onChange, className }) => {
                   }
                 : null;
 
-            editorRef.current.innerHTML = value || '';// Cập nhật nội dung
+            editorRef.current.innerHTML = value || '';
 
-            // Khôi phục vị trí con trỏ
             if (cursorPosition) {
                 const newRange = document.createRange();
                 newRange.setStart(cursorPosition.startContainer, cursorPosition.startOffset);

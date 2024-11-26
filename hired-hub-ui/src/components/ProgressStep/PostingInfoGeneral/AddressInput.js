@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Input, Select } from 'antd';
 import { useEffect, useState } from 'react';
 
-const AddressInput = ({ address, provinces, onChange }) => {
+const AddressInput = ({ address, provinces, onChange, onRemove }) => {
     const [districts, setDistricts] = useState([]);
 
     useEffect(() => {
@@ -47,7 +47,7 @@ const AddressInput = ({ address, provinces, onChange }) => {
                 onChange={onSelectedDistrictChange}
             />
             <Input value={address.location} placeholder="Địa chỉ" onChange={onLocationChange} allowClear />
-            <FontAwesomeIcon icon={faXmark} />
+            <FontAwesomeIcon icon={faXmark} onClick={onRemove} style={{ cursor: "pointer", color: "red" }} />
         </div>
     );
 };

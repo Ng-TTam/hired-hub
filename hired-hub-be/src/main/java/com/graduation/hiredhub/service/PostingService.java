@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -49,6 +50,8 @@ public class PostingService {
     EmployerRepository employerRepository;
     JobDescriptionRepository descriptionRepository;
     WorkAddressRepository workAddressRepository;
+    JobDescriptionRepository jobDescriptionRepository;
+    AccountRepository accountRepository;
     PostingMapper postingMapper;
     JobDescriptionMapper jobDescriptionMapper;
     WorkAddressMapper workAddressMapper;
@@ -59,7 +62,6 @@ public class PostingService {
 
     private static final String REDIS_POSTING_KEY = "postings";
     private static final long CACHE_POSTINGS_TTL_MINUTES = 10;
-    private final AccountRepository accountRepository;
 
     /**
      * Employer posting with status pending, wait admin approve post: pending -> active
@@ -97,6 +99,14 @@ public class PostingService {
             posting.setJobDescription(jobDescription);
 
             posting = postingRepository.save(posting);
+
+            //reset list posting in cache
+            String redisKeyPattern = REDIS_POSTING_KEY + "*";
+            Set<String> keysToDelete = stringRedisTemplate.keys(redisKeyPattern);
+            if (keysToDelete != null) {
+                stringRedisTemplate.delete(keysToDelete);
+            }
+
             return postingMapper.toPostingDetailResponse(posting);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -112,6 +122,7 @@ public class PostingService {
      * @param postingRequest: posting field need update
      * @return posting
      */
+    @Transactional
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public PostingDetailResponse updatePosting(String postingId, PostingRequest postingRequest) {
         Posting posting = postingRepository.findById(postingId).orElseThrow(
@@ -121,12 +132,47 @@ public class PostingService {
             throw new AppException(ErrorCode.POSTING_EXPIRED);
 
         postingMapper.updatePosting(posting, postingRequest);
+        posting.setStatus(PostingStatus.PENDING);
+
         try {
-            postingRepository.save(posting);
+            JobDescription jobDescription = jobDescriptionRepository.findById(postingRequest.getJobDescription().getId())
+                    .orElseThrow(() -> new AppException(ErrorCode.JOB_DESCRIPTION_NOT_EXISTED));
+            jobDescriptionMapper.updateJobDescription(jobDescription, postingRequest.getJobDescription());
+
+            //set jd id in list wa
+            JobDescription finalJobDescription = descriptionRepository.save(jobDescription);
+            List<WorkAddress> workAddresses = postingRequest
+                    .getJobDescription()
+                    .getWorkAddress()
+                    .stream()
+                    .map(workAddressDTO -> {
+                        WorkAddress workAddress = workAddressRepository.findById(workAddressDTO.getId())
+                                .orElseThrow(() -> new AppException(ErrorCode.WORK_ADDRESS_NOT_EXISTED));
+                        workAddressMapper.updateWorkAddress(workAddress, workAddressDTO);
+                        return workAddress;
+                    })
+                    .peek(wa -> wa.setJobDescription(finalJobDescription))
+                    .toList();
+            workAddresses = workAddressRepository.saveAll(workAddresses);
+
+            jobDescription.setWorkAddress(workAddresses);
+            posting.setJobDescription(jobDescription);
+
+            posting = postingRepository.save(posting);
+
+            //reset list posting in cache
+            //another way is set posting in cache if exist (complex)
+            String redisKeyPattern = REDIS_POSTING_KEY + "*";
+            Set<String> keysToDelete = stringRedisTemplate.keys(redisKeyPattern);
+            if (keysToDelete != null) {
+                stringRedisTemplate.delete(keysToDelete);
+            }
+
+            return postingMapper.toPostingDetailResponse(posting);
         } catch (Exception e) {
+            log.error(e.getMessage());
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
-        return postingMapper.toPostingDetailResponse(posting);
     }
 
     /**
@@ -138,8 +184,14 @@ public class PostingService {
      */
     @PreAuthorize("hasRole('EMPLOYER')")
     public PageResponse<PostingResponse> getPostingsByEmployer(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        var pageData = postingRepository.findByEmployer(getEmployerByAccount(), pageable);
+        Pageable pageable = PageRequest.of(page - 1, size,
+                Sort.by(
+                        Sort.Order.desc("createdAt"),
+                        Sort.Order.asc("title"),
+                        Sort.Order.asc("expiredAt")
+                )
+        );
+        var pageData = postingRepository.findByEmployer(getEmployerByAccount(), pageable );
         return PageResponse.<PostingResponse>builder()
                 .currentPage(page)
                 .pageSize(pageData.getSize())
@@ -166,11 +218,11 @@ public class PostingService {
         } else {
             Pageable pageable = PageRequest.of(page - 1, size,
                     Sort.by(
-                            Sort.Order.asc("title"),
-                            Sort.Order.desc("createdAt")
+                            Sort.Order.desc("createdAt"),
+                            Sort.Order.asc("title")
                     )
             );
-            Page<Posting> pageData = postingRepository.findAll(pageable);
+            Page<Posting> pageData = postingRepository.findByStatus(PostingStatus.ACTIVATE, pageable);
 
             pageResponse = PageResponse.<PostingResponse>builder()
                     .currentPage(page)

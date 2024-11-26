@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import PostingReview from '../components/ManageCandidate/PostingReview/PostingReview';
 import CVReview from '../components/ProfileCV/CVReview/CVReview';
-import UpdateEmployerCompany from '../components/UpdateEmployerCompany';
 import Dashboard from '../pages/Business/Dashboard';
 
 const BussinessRoutes = () => {

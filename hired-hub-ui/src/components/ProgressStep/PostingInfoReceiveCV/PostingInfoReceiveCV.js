@@ -12,7 +12,7 @@ const PostingInfoReceiveCV = ({ validate }) => {
     const [expiredAt, setExpriedDate] = useState(posting?.expiredAt || '');
     const [errors, setErrors] = useState('');
     const { Text } = Typography;
-    const { user } = useSelector((state) => state.user);
+    // const { user } = useSelector((state) => state.user);
 
     useEffect(() => {
         if (expiredAt) {
@@ -66,7 +66,7 @@ const PostingInfoReceiveCV = ({ validate }) => {
                         {errors.expiredAt && <Text type="danger">{errors.expiredAt}</Text>}
                     </div>
                 </div>
-                <h4>Thông tin người nhận CV</h4>
+                {/* <h4>Thông tin người nhận CV</h4>
                 <div className="input-two-block-container">
                     <div className="select-container">
                         <span>Họ tên</span>
@@ -110,7 +110,7 @@ const PostingInfoReceiveCV = ({ validate }) => {
                             <div className="underline" />
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

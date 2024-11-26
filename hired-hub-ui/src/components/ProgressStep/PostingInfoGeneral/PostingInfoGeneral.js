@@ -8,11 +8,11 @@ import { fetchPostions } from '../../../redux/postionCategorySlice';
 import { fetchProvinces } from '../../../redux/provinceSlice';
 import '../PostingInfoBase/PostingInfoBase.scss';
 import './PostingInfoGeneral.scss';
-import { Typography, Select, Input } from 'antd';
+import { Typography } from 'antd';
 import AddressInput from './AddressInput';
 
 const jobTypes = Object.values(constants.JobTypes);
-const genders = [{ id: null, name: 'Không yêu cầu' }, ...Object.values(constants.GenderRequire)];
+const genders = [...Object.values(constants.GenderRequire)];
 const expOptions = Object.values(constants.ExperienceRequire);
 
 const PostingInfoGeneral = ({ validate }) => {
@@ -59,7 +59,7 @@ const PostingInfoGeneral = ({ validate }) => {
             setPosting({
                 numberOfPosition,
                 jobType,
-                genderRequire,
+                genderRequire: genderRequire === 'none'? null : genderRequire,
                 position,
                 experienceRequire,
                 currencyUnit,
@@ -90,9 +90,10 @@ const PostingInfoGeneral = ({ validate }) => {
     }, [workAddress]);
 
     useEffect(() => {
+        console.log('posting', posting)
         setNumberOfPosition(posting.numberOfPosition || '');
         setJobType(posting.jobType || '');
-        setGenderRequire(posting.genderRequire || '');
+        setGenderRequire(posting.genderRequire || null);
         setPosition(posting.position || {});
         setExperienceRequire(posting.experienceRequire || '');
         setCurrencyUnit(posting.currencyUnit || '');
@@ -111,26 +112,28 @@ const PostingInfoGeneral = ({ validate }) => {
         if (validate) {
             validate(() => {
                 const newErrors = {};
-                if (!numberOfPosition) {
-                    newErrors.numberOfPosition = 'Vui lòng nhập số lượng tuyển!';
+                if (!posting.numberOfPosition) newErrors.numberOfPosition = 'Vui lòng nhập số lượng tuyển!';
+                if (!posting.jobType) newErrors.jobType = 'Vui lòng chọn loại công việc!';
+                if (Object.keys(posting.position).length === 0) newErrors.position = 'Vui lòng nhập vị trí tuyển dụng!';
+                if (!posting.experienceRequire) newErrors.experienceRequire = 'Vui lòng chọn kinh nghiệm yêu cầu!';
+                if (!posting.currencyUnit) newErrors.currencyUnit = 'Vui lòng chọn đơn vị tiền tệ!';
+
+                if (posting.salaryType === 'from' || posting.salaryType === 'between') {
+                    if (!posting.minimumSalary) newErrors.minimumSalary = 'Vui lòng nhập lương tối thiểu!';
                 }
-                if (!jobType) {
-                    newErrors.jobType = 'Vui lòng chọn loại công việc!';
+
+                if (posting.salaryType === 'to' || posting.salaryType === 'between') {
+                    if (!posting.maximumSalary) newErrors.maximumSalary = 'Vui lòng nhập lương tối đa!';
                 }
-                if (!position) {
-                    newErrors.position = 'Vui lòng nhập vị trí tuyển dụng!';
-                }
-                if (!experienceRequire) {
-                    newErrors.experienceRequire = 'Vui lòng chọn kinh nghiệm yêu cầu!';
-                }
-                if (!currencyUnit) {
-                    newErrors.currencyUnit = 'Vui lòng chọn đơn vị tiền tệ!';
-                }
-                if ((salaryType === 'from' || salaryType === 'between') && !minimumSalary) {
-                    newErrors.minimumSalary = 'Vui lòng nhập lương tối thiểu!';
-                }
-                if ((salaryType === 'to' || salaryType === 'between') && !maximumSalary) {
-                    newErrors.maximumSalary = 'Vui lòng nhập lương tối đa!';
+
+                if (!posting.jobDescription?.workAddress?.length) {
+                    newErrors.workAddress = 'Vui lòng nhập đầy đủ tỉnh/huyện!';
+                } else {
+                    posting.jobDescription.workAddress.forEach((address) => {
+                        if (!address.province || !address.district) {
+                            newErrors.workAddress = 'Vui lòng nhập đầy đủ tỉnh/huyện!';
+                        }
+                    });
                 }
                 setErrors(newErrors);
                 return Object.keys(newErrors).length === 0;
@@ -189,6 +192,10 @@ const PostingInfoGeneral = ({ validate }) => {
         setWorkAddress(updatedWorkAddresses);
     };
 
+    const handleRemoveWorkAddress = (index) => {
+        setWorkAddress((prev) => prev.filter((_, idx) => idx !== index));
+    };
+
     return (
         <div className="field-container">
             <div>
@@ -238,9 +245,7 @@ const PostingInfoGeneral = ({ validate }) => {
                             value={genderRequire}
                             onChange={(e) => setGenderRequire(e.target.value)}
                         >
-                            <option value="" disabled>
-                                -- Chọn giới tính --
-                            </option>
+                            <option value='none'>Không yêu cầu</option>
                             {genders.map((item) => (
                                 <option key={item.id} value={item.id}>
                                     {item.name}
@@ -302,9 +307,6 @@ const PostingInfoGeneral = ({ validate }) => {
                     <div className="select-container">
                         <span>Kiểu lương</span>
                         <select id="select-salary-type" onChange={handleOnChangeSalaryType} value={salaryType}>
-                            <option value="" disabled>
-                                -- Chọn kiểu lương --
-                            </option>
                             <option value="between">Trong khoảng</option>
                             <option value="from">Từ</option>
                             <option value="to">Đến</option>
@@ -361,8 +363,10 @@ const PostingInfoGeneral = ({ validate }) => {
                             onChange={({ province, district, location }) =>
                                 handleOnWorkAddressChange({ province, district, location }, index)
                             }
+                            onRemove={() => handleRemoveWorkAddress(index)}
                         />
                     ))}
+                    {errors.workAddress && <Text type="danger">{errors.workAddress}</Text>}
                     <button
                         className="button-success"
                         onClick={() => {

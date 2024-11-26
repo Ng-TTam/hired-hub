@@ -28,6 +28,6 @@ public class JobDescription {
     @Lob
     String benefit;
 
-    @OneToMany(mappedBy = "jobDescription", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "jobDescription")
     List<WorkAddress> workAddress;
 }

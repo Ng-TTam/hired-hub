@@ -14,7 +14,7 @@ const Dashboard = () => {
     return (
         <div style={{ display: 'flex' }}>
             <Sidebar />
-            <div className="topNav" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <div className="topNav" style={{ /*display: 'flex', flexDirection: 'column',*/ flex: 1 }}>
                 <NavbarCMS />
                 <div
                     className="content"

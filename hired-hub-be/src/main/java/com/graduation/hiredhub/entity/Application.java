@@ -31,10 +31,6 @@ public class Application {
 
     String message;
 
-    @Lob
-    @Column(columnDefinition = "json")
-    String cvSend;
-
     @ManyToOne
     @JoinColumn(name = "cv_id", nullable = false)
     CV cv;

@@ -73,8 +73,18 @@ export const fetchPosting = createAsyncThunk('postings/fetchPosting', async (id,
 export const createPosting = createAsyncThunk('postings/createPosting', async (posting, { rejectWithValue }) => {
     try {
         const response = await axiosPro.post(apiUrl, posting);
+        notification.success({
+            message: 'Thành công',
+            description: 'Đăng tuyển thành công',
+        });
         return response.data;
     } catch (error) {
+        notification.error({
+            message: 'Thất bại',
+            description: `Cập nhật thất bại - ${
+                error.response.data.message || error.response.data || 'lỗi bất định'
+            }`,
+        });
         return rejectWithValue(error.response?.data);
     }
 });
@@ -82,8 +92,18 @@ export const createPosting = createAsyncThunk('postings/createPosting', async (p
 export const updatePosting = createAsyncThunk('postings/updatePosting', async (posting, { rejectWithValue }) => {
     try {
         const response = await axiosPro.put(`${apiUrl}/${posting.id}`, posting);
+        notification.success({
+            message: 'Thành công',
+            description: 'Chỉnh sửa tin tuyển dụng thành công',
+        });
         return response.data;
     } catch (error) {
+        notification.error({
+            message: 'Thất bại',
+            description: `Cập nhật thất bại - ${
+                error.response.data.message || error.response.data || 'lỗi bất định'
+            }`,
+        });
         return rejectWithValue(error.response?.data);
     }
 });
@@ -148,10 +168,23 @@ const postingSlice = createSlice({
             })
             .addCase(createPosting.fulfilled, (state) => {
                 state.loading = false;
-                // state.posting = null;
                 state.success = true;
             })
             .addCase(createPosting.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            //update posting
+            .addCase(updatePosting.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(updatePosting.fulfilled, (state) => {
+                state.loading = false;
+                state.success = true;
+            })
+            .addCase(updatePosting.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
@@ -193,6 +226,7 @@ const postingSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchPosting.fulfilled, (state, action) => {
+                state.loading = false;
                 state.posting = false;
                 state.posting = action.payload.data;
                 state.error = null;

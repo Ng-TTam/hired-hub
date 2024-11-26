@@ -63,6 +63,8 @@ public enum ErrorCode {
     EMAIL_EXISTED("EXISTED_006", "Email is existed", HttpStatus.BAD_REQUEST),
     CV_NOT_EXISTED("EXISTED_101","CV is not exist", HttpStatus.NOT_FOUND),
     COMPANY_NOT_EXISTED("EXISTED_113", "Company not existed", HttpStatus.NOT_FOUND),
+    JOB_DESCRIPTION_NOT_EXISTED("EXISTED_114", "Job Description not existed", HttpStatus.NOT_FOUND),
+    WORK_ADDRESS_NOT_EXISTED("EXISTED_115", "Work address not existed", HttpStatus.NOT_FOUND),
     CV_NOT_FOUND("NOT_FOUND", "CV not found", HttpStatus.NOT_FOUND),
 
     APPLICATION_ALREADY_EXISTS("ALREADY_001", "application already exists",HttpStatus.BAD_REQUEST),
