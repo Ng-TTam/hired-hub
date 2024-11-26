@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 const CVSelect = ({ onCVSelect }) => {
     const dispatch = useDispatch();
     const { list: cvList, loading, error } = useSelector(state => state.cv);
-    const [selectedCV, setSelectedCV] = useState(null); // State để lưu CV được chọn
+    const [selectedCV, setSelectedCV] = useState(null);
 
     useEffect(() => {
         dispatch(fetchCVs());
@@ -17,7 +17,7 @@ const CVSelect = ({ onCVSelect }) => {
     const handleCVClick = (cvId) => {
         setSelectedCV(prevCV => {
             const newCV = prevCV === cvId ? null : cvId;
-            onCVSelect(newCV); // Gọi callback để truyền cv.id cho component cha
+            onCVSelect(newCV);
             return newCV;
         });
     };
@@ -32,7 +32,7 @@ const CVSelect = ({ onCVSelect }) => {
                     <div key={cv.id} className={cv.id}>
                         <div
                             className={`box-bg-1 ${selectedCV === cv.id ? 'selected' : ''}`}
-                            onClick={() => handleCVClick(cv.id)} // Click vào CV để chọn
+                            onClick={() => handleCVClick(cv.id)}
                         >
                             <div className="box-info-1">
                                 <h4 className="description-cv-1">

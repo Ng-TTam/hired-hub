@@ -1,9 +1,9 @@
 .cv-review {
-    width: 790px; // Đặt chiều rộng của div là 80%
-    background-color: rgb(255, 255, 255); // Màu nền cho div
-    padding: 20px; // Padding cho div
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // Bóng đổ cho div
-    border-radius: 8px; // Bo góc cho div
+    width: 790px;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     margin-left: auto; 
     margin-right: auto; 
     height: auto;
@@ -19,8 +19,8 @@
             box-sizing: inherit;
             flex: 1;
             display: flex;
-            justify-content: center; /* Căn giữa theo chiều ngang */
-            align-items: center;    /* Căn giữa theo chiều dọc */
+            justify-content: center;
+            align-items: center; 
 
             .img-cv-1 {
                 max-width: 85%;  
@@ -85,7 +85,6 @@
         
     }
     .cv-text{
-        // margin-left: 10px;
         margin-top: 10px;
         text-decoration: underline;
     }

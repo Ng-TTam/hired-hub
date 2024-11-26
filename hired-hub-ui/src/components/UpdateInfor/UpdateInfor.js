@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './UpdateInfor.scss';
 import ProfileJobSeeker from '../ProfileCV/ProfileJobSeeker/ProfileJobSeeker';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserInformation, updateInformation } from '../../redux/userSlice';
 
 const UpdateInfor = () => {
-    const user = useSelector((state) => state.user.user);
+    const {user, error} = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const [isError, setIsError] = useState(false);
 
     const [formData, setFormData] = useState({
         firstName: `${user?.firstName}`,
@@ -17,6 +18,20 @@ const UpdateInfor = () => {
         address: `${user?.address}`,
         avatar: null,
     });
+
+    useEffect(() => {
+        if (!error) {
+            setFormData({
+                firstName: user?.firstName,
+                lastName: user?.lastName,
+                phoneNumber: user?.phoneNumber,
+                dob: user?.dob,
+                gender: user?.gender,
+                address: user?.address,
+                avatar: null,
+            });
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -63,8 +78,16 @@ const UpdateInfor = () => {
             console.log(pair[0] + ': ' + pair[1]);
         }
 
-        dispatch(updateInformation(formDataU));
-        dispatch(fetchUserInformation());
+        const update = async() =>{
+            try {
+                await dispatch(updateInformation(formDataU)).unwrap();
+                dispatch(fetchUserInformation());
+                setIsError(false);
+            } catch (error) {
+                setIsError(true);
+            }
+        }
+        update();
     };
 
     return (
@@ -171,6 +194,11 @@ const UpdateInfor = () => {
                         <label>Ảnh đại diện</label>
                         <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} />
                     </div>
+                    {isError && (
+                        <div style={{marginBottom: '10px'}}>
+                            <span style={{color: '#dc2f2f', fontSize: '14px'}}>* {error}</span>
+                        </div>
+                    )}
 
                     <div className="ui-btn">
                         <button onClick={handleSubmit} className="ui-submit-btn">

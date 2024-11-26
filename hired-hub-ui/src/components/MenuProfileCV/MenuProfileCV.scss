@@ -1,19 +1,18 @@
 .menu-item {
     .box-item-parent {
-        // Hiệu ứng hover cho item chính
         &:hover .name {
-            color: var(--primary-color); // Thay đổi màu khi hover
+            color: var(--primary-color);
         }
     }
     .menu {
         a {
-            color: #212f3f; // Màu sắc mặc định cho item con
+            color: #212f3f;
             font-size: 14px;
             font-weight: 600;
             text-decoration: none;
             
             &:hover {
-                color: #212f3f; // Giữ nguyên màu khi hover trên các item con
+                color: #212f3f;
             }
         }
     }

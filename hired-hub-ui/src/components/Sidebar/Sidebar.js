@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, User, ChartBarIcon, LogOut, LibraryBig } from 'lucide-react';
 import './Sidebar.scss';
 import images from '../../assets/images';
+import { useDispatch, useSelector } from 'react-redux';
+import Image from '../Image';
+import { fetchUserInformation } from '../../redux/userSlice';
 
 const Sidebar = () => {
-    // const user = JSON.parse(localStorage.getItem('user'));
+    const {user} = useSelector(state => state.user);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchUserInformation());
+    }, dispatch)
 
     return (
         <div className="sidebar">
@@ -15,10 +23,16 @@ const Sidebar = () => {
 
             <div className="user-section">
                 <div className="user-info">
-                    <div className="user-icon" />
+                    <div className="user-icon" >
+                        <Image className='user-icon-avatar'
+                        src={user?.avatar? user?.avatar : images.avatarDefault}
+                        alt="User avatar"
+                        fallback={ images.avatarDefault}
+                        style={{maxWidth: "100%", maxHeight: "100%", aspectRatio: "1 / 1", objectFit:"cover",borderRadius: "50%" , marginLeft:"auto" , marginRight:"auto"}}
+                        />
+                    </div>
                     <span className="user-name">
-                        Hi
-                        {/* {user.lastName} */}
+                        Hi {user?.lastName}
                     </span>
                 </div>
             </div>

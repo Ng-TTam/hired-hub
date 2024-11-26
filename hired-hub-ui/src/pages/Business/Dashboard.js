@@ -9,6 +9,7 @@ import PostingStat from '../../components/PostingStat/PostingStat';
 import ProgressSteps from '../../components/ProgressStep';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import UpdateEmployerCompany from '../../components/UpdateEmployerCompany';
+import UpdateInfor from '../../components/UpdateInfor/UpdateInfor';
 
 const Dashboard = () => {
     return (
@@ -28,6 +29,7 @@ const Dashboard = () => {
                         <Route path="/create-post" element={<ProgressSteps />} />
                         <Route path="/update-post/:id" element={<ProgressSteps />} />
                         <Route path="/update-company" element={<UpdateEmployerCompany />} />
+                        <Route path="/update-information" element={<UpdateInfor/>} />
                     </Routes>
                 </div>
             </div>

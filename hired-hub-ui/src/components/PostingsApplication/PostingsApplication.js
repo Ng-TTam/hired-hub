@@ -78,7 +78,7 @@ const PostingsApplication = () => {
                     <div className="pa-header-select">
                         <Dropdown overlay={statusMenu} trigger={['click']} placement="bottom" overlayClassName="pa-custom-dropdown"
                         onClick={handleToggle}
-                        onBlur={() => handleToggle(false)}
+                        onBlur={() => setIsOpen(false)}
                         >
                             <button className="pa-filter-dropdown" style={{fontSize:"14px"}}>
                                 {filterStatusLabel}
@@ -100,9 +100,8 @@ const PostingsApplication = () => {
                             <div className="no-pa-image">
                                 <img src={images.emptyApllication} alt="No Applications" />
                             </div>
-                            <div className="no-pa-title">Không tìm thấy thông tin ứng tuyển!</div>
+                            <div className="no-pa-title">Không tìm thấy thông tin ứng tuyển nào!</div>
                             <div className="no-pa-des"> 
-                                <p>Không tìm thấy thông tin ứng tuyển!</p>
                                 <p>Bắt đầu sự nghiệp mơ ước với hàng nghìn việc làm chất lượng tại HiredHub</p>
                             </div>
                             <div className="no-pa-button">
