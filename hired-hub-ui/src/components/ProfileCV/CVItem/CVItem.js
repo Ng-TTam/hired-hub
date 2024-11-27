@@ -20,7 +20,7 @@ function CVItem({ cvId, titleBox, onDelete }) {
                 },
             });
             alert("Xóa CV thành công!");
-            onDelete(cvId); // Gọi hàm onDelete để cập nhật lại danh sách
+            onDelete(cvId);
             setShowConfirmDialog(false);
         } catch (error) {
             console.error("Lỗi khi xóa CV:", error);
@@ -49,7 +49,7 @@ function CVItem({ cvId, titleBox, onDelete }) {
                             </li>
                             <li>
                                 <button 
-                                    onClick={() => setShowConfirmDialog(true)} // Hiện hộp thoại khi nhấn nút
+                                    onClick={() => setShowConfirmDialog(true)}
                                     className="del-button"
                                 >
                                     Xóa CV
@@ -59,8 +59,6 @@ function CVItem({ cvId, titleBox, onDelete }) {
                     </div>
                 </div>
             </div>
-
-            {/* Hộp thoại xác nhận xóa */}
             {showConfirmDialog && (
                 <div className="confirm-dialog">
                     <p>Bạn có chắc chắn muốn xóa CV này không?</p>

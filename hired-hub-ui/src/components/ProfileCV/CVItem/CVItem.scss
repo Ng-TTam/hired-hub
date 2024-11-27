@@ -1,38 +1,35 @@
-// CVItem.scss
-
 .box-bg {
     background-color: white; 
     border: 2px solid #ddd; 
     border-radius: 8px; 
     padding: 16px; 
-    // margin-bottom: 16px; 
 
     .box-info {
-        display: flex; // Sử dụng flex để căn chỉnh nội dung
-        justify-content: space-between; // Căn giữa nội dung
-        align-items: center; // Căn chỉnh theo chiều dọc
+        display: flex; 
+        justify-content: space-between;
+        align-items: center;
     }
 
     .description-cv {
-        font-size: 1.2rem; // Kích thước chữ cho tiêu đề CV
-        color: #000000; // Màu chữ
-        margin: 0; // Loại bỏ margin mặc định
-        position: relative; // Để sử dụng absolute cho icon
+        font-size: 1.2rem;
+        color: #000000;
+        margin: 0;
+        position: relative;
 
         a {
-            text-decoration: none; // Bỏ gạch chân
-            color: inherit; // Sử dụng màu chữ của parent
+            text-decoration: none;
+            color: inherit;
             &:hover {
-                color: #28a745; // Thay đổi màu khi hover
+                color: #28a745;
             }
         }
     }
 
     .action {
-        list-style: none; // Bỏ danh sách kiểu
-        padding: 0; // Bỏ padding
-        display: flex; // Sử dụng flex để căn chỉnh
-        gap: 10px; // Khoảng cách giữa các nút
+        list-style: none;
+        padding: 0;
+        display: flex;
+        gap: 10px;
     }
 }
 .confirm-dialog {
@@ -62,8 +59,8 @@
     background-color: #28a745;
     color: white;
     &:hover {
-        background-color: #218838; // Màu nền khi hover
-        border-color: #1e7e34; // Đường viền khi hover
+        background-color: #218838;
+        border-color: #1e7e34;
     }
 }
 
@@ -72,19 +69,19 @@
     background-color: #EAEAEA;
     color: #000000;
     &:hover {
-        background-color: #d2d6d3; // Màu nền khi hover
-        border-color: #d2d6d3; // Đường viền khi hover
+        background-color: #d2d6d3;
+        border-color: #d2d6d3;
     }
 }
 
 .del-button {
     color: #ffffff;
-    background-color: #b44848; // Màu nền khi hover
+    background-color: #b44848;
     border-color: #b44848;
     &:hover {
         color: #ffffff;
-        background-color: #7e2e2e; // Màu nền khi hover
-        border-color: #7e2e2e; // Đường viền khi hover
+        background-color: #7e2e2e;
+        border-color: #7e2e2e;
     }
 }
 

@@ -61,7 +61,9 @@ const NavbarCMS = () => {
                             </Link>
                         </li>
                         <li>
-                            <LucideInfo size={20} /> &nbsp;&nbsp;&nbsp; Thông tin của tôi
+                            <Link to="/business/update-information">
+                                <LucideInfo size={20} /> &nbsp;&nbsp;&nbsp; Thông tin của tôi
+                            </Link>
                         </li>
                         <li>
                             <KeySquare size={20} /> &nbsp;&nbsp;&nbsp; Đổi mật khẩu

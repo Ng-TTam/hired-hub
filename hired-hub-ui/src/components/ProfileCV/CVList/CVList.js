@@ -9,13 +9,12 @@ const CVList = () => {
     const dispatch = useDispatch();
     const { list: cvList, loading, error } = useSelector(state => state.cv);
 
-    // Cập nhật danh sách CV khi có sự thay đổi
     const handleDelete = (cvId) => {
-        dispatch(fetchCVs()); // Gọi lại action fetchCVs để tải lại dữ liệu sau khi xóa
+        dispatch(fetchCVs());
     };
 
     useEffect(() => {
-        dispatch(fetchCVs()); // Lấy danh sách CV khi component mount
+        dispatch(fetchCVs());
     }, [dispatch]);
 
     if (loading) return <div className="loading">Đang tải...</div>;
@@ -26,10 +25,10 @@ const CVList = () => {
             {cvList.length > 0 ? (
                 cvList.map(cv => (
                     <CVItem 
-                        key={cv.id} // Đảm bảo mỗi item có key duy nhất
+                        key={cv.id}
                         cvId={cv.id}
                         titleBox={cv.description}
-                        onDelete={handleDelete} // Truyền handleDelete xuống CVItem
+                        onDelete={handleDelete}
                     />
                 ))
             ) : (

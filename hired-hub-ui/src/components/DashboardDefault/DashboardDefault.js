@@ -11,6 +11,7 @@ import image from "../../assets/images/index"
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStatisticsDashboard } from "../../redux/statisticsSlice";
 import { fetchUserInformation } from "../../redux/userSlice";
+import Image from "../Image";
 
 const DashboardDefault = () =>{
     const email = localStorage.getItem('email');
@@ -114,26 +115,21 @@ const DashboardDefault = () =>{
                                 height: '126px',
                             }}
                         />
-                        <div className="dd-text-center">
+                        {/* <div className="dd-text-center">
                             <span className="dd-text-muted">Chưa đủ dữ liệu để hiển thị</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
             <div className="dd-right">
                 <div className="dd-right-body">
                     <div className="dd-right-image">
-                    <img
-                        className="dd-right-avatar"
-                        src={image.avatarDefault}
-                        style={{
-                            width: '56px',
-                            height: '56px',
-                            flex: '0 0 56px',
-                            backgroundPosition: 'center',
-                            borderRadius: '50%',
-                        }}
-                    />
+                        <Image className='dd-right-avatar'
+                            src={user?.avatar? user?.avatar : image.avatarDefault}
+                            alt="User avatar"
+                            fallback={ image.avatarDefault}
+                            style={{maxWidth: "100%", maxHeight: "100%", aspectRatio: "1 / 1", objectFit:"cover",borderRadius: "50%" , marginLeft:"auto" , marginRight:"auto"}}
+                        />
                     </div>
                     <div className="dd-right-infor">
                         <div className="dd-infor-name" style={{fontSize:'16px', fontWeight: 'bold'}}>

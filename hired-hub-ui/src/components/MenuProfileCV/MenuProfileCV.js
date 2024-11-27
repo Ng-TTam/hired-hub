@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { Wrapper as PopperWrapper } from '../Popper';
-import Menu from '../Menu/Menu'; // Đường dẫn đến component Menu
-import './MenuProfileCV.scss'; // Đường dẫn đến tệp SCSS của component
+import Menu from '../Menu/Menu';
+import './MenuProfileCV.scss'; 
 
 const MenuProfileCV = () => {
-    // const isLogin = useSelector((state) => state.authentication.isLogin);
     const isLogin = localStorage.getItem('isLogin');
-    
-    // Danh sách các mục menu
     const MENU_ITEMS = [
         {
             title: 'Tạo CV',

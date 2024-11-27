@@ -10,7 +10,7 @@
         padding: 0;
         align-items: center;
         display: flex;
-        justify-content: space-between; /* Giữ khoảng cách giữa tiêu đề và nút */
+        justify-content: space-between;
         margin-bottom: 12px;
     
         .title {
@@ -20,7 +20,7 @@
             font-size: 19px;
             font-weight: 700;
             line-height: 24px;
-            flex-grow: 1; /* Giúp tiêu đề chiếm không gian còn lại */
+            flex-grow: 1;
             width: 80%;
         }
     

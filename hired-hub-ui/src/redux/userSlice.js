@@ -35,7 +35,7 @@ export const updateInformation = createAsyncThunk('user/updateInformation', asyn
         });
         return response.data;
     } catch (error) {
-        return rejectWithValue(error.response);
+        return rejectWithValue(error.response.data);
     }
 });
 
@@ -75,6 +75,7 @@ const userSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+        // fetch User Information
             .addCase(fetchUserInformation.pending, (state) => {
                 state.loading = true;
                 state.user = null;
@@ -89,18 +90,20 @@ const userSlice = createSlice({
                 state.error = action.payload;
             })
 
+        // update Information
             .addCase(updateInformation.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
             .addCase(updateInformation.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload.data;
             })
             .addCase(updateInformation.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.error = action.payload.message;
             })
+
+        // fetch All Users
             .addCase(fetchAllUsers.pending, (state) => {
                 state.loading = true;
                 state.users = [];

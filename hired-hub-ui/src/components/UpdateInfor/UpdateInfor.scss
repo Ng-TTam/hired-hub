@@ -2,8 +2,8 @@
     width: 70%;
     margin-left: auto;
     margin-right: auto;
-    display: flex; /* Sử dụng flexbox để chia cột */
-    gap: 10%; /* Khoảng cách giữa các cột */
+    display: flex;
+    gap: 10%;
     font-family: Inter, sans-serif;
     padding-top: 20px;
     font-family: Inter, sans-serif;
@@ -42,6 +42,12 @@
             font-weight: bold;
             margin-bottom: 5px;
           }
+          .error-message-ui {
+            color: #dc2f2f;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }
       
           input {
             width: 100%;
@@ -96,7 +102,7 @@
     }
     
     .ui-profile-js{
-        flex: 1; /* Chiếm 1 phần của chiều rộng */
+        flex: 1;
         background-color: white;
         border-radius: 10px;
         height: fit-content;

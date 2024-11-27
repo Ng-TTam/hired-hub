@@ -2,8 +2,8 @@
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    display: flex; /* Sử dụng flexbox để chia cột */
-    gap: 30px; /* Khoảng cách giữa các cột */
+    display: flex;
+    gap: 30px;
     font-family: Inter, sans-serif;
     padding: 12px;
     margin-bottom: 16px;
@@ -17,7 +17,7 @@
         height: 100%;
     }
     .pai-data{
-        flex: 8; /* Chiếm 1 phần của chiều rộng */
+        flex: 8;
         border-radius: 10px;
         display: inline-grid;
         gap: 12px;

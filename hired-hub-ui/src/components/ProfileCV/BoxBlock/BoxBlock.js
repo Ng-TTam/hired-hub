@@ -1,5 +1,5 @@
 import React from "react";
-import CVList from "../CVList/CVList"; // Đảm bảo đường dẫn đúng
+import CVList from "../CVList/CVList";
 import './BoxBlock.scss'
 
 function BoxBlock({ titleBox}) {
