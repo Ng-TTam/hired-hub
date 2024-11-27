@@ -2,14 +2,16 @@ package com.graduation.hiredhub.service;
 
 import com.graduation.hiredhub.dto.reqResp.NotificationDTO;
 import com.graduation.hiredhub.dto.response.PageResponse;
-import com.graduation.hiredhub.entity.Notification;
-import com.graduation.hiredhub.entity.User;
+import com.graduation.hiredhub.entity.*;
 import com.graduation.hiredhub.entity.enumeration.NotificationType;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.NotificationMapper;
+import com.graduation.hiredhub.repository.JobSeekerRepository;
 import com.graduation.hiredhub.repository.NotificationRepository;
+import com.graduation.hiredhub.repository.SubscriptionRepository;
 import com.graduation.hiredhub.repository.UserRepository;
+import com.graduation.hiredhub.service.util.NotificationUtils;
 import com.graduation.hiredhub.service.util.PageUtils;
 import com.graduation.hiredhub.service.util.SecurityUtils;
 import lombok.AccessLevel;
@@ -20,6 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -28,6 +32,8 @@ public class NotificationService {
     NotificationMapper notificationMapper;
     PushNotificationService pushNotificationService;
     UserRepository userRepository;
+    private final JobSeekerRepository jobSeekerRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
     /**
      * Retrieves a paginated list of notifications for the currently logged-in user.
@@ -86,6 +92,7 @@ public class NotificationService {
 
     /**
      * Retrieves number of unread notifications of current user login
+     *
      * @return number of unread notifications
      */
     public int countUnread() {
@@ -93,5 +100,21 @@ public class NotificationService {
                 () -> new AppException(ErrorCode.UNAUTHENTICATED)
         );
         return notificationRepository.countUnreadNotification(accountId);
+    }
+
+    public void createNotification(Notification notification) {
+        notificationRepository.save(notification);
+        pushNotificationService.push(notification);
+    }
+
+    public void onCompanyNewPost(Posting posting) {
+        Company company = posting.getEmployer().getCompany();
+        List<JobSeeker> followers = subscriptionRepository.findAllByCompanyId(company.getId())
+                .stream().map(Subscription::getJobSeeker)
+                .toList();
+        followers.forEach(follower -> {
+            Notification notification = NotificationUtils.followedCompanyNewPost(posting, follower);
+            createNotification(notification);
+        });
     }
 }

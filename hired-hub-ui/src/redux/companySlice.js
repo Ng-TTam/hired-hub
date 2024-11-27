@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { baseURL } from '../config/axios';
-import axiosPro from '../config/axios';
 import { notification } from 'antd';
+import axios from 'axios';
+import axiosPro, { baseURL } from '../config/axios';
 
 const apiURL = `${baseURL}company`;
 
@@ -78,6 +77,31 @@ export const fetchByCurrentUserLogin = createAsyncThunk(
             const response = await axiosPro.get(`${apiURL}/self`);
             return response.data;
         } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    },
+);
+
+export const updateStatus = createAsyncThunk(
+    'companies/updateStatus',
+    async ({ companyId, isActive }, { rejectWithValue }) => {
+        try {
+            const response = await axiosPro.post(`${apiURL}/update-status`, {
+                companyId,
+                isActive,
+            });
+            notification.success({
+                message: 'Thành công',
+                description: 'Cập nhật trạng thái thành công',
+            });
+            return response.data;
+        } catch (error) {
+            notification.error({
+                message: 'Thất bại',
+                description: `Cập nhật thất bại - ${
+                    error.response.data.message || error.response.data || 'lỗi bất định'
+                }`,
+            });
             return rejectWithValue(error.response.data);
         }
     },
@@ -160,6 +184,19 @@ const companySlice = createSlice({
                 state.success = true;
             })
             .addCase(createCompany.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+            })
+            .addCase(updateStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(updateStatus.fulfilled, (state) => {
+                state.loading = false;
+                state.success = true;
+            })
+            .addCase(updateStatus.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
             });

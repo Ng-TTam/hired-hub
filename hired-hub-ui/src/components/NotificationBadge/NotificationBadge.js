@@ -2,7 +2,7 @@ import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeadlessTippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectWebSocket, disconnectWebSocket } from '../../config/webSocketConfig';
 import { fetchNotifications, markAsReadAll } from '../../redux/notificationSlice';
@@ -14,12 +14,18 @@ const cx = classNames.bind(styles);
 
 function NotificationBadge({ className }) {
     const dispatch = useDispatch();
-    const { unreadCount, notifications } = useSelector((state) => state.notifications);
+    const { unreadCount, notifications, updated } = useSelector((state) => state.notifications);
     const user = useSelector((state) => state.user.user);
+
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         dispatch(fetchNotifications());
     }, [dispatch]);
+
+    useEffect(() => {
+        if (updated) dispatch(fetchNotifications());
+    }, [updated]);
 
     useEffect(() => {
         if (user) connectWebSocket(user.id);
@@ -36,7 +42,9 @@ function NotificationBadge({ className }) {
         <div>
             <HeadlessTippy
                 interactive
-                placement="bottom-start"
+                placement="bottom"
+                visible={open}
+                onClickOutside={() => setOpen(false)}
                 delay={[500, 300]}
                 render={(attrs) => (
                     <div tabIndex="-1" {...attrs}>
@@ -49,7 +57,11 @@ function NotificationBadge({ className }) {
                                         </div>
                                         <div className={cx('notification-list')}>
                                             {notifications.map((item) => (
-                                                <NotificationItem key={item.id} notification={item} />
+                                                <NotificationItem
+                                                    key={item.id}
+                                                    notification={item}
+                                                    onClick={() => setOpen(false)}
+                                                />
                                             ))}
                                         </div>
                                     </>
@@ -61,7 +73,7 @@ function NotificationBadge({ className }) {
                     </div>
                 )}
             >
-                <div className={cx('notification-badge', className)}>
+                <div className={cx('notification-badge', className)} onClick={() => setOpen((prev) => !prev)}>
                     <span className={cx('icon')}>
                         <FontAwesomeIcon icon={faBell} />
                     </span>

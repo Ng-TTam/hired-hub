@@ -2,6 +2,7 @@ package com.graduation.hiredhub.controller;
 
 import com.graduation.hiredhub.dto.request.AdminCompanyFilterCriteria;
 import com.graduation.hiredhub.dto.request.CompanyCreationRequest;
+import com.graduation.hiredhub.dto.request.CompanyStatusRequest;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.CompanyDetailResponse;
 import com.graduation.hiredhub.dto.response.CompanyResponse;
@@ -57,5 +58,11 @@ public class CompanyController {
         return ApiResponse.<CompanyResponse>builder()
                 .data(companyService.findByCurrentUserLogin())
                 .build();
+    }
+
+    @PostMapping("/update-status")
+    public ApiResponse<Void> updateStatus(@RequestBody CompanyStatusRequest companyStatusRequest) {
+        companyService.updateStatus(companyStatusRequest);
+        return ApiResponse.<Void>builder().build();
     }
 }

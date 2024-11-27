@@ -8,7 +8,6 @@ import ProgressSteps from '../components/ProgressStep';
 
 function App() {
     const role = localStorage.getItem('role');
-    console.log(role);
 
     return (
         <Router>

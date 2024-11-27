@@ -1,2 +1,11 @@
 .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter {
+    display: grid;
+    grid-template-columns: 4fr 1fr 5fr;
+    gap: 10px;
 }

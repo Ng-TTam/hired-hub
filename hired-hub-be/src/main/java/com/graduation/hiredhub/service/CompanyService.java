@@ -3,6 +3,7 @@ package com.graduation.hiredhub.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduation.hiredhub.dto.request.AdminCompanyFilterCriteria;
 import com.graduation.hiredhub.dto.request.CompanyCreationRequest;
+import com.graduation.hiredhub.dto.request.CompanyStatusRequest;
 import com.graduation.hiredhub.dto.response.CompanyDetailResponse;
 import com.graduation.hiredhub.dto.response.CompanyResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
@@ -154,5 +155,15 @@ public class CompanyService {
         return Optional.ofNullable(employer.getCompany())
                 .map(companyMapper::toCompanyResponse)
                 .orElseThrow(() -> new AppException(ErrorCode.EMPLOYER_COMPANY_NOT_EXISTS));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateStatus(CompanyStatusRequest companyStatusRequest) {
+        companyRepository.findById(companyStatusRequest.getCompanyId())
+                .map(company -> {
+                    company.setIsActive(companyStatusRequest.getIsActive());
+                    return company;
+                })
+                .map(companyRepository::save);
     }
 }

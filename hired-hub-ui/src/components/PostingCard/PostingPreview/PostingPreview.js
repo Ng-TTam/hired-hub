@@ -52,19 +52,19 @@ function PostingPreview({ posting }) {
                     <div>
                         <h3 className={cx('jd-item__title')}>Mô tả công việc</h3>
                     </div>
-                    <HtmlRenderer content={posting?.jobDescription?.description} />
+                    <HtmlRenderer className={cx('jd-item__content')} content={posting?.jobDescription?.description} />
                 </div>
                 <div className={cx('jd-item')}>
                     <div>
                         <h3 className={cx('jd-item__title')}>Yêu cầu ứng viên</h3>
                     </div>
-                    <HtmlRenderer content={posting?.jobDescription?.requirement} />
+                    <HtmlRenderer className={cx('jd-item__content')} content={posting?.jobDescription?.requirement} />
                 </div>
                 <div className={cx('jd-item')}>
                     <div>
                         <h3 className={cx('jd-item__title')}>Quyền lợi</h3>
                     </div>
-                    <HtmlRenderer content={posting?.jobDescription?.benefit} />
+                    <HtmlRenderer className={cx('jd-item__content')} content={posting?.jobDescription?.benefit} />
                 </div>
                 <div className={cx('jd-item')}>
                     <div>

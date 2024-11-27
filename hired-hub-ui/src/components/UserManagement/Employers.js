@@ -1,4 +1,4 @@
-import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Modal, Space, Table, Tag } from 'antd';
 import classNames from 'classnames/bind';
@@ -12,7 +12,7 @@ import styles from './UserManagement.module.scss';
 
 const cx = classNames.bind(styles);
 
-const Emloyers = () => {
+const Emloyers = ({ status }) => {
     const dispatch = useDispatch();
     const { users, totalPages, loading } = useSelector((state) => state.user);
     const { updateSuccess } = useSelector((state) => state.account);
@@ -21,8 +21,16 @@ const Emloyers = () => {
     const [pageable, setPageable] = useState({ page: 0, size: 10 });
 
     useEffect(() => {
+        setCriteria((prev) => ({ ...prev, status }));
+    }, [status]);
+
+    useEffect(() => {
+        setPageable((prev) => ({ ...prev, page: 0 }));
+    }, [criteria]);
+
+    useEffect(() => {
         dispatch(fetchAllUsers({ criteria, pageable }));
-    }, [dispatch]);
+    }, [pageable]);
 
     useEffect(() => {
         if (updateSuccess) {
@@ -103,7 +111,7 @@ const Emloyers = () => {
                             >
                                 Khóa
                             </Button>
-                        ) : (
+                        ) : status === 'DEACTIVATE' ? (
                             <Button
                                 type="primary"
                                 icon={<FontAwesomeIcon icon={faUnlock} />}
@@ -111,6 +119,28 @@ const Emloyers = () => {
                             >
                                 Mở khóa
                             </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    type="primary"
+                                    icon={<FontAwesomeIcon icon={faCheck} />}
+                                    onClick={() =>
+                                        handleShowConfirm({ accountId: record.account.id, status: 'ACTIVATE' })
+                                    }
+                                >
+                                    Phê duyệt
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    danger
+                                    icon={<FontAwesomeIcon icon={faBan} />}
+                                    onClick={() =>
+                                        handleShowConfirm({ accountId: record.account.id, status: 'DEACTIVATE' })
+                                    }
+                                >
+                                    Từ chối
+                                </Button>
+                            </>
                         )}
                     </Space>
                 );
