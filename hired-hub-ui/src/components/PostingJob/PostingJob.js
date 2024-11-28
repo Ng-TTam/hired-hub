@@ -6,43 +6,57 @@ import { PenBox, PenBoxIcon, StepForwardIcon, StopCircleIcon } from 'lucide-reac
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Tag } from 'antd';
 import { Link } from 'react-router-dom';
-import { fetchEmployerPostings, updateStatus } from '../../redux/postingSlice';
+import { fetchEmployerFilterPostings, updateStatus } from '../../redux/postingSlice';
 import { formatDateTime } from '../../utils';
-import { getStatusClassNames } from 'antd/es/_util/statusUtils';
+import FilterPosting from './FilterPosting/FilterPosting';
 
 const PostingJob = () => {
     const dispatch = useDispatch();
     const { postings, totalPages, loading, success } = useSelector((state) => state.postings);
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 10;
+    const [criteria, setCriteria] = useState({});
+    const [pageable, setPageable] = useState({ page: 0, size: 10 });
 
     useEffect(() => {
-        dispatch(fetchEmployerPostings({ page: currentPage, size: pageSize }));
-    }, [dispatch, currentPage]);
+        dispatch(fetchEmployerFilterPostings({ criteria, pageable }))
+    }, [pageable]);
 
     useEffect(() => {
         if (success) {
-            dispatch(fetchEmployerPostings({ page: currentPage, size: pageSize }));
+            dispatch(fetchEmployerFilterPostings({ criteria, pageable }))
         }
     }, [success]);
 
-    const handleOnPageChange = (page) => {
-        setCurrentPage(page);
-    };
-
     const handleSubmitStatusChange = (postingId, status) => {
         dispatch(updateStatus({ postingId, status }));
+    };
+
+    const handleOnStatusChange = (newStatus) => {
+        setCriteria((prev) => ({
+            ...prev,
+            status: newStatus,
+        }));
+    };
+
+    const handleOnSearchValueChange = (newSearchValue) => {
+        setCriteria((prev) => ({
+            ...prev,
+            searchValue: newSearchValue,
+        }));
     };
 
     return (
         <>
             {loading ? (
                 <div className="loading">Đang tải...</div>
-            ) : postings.length > 0 ? (
+            ) : postings.length > -1 ? (
                 <div style={{ flex: 1 }}>
-                    <div className="post-button" style={{ fontSize: '16px' }}>
-                        <Link to="/business/create-post">Đăng tuyển</Link>
-                    </div>
+                    <FilterPosting
+                        criteria={criteria}
+                        filterStatus
+                        onSearchValueChange={handleOnSearchValueChange}
+                        onSelectedStatusChange={handleOnStatusChange}
+                        onClickSearch={() => dispatch(fetchEmployerFilterPostings({ criteria, pageable }))}
+                    />
                     <table className="custom-table" style={{ marginTop: '10px' }}>
                         <thead>
                             <tr>
@@ -125,7 +139,11 @@ const PostingJob = () => {
                             ))}
                         </tbody>
                     </table>
-                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handleOnPageChange} />
+                    <Pagination
+                        currentPage={pageable.page + 1}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setPageable((prev) => ({ ...prev, page: page - 1 }))}
+                    />
                 </div>
             ) : (
                 <div className="posting-nil">

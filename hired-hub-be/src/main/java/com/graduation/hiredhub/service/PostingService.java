@@ -2,10 +2,7 @@ package com.graduation.hiredhub.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graduation.hiredhub.dto.request.AdminPostingFilterCriteria;
-import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
-import com.graduation.hiredhub.dto.request.PostingRequest;
-import com.graduation.hiredhub.dto.request.PostingStatusRequest;
+import com.graduation.hiredhub.dto.request.*;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
@@ -176,32 +173,6 @@ public class PostingService {
         }
     }
 
-    /**
-     * Get postings employer post
-     *
-     * @param page: current page
-     * @param size: size of one page
-     * @return Page of posting response
-     */
-    @PreAuthorize("hasRole('EMPLOYER')")
-    public PageResponse<PostingResponse> getPostingsByEmployer(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size,
-                Sort.by(
-                        Sort.Order.desc("createdAt"),
-                        Sort.Order.asc("title"),
-                        Sort.Order.asc("expiredAt")
-                )
-        );
-        var pageData = postingRepository.findByEmployer(getEmployerByAccount(), pageable );
-        return PageResponse.<PostingResponse>builder()
-                .currentPage(page)
-                .pageSize(pageData.getSize())
-                .totalPages(pageData.getTotalPages())
-                .totalElements(pageData.getTotalElements())
-                .data(pageData.getContent().stream().map(postingMapper::toPostingResponse).toList())
-                .build();
-    }
-
     @PreAuthorize("permitAll()")
     public PageResponse<PostingResponse> getAllPostings(int page, int size) {
         String cacheKey = REDIS_POSTING_KEY + "_page_" + page + "_size_" + size;
@@ -304,6 +275,28 @@ public class PostingService {
         }
         Page<Posting> page = postingRepository.findAll(spec, pageable);
         return PageUtils.toPageResponse(page.map(postingMapper::toPostingDetailResponse));
+    }
+
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public PageResponse<PostingResponse> employerFilter(EmployerPostingFilterCriteria criteria, Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                Sort.by(
+                        Sort.Order.desc("createdAt"),
+                        Sort.Order.asc("title"),
+                        Sort.Order.asc("expiredAt")
+                )
+        );
+        Specification<Posting> spec = Specification.where(null);
+        if (criteria.getSearchValue() != null) {
+            spec = spec.and(PostingSpecifications.withSearchText(criteria.getSearchValue()));
+        }
+        if (criteria.getStatus() != null) {
+            spec = spec.and(PostingSpecifications.hasStatus(criteria.getStatus()));
+        }
+        spec = spec.and(PostingSpecifications.hasEmployer(getEmployerByAccount()));
+        Page<PostingResponse> page = postingRepository.findAll(spec, sortedPageable)
+                .map(postingMapper::toPostingResponse);
+        return PageUtils.toPageResponse(page);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

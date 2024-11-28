@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './OTP.scss';
-import { KeySquareIcon } from 'lucide-react';
+import styles from './OTP.module.scss';
+import { KeySquareIcon, LoaderCircleIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resendOtp } from '../../redux/accountSlice';
+import classNames from 'classnames/bind';
 
-const OTP = ({ length = 6, onComplete }) => {
+const cx = classNames.bind(styles);
+
+const OTP = ({ length = 6, onComplete, error }) => {
     const [otp, setOtp] = useState(new Array(length).fill(''));
     const inputRefs = useRef([]);
     const dispatch = useDispatch();
@@ -80,13 +83,13 @@ const OTP = ({ length = 6, onComplete }) => {
     };
 
     return (
-        <div className="otp">
-            <div className="otp-container">
+        <div className={cx('otp')}>
+            <div className={cx('otp-container')}>
                 <h2>Hãy nhập mã OTP</h2>
                 <KeySquareIcon size={120} style={{ marginBottom: '20px', color: '#00b14f' }} />
                 <span>Mã OTP đã được gửi tới email của bạn.</span>
                 <span>Vui lòng nhập mã vào ô bên dưới, OTP sẽ hết hạn sau 5 phút nữa, </span>
-                <div className="otp-input-group">
+                <div className={cx('otp-input-group')}>
                     {otp.map((value, index) => (
                         <input
                             key={index}
@@ -97,16 +100,20 @@ const OTP = ({ length = 6, onComplete }) => {
                             onKeyDown={(e) => handleKeyDown(e, index)}
                             onPaste={handlePaste}
                             ref={(ref) => (inputRefs.current[index] = ref)}
-                            className="otp-input"
+                            className={cx('otp-input')}
                             autoComplete="off"
                         />
                     ))}
                 </div>
-                <div className="otp-footer">
-                    Chưa nhận được mã? <a className="resend-button"  onClick={handleResend}>Gửi lại</a>
+                <div className={cx('otp-footer')}>
+                    Chưa nhận được mã? <a className={cx('resend-button')} onClick={handleResend}>Gửi lại</a>
                 </div>
                 {otpResendSuccess && <span>Mã otp đã được gửi lại.</span>}
+                {otpResendLoading && <LoaderCircleIcon size={20} />}
+                {otpResendError && <span style={{color:'red'}}>Gửi otp bị lỗi.</span>}
+                {error && <span style={{color:'red', marginTop:'10px'}}>Otp không đúng hoặc hết hạn.</span>}
             </div>
+            
         </div>
     );
 };

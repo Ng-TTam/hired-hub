@@ -1,9 +1,6 @@
 package com.graduation.hiredhub.controller;
 
-import com.graduation.hiredhub.dto.request.AdminPostingFilterCriteria;
-import com.graduation.hiredhub.dto.request.PostingFilterCriteria;
-import com.graduation.hiredhub.dto.request.PostingRequest;
-import com.graduation.hiredhub.dto.request.PostingStatusRequest;
+import com.graduation.hiredhub.dto.request.*;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
@@ -48,12 +45,13 @@ public class PostingController {
                 .build();
     }
 
-    @GetMapping("/self")
-    ApiResponse<PageResponse<PostingResponse>> getPostingsByEmployer(
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+    @GetMapping("/employer")
+    public ApiResponse<PageResponse<PostingResponse>> employerFilter(
+            EmployerPostingFilterCriteria criteria,
+            Pageable pageable
+    ) {
         return ApiResponse.<PageResponse<PostingResponse>>builder()
-                .data(postingService.getPostingsByEmployer(page, size))
+                .data(postingService.employerFilter(criteria, pageable))
                 .build();
     }
 

@@ -12,6 +12,8 @@ const images = {
     recruitmentEmpty: require('./recruitment-empty.png'),
     emptyApllication: require('./emptyApplication.png'),
     emptyCV: require('./empty-cv.png'),
+    employer: require('./employer.png'),
+    jobSeeker: require('./job-seeker.png'),
 };
 
 export default images;

@@ -2,7 +2,6 @@ import { Button, Input, Select } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import styles from './Filter.module.scss';
 import classNames from 'classnames/bind';
-import constants from '../../../config/constants';
 import { useState } from 'react';
 
 const cx = classNames.bind(styles);

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import gLogo from '../../assets/images/google.png';
 import {
     Building2Icon,
     CalendarDaysIcon,
+    Eye,
+    EyeOffIcon,
     Loader,
     Lock,
     MailIcon,
@@ -15,6 +16,7 @@ import './RegisterForm.scss';
 import '../EmloyerRegister/EmployerRegister.scss';
 import { useNavigate } from 'react-router-dom';
 import { registerAccount } from '../../redux/accountSlice';
+import { Input } from 'antd';
 
 const RegisterForm = () => {
     const dispatch = useDispatch();
@@ -23,7 +25,6 @@ const RegisterForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
-    const [touched, setTouched] = useState({});
     const [isTermsChecked, setIsTermsChecked] = useState(false);
     const urlSignIn = 'http://localhost:3000/login';
 
@@ -70,106 +71,67 @@ const RegisterForm = () => {
         setIsTermsChecked(e.target.checked);
     };
 
-    const validateField = (name, value) => {
-        if (!value && touched[name]) {
-            setErrors((prev) => ({
-                ...prev,
-                [name]: `${
-                    name === 'email'
-                        ? 'Email'
-                        : name === 'firstName'
-                        ? 'Họ'
-                        : name === 'lastName'
-                        ? 'Tên'
-                        : name === 'password'
-                        ? 'Mật khẩu'
-                        : name === 'confirmPassword'
-                        ? 'Nhập lại mật khẩu'
-                        : name === 'phoneNumber'
-                        ? 'Số điện thoại cá nhân'
-                        : name === 'dob'
-                        ? 'Ngày sinh'
-                        : name === 'address'
-                        ? 'Địa chỉ thường trú'
-                        : ''
-                } không được để trống`,
-            }));
-        } else {
-            setErrors((prev) => {
-                const newErrors = { ...prev };
-                delete newErrors[name];
-                return newErrors;
-            });
-        }
-    };
-
-    const handleBlur = (e) => {
-        const { name, value } = e.target;
-        setTouched((prev) => ({ ...prev, [name]: true }));
-        validateField(name, value);
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const fieldsToValidate = {
-            email: account.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            gender: user.gender,
-            password: account.password,
-            confirmPassword: account.confirmPassword,
-            phoneNumber: user.phoneNumber,
-            address: user.address,
-            dob: user.dob,
-        };
-
-        let isValid = true;
-        Object.keys(fieldsToValidate).forEach((fieldName) => {
-            if (!fieldsToValidate[fieldName]) {
-                validateField(fieldName, fieldsToValidate[fieldName]);
-                isValid = false;
-            }
-        });
-
+        const errors = {};
+        if (!account.email || !/\S+@\S+\.\S+/.test(account.email)) {
+            errors.email = 'Email không hợp lệ';
+        }
+        if (!user.firstName?.trim()) {
+            errors.firstName = 'Họ không được để trống';
+        }
+        if (!user.lastName?.trim()) {
+            errors.lastName = 'Tên không được để trống';
+        }
+        if (!user.dob) {
+            errors.dob = 'Ngày sinh không được để trống';
+        }
+        if (!user.gender) {
+            errors.gender = 'Giới tính không được để trống';
+        }
+        if (!user.address?.trim()) {
+            errors.address = 'Địa chỉ không được để trống';
+        }
+        if (!user.phoneNumber || !/^\d{10,11}$/.test(user.phoneNumber)) {
+            errors.phoneNumber = 'Số điện thoại phải gồm 10-11 chữ số';
+        }
+        if (!account.password || account.password.length < 8 || account.password.length > 25) {
+            errors.password = 'Mật khẩu dài từ 8 - 25 ký tự';
+        }
         if (account.password !== account.confirmPassword) {
-            setErrors((prev) => ({
-                ...prev,
-                confirmPassword: 'Mật khẩu không trùng khớp',
-            }));
-            isValid = false;
+            errors.confirmPassword = 'Mật khẩu không trùng khớp';
         }
-
-        if (isValid) {
-            const formData = {
-                account: {
-                    ...account,
-                },
-                user: {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    dob: user.dob,
-                    address: user.address,
-                    phoneNumber: user.phoneNumber,
-                    gender: user.gender,
-                },
-            };
-            console.log('Form Data:', formData);
-            dispatch(registerAccount(formData));
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
         }
+    
+        const formData = {
+            account: { ...account },
+            user: {
+                firstName: user.firstName.trim(),
+                lastName: user.lastName.trim(),
+                dob: user.dob,
+                address: user.address.trim(),
+                phoneNumber: user.phoneNumber,
+                gender: user.gender,
+            },
+        };
+        dispatch(registerAccount(formData));
     };
+    
 
     useEffect(() => {
-        if ( success ) {
+        if (success) {
             navigate('/verify-otp');
         }
     }, [success, navigate]);
 
     return (
-        <div className="container">
+        <div className="container1">
             <form className="form-register" onSubmit={handleSubmit}>
-                <div className="logo-app-auth">
-                    <img src={images.logoApp} alt="logo-app" title="Logo của TopCV" />
+                <div className="logo-app-auth-1">
+                    <img src={images.logoApp} alt="logo-app" title="Logo của Hiredhub" />
                     <h1 className="label-register">Đăng ký</h1>
                 </div>
 
@@ -178,14 +140,13 @@ const RegisterForm = () => {
                         Email <span>*</span>
                     </label>
                     <div className="input-container-1">
-                        <input
+                        <Input
                             name="email"
                             type="email"
-                            className="form-input-1"
+                            className="form-input-2"
                             placeholder="Email"
                             value={account.email}
                             onChange={handleAccountChange}
-                            onBlur={handleBlur}
                         />
                         <MailIcon size={20} className="input-icon" />
                     </div>
@@ -198,34 +159,15 @@ const RegisterForm = () => {
                         Mật khẩu <span>*</span>
                     </label>
                     <div className="input-container-1">
-                        <input
+                        <Input
                             type={showPassword ? 'text' : 'password'}
-                            className="form-input-1"
+                            className="form-input-2"
                             name="password"
                             value={account.password}
                             onChange={handleAccountChange}
-                            onBlur={handleBlur}
                             placeholder="Mật khẩu (từ 8 đến 25 ký tự)"
                         />
                         <Lock size={20} className="input-icon" />
-                        <button
-                            type="button"
-                            className="toggle-password"
-                            onClick={() => setShowPassword(!showPassword)}
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d={
-                                        showPassword
-                                            ? 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
-                                            : 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21'
-                                    }
-                                />
-                            </svg>
-                        </button>
                     </div>
                     <p className={`error-message ${errors.password ? 'show' : ''}`}>{errors.password}</p>
                 </div>
@@ -236,34 +178,15 @@ const RegisterForm = () => {
                         Nhập lại mật khẩu <span>*</span>
                     </label>
                     <div className="input-container-1">
-                        <input
+                        <Input
                             type={showConfirmPassword ? 'text' : 'password'}
-                            className="form-input-1"
+                            className="form-input-2"
                             name="confirmPassword"
                             value={account.confirmPassword}
                             onChange={handleAccountChange}
-                            onBlur={handleBlur}
                             placeholder="Nhập lại mật khẩu"
                         />
                         <Lock size={20} className="input-icon" />
-                        <button
-                            type="button"
-                            className="toggle-password"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d={
-                                        showConfirmPassword
-                                            ? 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
-                                            : 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21'
-                                    }
-                                />
-                            </svg>
-                        </button>
                     </div>
                     <p className={`error-message ${errors.confirmPassword ? 'show' : ''}`}>{errors.confirmPassword}</p>
                 </div>
@@ -274,30 +197,48 @@ const RegisterForm = () => {
                     <div className="form-grid">
                         {/* Name inputs */}
                         <div className="form-group">
-                            <label className="form-label">
-                                Họ và tên <span>*</span>
-                            </label>
-                            <div className="input-container-1" style={{ display: 'inline-flex' }}>
-                                <input
-                                    type="text"
-                                    name="firstName"
-                                    className="form-input-1"
-                                    placeholder="Họ"
-                                    value={user.firstName}
-                                    onChange={handleUserChange}
-                                    onBlur={handleBlur}
-                                />
-                                <User2 size={20} className="input-icon" />
-                                <input
-                                    type="text"
-                                    name="lastName"
-                                    className="form-input-1"
-                                    placeholder="Tên"
-                                    value={user.lastName}
-                                    onChange={handleUserChange}
-                                    onBlur={handleBlur}
-                                    style={{ marginLeft: '5px' }}
-                                />
+                            <div style={{ display: 'inline-flex' }}>
+                                <div className="form-group" style={{marginBottom: '0px'}}>
+                                    <label className="form-label">
+                                        Họ <span>*</span>
+                                    </label>
+                                    <div className="input-container-1">
+                                        <Input
+                                            type="text"
+                                            name="firstName"
+                                            className="form-input-2"
+                                            placeholder="Họ"
+                                            value={user.firstName}
+                                            onChange={handleUserChange}
+                                        />
+                                        <User2 size={20} className="input-icon" />
+                                    </div>
+                                    <p className={`error-message ${errors.firstName ? 'show' : ''}`}>
+                                        {errors.firstName}
+                                    </p>
+                                </div>
+                                <div className="form-group" style={{marginBottom: '0px'}}>
+                                    <label className="form-label" style={{marginLeft: '5px'}}>
+                                        Tên <span>*</span>
+                                    </label>
+                                    <div className="input-container-1">
+                                        <Input
+                                            type="text"
+                                            name="lastName"
+                                            className="form-input-2"
+                                            placeholder="Tên"
+                                            value={user.lastName}
+                                            onChange={handleUserChange}
+                                            style={{ marginLeft: '5px', paddingLeft: '7px' }}
+                                        />
+                                    </div>
+                                    <p
+                                        className={`error-message ${errors.lastName ? 'show' : ''}`}
+                                        style={{ marginLeft: '5px' }}
+                                    >
+                                        {errors.lastName}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
@@ -314,7 +255,6 @@ const RegisterForm = () => {
                                         value="MALE"
                                         checked={user.gender === 'MALE'}
                                         onChange={handleGenderChange}
-                                        onBlur={handleBlur}
                                     />
                                     <span>Nam</span>
                                 </label>
@@ -325,7 +265,6 @@ const RegisterForm = () => {
                                         value="FEMALE"
                                         checked={user.gender === 'FEMALE'}
                                         onChange={handleGenderChange}
-                                        onBlur={handleBlur}
                                     />
                                     <span>Nữ</span>
                                 </label>
@@ -339,21 +278,20 @@ const RegisterForm = () => {
                                 Số điện thoại cá nhân <span>*</span>
                             </label>
                             <div className="input-container-1">
-                                <input
+                                <Input
                                     type="tel"
                                     name="phoneNumber"
-                                    className="form-input-1"
+                                    className="form-input-2"
                                     placeholder="Số điện thoại cá nhân"
                                     value={user.phoneNumber}
                                     onChange={handleUserChange}
-                                    onBlur={handleBlur}
                                 />
                                 <PhoneIcon size={20} className="input-icon" />
                             </div>
                             <p className={`error-message ${errors.phoneNumber ? 'show' : ''}`}>{errors.phoneNumber}</p>
                         </div>
 
-                        {/* Company */}
+                        {/* Date of birth */}
                         <div className="form-group">
                             <label className="form-label">
                                 Ngày sinh <span>*</span>
@@ -362,11 +300,10 @@ const RegisterForm = () => {
                                 <input
                                     type="date"
                                     name="dob"
-                                    id = "dob"
-                                    className="form-input-1"
+                                    id="dob2"
+                                    className="form-input-2"
                                     value={user.dob}
                                     onChange={handleUserChange}
-                                    onBlur={handleBlur}
                                 />
                                 <CalendarDaysIcon size={20} className="input-icon" />
                             </div>
@@ -379,18 +316,17 @@ const RegisterForm = () => {
                                 Địa chỉ thường trú<span>*</span>
                             </label>
                             <div className="input-container-1">
-                                <input
+                                <Input
                                     type="text"
                                     name="address"
-                                    className="form-input-1"
+                                    className="form-input-2"
                                     placeholder="Nhập địa chỉ"
                                     value={user.address}
                                     onChange={handleUserChange}
-                                    onBlur={handleBlur}
                                 />
                                 <Building2Icon size={20} className="input-icon" />
                             </div>
-                            <p className={`error-message ${errors.addres ? 'show' : ''}`}>{errors.address}</p>
+                            <p className={`error-message ${errors.address ? 'show' : ''}`}>{errors.address}</p>
                             {error && <p className="error-message show">{error.message}</p>}
                         </div>
                     </div>
