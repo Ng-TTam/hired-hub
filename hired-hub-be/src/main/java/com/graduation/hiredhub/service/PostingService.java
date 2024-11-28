@@ -174,15 +174,15 @@ public class PostingService {
     }
 
     @PreAuthorize("permitAll()")
-    public PageResponse<PostingResponse> getAllPostings(int page, int size) {
+    public PageResponse<PostingDetailResponse> getAllPostings(int page, int size) {
         String cacheKey = REDIS_POSTING_KEY + "_page_" + page + "_size_" + size;
-        PageResponse<PostingResponse> pageResponse;
+        PageResponse<PostingDetailResponse> pageResponse;
 
         // Check in cache
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
             try {
                 pageResponse = objectMapper.readValue(stringRedisTemplate.opsForValue().get(cacheKey),
-                        new TypeReference<PageResponse<PostingResponse>>() {
+                        new TypeReference<PageResponse<PostingDetailResponse>>() {
                         });
             } catch (Exception e) {
                 throw new AppException(ErrorCode.ERROR_PARSING_JSON);
@@ -196,13 +196,13 @@ public class PostingService {
             );
             Page<Posting> pageData = postingRepository.findByStatus(PostingStatus.ACTIVATE, pageable);
 
-            pageResponse = PageResponse.<PostingResponse>builder()
+            pageResponse = PageResponse.<PostingDetailResponse>builder()
                     .currentPage(page)
                     .pageSize(pageData.getSize())
                     .totalPages(pageData.getTotalPages())
                     .totalElements(pageData.getTotalElements())
                     .data(pageData.getContent().stream()
-                            .map(postingMapper::toPostingResponse)
+                            .map(postingMapper::toPostingDetailResponse)
                             .toList())
                     .build();
 

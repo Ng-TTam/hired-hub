@@ -13,23 +13,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import '@fortawesome/free-solid-svg-icons';
 import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constants';
-import { resetAndSetDistrict, resetAndSetJobCategory, resetAndSetProvince } from '../../redux/filterSlice';
+import { fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
+import { setCriteria } from '../../redux/filterSlice';
 import { fetchPosting } from '../../redux/postingSlice';
+import { savePosting, savePostingStatus, unsavePosting } from '../../redux/savedPostingSlice';
 import { convertSalary, convertWorkAddressDetail, convertWorkAddressSumary, formatDate } from '../../utils';
+import CreateApplication from '../Application/CreateApplication/CreateApplication';
+import GetApplication from '../Application/GetApplication/GetApplication';
 import Button from '../Button';
+import HtmlRenderer from '../HtmlRenderer';
 import CompanyInfo from './CompanyInfo';
 import ContentBox from './ContentBox';
 import ContentIcon from './ContentIcon';
 import styles from './Posting.module.scss';
-import { fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
-import '@fortawesome/free-solid-svg-icons';
-import CreateApplication from '../Application/CreateApplication/CreateApplication';
-import GetApplication from '../Application/GetApplication/GetApplication';
-import { savePosting, savePostingStatus, unsavePosting } from '../../redux/savedPostingSlice';
-import HtmlRenderer from '../HtmlRenderer';
 
 const cx = classNames.bind(styles);
 
@@ -56,18 +56,8 @@ function Posting({ className }) {
         };
     }, [dispatch, id]);
 
-    const handleSearchByProvince = (province) => {
-        dispatch(resetAndSetProvince(province.id));
-        navigate('/');
-    };
-
-    const handleSearchByDistrict = (address) => {
-        dispatch(resetAndSetDistrict({ provinceId: address.province.id, districtId: address.district.id }));
-        navigate('/');
-    };
-
-    const handleSearchByJobCategory = (jobCategory) => {
-        dispatch(resetAndSetJobCategory(jobCategory.id));
+    const handleSearchByTag = (criteria) => {
+        dispatch(setCriteria(criteria));
         navigate('/');
     };
 
@@ -82,8 +72,8 @@ function Posting({ className }) {
     useEffect(() => {
         const hasViewed = sessionStorage.getItem('hasViewedApplicationModal');
         if (!hasViewed && selectApplication) {
-            const getData = async() =>{
-                try{
+            const getData = async () => {
+                try {
                     const result = await dispatch(fetchApplicationInPosting(id)).unwrap();
                     if (result) {
                         setIsModalOpen(true);
@@ -92,15 +82,14 @@ function Posting({ className }) {
                         setIsModalOpen(true);
                         setShowCreateApplication(true);
                     }
-                }catch{
+                } catch {
                     setIsModalOpen(true);
                     setShowCreateApplication(true);
                 }
             };
             getData();
             sessionStorage.setItem('hasViewedApplicationModal', 'true');
-        };
-        
+        }
     }, [selectApplication, dispatch]);
 
     const handleApplication = (reload) => {
@@ -237,7 +226,7 @@ function Posting({ className }) {
                         <div className={cx('job-category-list')}>
                             <span
                                 className={cx('label-section', 'link-tag')}
-                                onClick={() => handleSearchByJobCategory(posting.mainJob)}
+                                onClick={() => handleSearchByTag({ jobCategoryId: posting.mainJob.id })}
                             >
                                 {posting.mainJob.name}
                             </span>
@@ -245,7 +234,7 @@ function Posting({ className }) {
                                 <span
                                     key={`${item.id}_subjob`}
                                     className={cx('label-section', 'link-tag')}
-                                    onClick={() => handleSearchByJobCategory(item)}
+                                    onClick={() => handleSearchByTag({ jobCategoryId: item.id })}
                                 >
                                     {item.name}
                                 </span>
@@ -259,13 +248,18 @@ function Posting({ className }) {
                                 <React.Fragment key={address.id}>
                                     <span
                                         className={cx('label-section', 'link-tag')}
-                                        onClick={() => handleSearchByProvince(address.province)}
+                                        onClick={() => handleSearchByTag({ provinceId: address.province.id })}
                                     >
                                         {address.province.name}
                                     </span>
                                     <span
                                         className={cx('label-section', 'link-tag')}
-                                        onClick={() => handleSearchByDistrict(address)}
+                                        onClick={() =>
+                                            handleSearchByTag({
+                                                provinceId: address.province.id,
+                                                districtId: address.district.id,
+                                            })
+                                        }
                                     >
                                         {address.province.name} / {address.district.name}
                                     </span>
