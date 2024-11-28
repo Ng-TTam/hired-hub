@@ -335,11 +335,17 @@ public class PostingService {
                 || posting.getStatus().equals(PostingStatus.PENDING))) {
             throw new AppException(ErrorCode.POSTING_PENDING);
         }
+
+        PostingStatus oldStatus = posting.getStatus();
+
         posting.setStatus(postingStatusRequest.getStatus());
         postingRepository.save(posting);
 
-        if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
-            notificationService.onCompanyNewPost(posting);
+        if (oldStatus.equals(PostingStatus.PENDING)) {
+            if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+                notificationService.onCompanyNewPost(posting);
+            }
+            notificationService.onPostingStatusChange(posting, true);
         }
     }
 }

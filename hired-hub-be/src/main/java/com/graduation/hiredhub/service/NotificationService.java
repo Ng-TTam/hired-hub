@@ -117,4 +117,29 @@ public class NotificationService {
             createNotification(notification);
         });
     }
+
+    public void onApplicationStatusChange(Application application) {
+        Notification notification = NotificationUtils.applicationStatusChanged(application);
+        createNotification(notification);
+    }
+
+    public void onNewCandidate(Application application) {
+        Notification notification = NotificationUtils.newCandidate(application);
+        createNotification(notification);
+    }
+
+    public void onCandidateUpdateApplication(Application application) {
+        Notification notification = NotificationUtils.candidateUpdateApplication(application);
+        createNotification(notification);
+    }
+
+    public void savedPostReminder(SavedPost savedPost) {
+        Notification notification = NotificationUtils.savedPostReminder(savedPost);
+        createNotification(notification);
+    }
+
+    public void onPostingStatusChange(Posting posting, boolean isApprove) {
+        Notification notification = NotificationUtils.postingStatusChange(posting, isApprove);
+        createNotification(notification);
+    }
 }
