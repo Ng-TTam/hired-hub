@@ -17,16 +17,8 @@ const Emloyers = ({ status }) => {
     const { users, totalPages, loading } = useSelector((state) => state.user);
     const { updateSuccess } = useSelector((state) => state.account);
 
-    const [criteria, setCriteria] = useState({ role: 'EMPLOYER' });
+    const [criteria, setCriteria] = useState({ role: 'EMPLOYER', status });
     const [pageable, setPageable] = useState({ page: 0, size: 10 });
-
-    useEffect(() => {
-        setCriteria((prev) => ({ ...prev, status }));
-    }, [status]);
-
-    useEffect(() => {
-        setPageable((prev) => ({ ...prev, page: 0 }));
-    }, [criteria]);
 
     useEffect(() => {
         dispatch(fetchAllUsers({ criteria, pageable }));

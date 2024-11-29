@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePageable } from '../../redux/filterSlice';
 import { fetchPostings, fetchPostingsDefault } from '../../redux/postingSlice';
@@ -15,10 +15,6 @@ function PostingFilter() {
     const dispatch = useDispatch();
     const { criteria, pageable } = useSelector((state) => state.filter);
     const { postings, totalPages } = useSelector((state) => state.postings);
-
-    useEffect(() => {
-        dispatch(updatePageable({ page: 0 }));
-    }, [criteria]);
 
     useEffect(() => {
         const hasValidKeys = () => {

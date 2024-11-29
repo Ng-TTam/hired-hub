@@ -14,9 +14,11 @@ const filterSlice = createSlice({
     reducers: {
         updateCriteria: (state, action) => {
             state.criteria = { ...state.criteria, ...action.payload };
+            state.pageable = { ...state.pageable, page: 0 };
         },
         setCriteria: (state, action) => {
             state.criteria = action.payload;
+            state.pageable = { ...state.pageable, page: 0 };
         },
         updatePageable: (state, action) => {
             state.pageable = { ...state.pageable, ...action.payload };
