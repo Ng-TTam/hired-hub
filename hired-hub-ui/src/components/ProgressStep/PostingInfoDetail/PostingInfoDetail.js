@@ -32,17 +32,27 @@ const PostingInfoDetail = ({ validate }) => {
         setBenefit(posting?.jobDescription?.benefit || '');
     }, [posting]);
 
+    const isContentEmpty = (htmlContent) => {
+        if (!htmlContent) return true;
+    
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = htmlContent;
+    
+        const textContent = tempElement.textContent || tempElement.innerText || '';
+        return textContent.trim() === '';
+    };
+
     useEffect(() => {
         if (validate) {
             validate(() => {
                 const newErrors = {};
-                if (!description.trim()) {
+                if (isContentEmpty(description)) {
                     newErrors.description = 'Vui lòng nhập mô tả công việc!';
                 }
-                if (!requirement.trim()) {
+                if (isContentEmpty(requirement)) {
                     newErrors.requirement = 'Vui lòng nhập yêu cầu ứng viên!';
                 }
-                if (!benefit.trim()) {
+                if (isContentEmpty(benefit)) {
                     newErrors.benefit = 'Vui lòng nhập quyền lợi ứng viên';
                 }
                 setErrors(newErrors);

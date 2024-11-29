@@ -55,7 +55,7 @@ const PostingInfoBase = ({ validate }) => {
     }, [validate, title, mainJob]);
 
     return (
-        <>
+        <div style={{height: "100%"}}>
             <div className="field-container">
                 <div>
                     <div className="icon">
@@ -116,7 +116,7 @@ const PostingInfoBase = ({ validate }) => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
