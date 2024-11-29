@@ -49,40 +49,38 @@ const ManageCandidate = () => {
         navigate(`./posting/${application.posting.id}`);
     };
 
-    const handApproved = async (applicationId) => {
-        var ok = false;
+    const handApproved = (applicationId) => {
         Modal.confirm({
             title: 'Bạn có chắc chắn?',
             content: 'Bạn có chắc chắn muốn cập nhật không?',
             okText: 'Đồng ý',
             cancelText: 'Hủy',
             onOk() {
-                ok = true;
+                const handAppro = async(applicationId) =>{
+                    const applicationStatus = { applicationStatus: 'APPROVED' };
+                    await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
+                    dispatch(fetchApplications());
+                };
+                handAppro(applicationId);
             },
         });
-        if(ok){
-            const applicationStatus = { applicationStatus: 'APPROVED' };
-            await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
-            dispatch(fetchApplications());
-        }
     };
 
     const handRejected = async (applicationId) => {
-        var ok = false;
         Modal.confirm({
             title: 'Bạn có chắc chắn?',
             content: 'Bạn có chắc chắn muốn cập nhật không?',
             okText: 'Đồng ý',
             cancelText: 'Hủy',
             onOk() {
-                ok = true;
+                const handReject = async(applicationId) => {
+                    const applicationStatus = { applicationStatus: 'REJECTED' };
+                    await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
+                    dispatch(fetchApplications());
+                };
+                handReject(applicationId);
             },
         });
-        if(ok){
-            const applicationStatus = { applicationStatus: 'REJECTED' };
-            await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
-            dispatch(fetchApplications());
-        }
     };
 
     const handPending = async (applicationId) => {

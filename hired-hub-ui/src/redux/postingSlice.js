@@ -232,6 +232,7 @@ const postingSlice = createSlice({
                 state.loading = true;
                 state.error = null;
                 state.postings = null;
+                state.success = false;
             })
             .addCase(fetchEmployerFilterPostings.fulfilled, (state, action) => {
                 state.loading = false;

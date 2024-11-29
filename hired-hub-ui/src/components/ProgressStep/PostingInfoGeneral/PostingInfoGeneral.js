@@ -113,6 +113,7 @@ const PostingInfoGeneral = ({ validate }) => {
             validate(() => {
                 const newErrors = {};
                 if (!posting.numberOfPosition) newErrors.numberOfPosition = 'Vui lòng nhập số lượng tuyển!';
+                if (posting.numberOfPosition < 1) newErrors.numberOfPosition = 'Vui lòng nhập số lớn hơn 0!';
                 if (!posting.jobType) newErrors.jobType = 'Vui lòng chọn loại công việc!';
                 if (Object.keys(posting.position).length === 0) newErrors.position = 'Vui lòng nhập vị trí tuyển dụng!';
                 if (!posting.experienceRequire) newErrors.experienceRequire = 'Vui lòng chọn kinh nghiệm yêu cầu!';
@@ -181,15 +182,16 @@ const PostingInfoGeneral = ({ validate }) => {
     };
 
     const handleOnWorkAddressChange = ({ province, district, location }, index) => {
-        const updatedWorkAddresses = [...workAddress];
-        updatedWorkAddresses[index] = {
-            ...updatedWorkAddresses[index],
-            ...(province && { province }),
-            ...(district && { district }),
-            ...(location && { location }),
-        };
-
-        setWorkAddress(updatedWorkAddresses);
+        setWorkAddress((prev) => {
+            const updated = [...prev];
+            updated[index] = {
+                ...updated[index],
+                ...(province && { province }),
+                ...(district && { district }),
+                ...(location !== undefined && { location }),
+            };
+            return updated;
+        });
     };
 
     const handleRemoveWorkAddress = (index) => {
