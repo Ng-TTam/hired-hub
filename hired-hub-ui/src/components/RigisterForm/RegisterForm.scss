@@ -1,7 +1,8 @@
-.container {
+.container1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
 }
 
 .form-register {
@@ -30,7 +31,7 @@
     transition: 0.2s ease-in-out;
 }
 
-#dob{
+#dob {
     width: 100%;
     padding: 8px 8px 8px 32px;
     border: 1px solid #ccc;
@@ -50,17 +51,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(75deg, #9DBA5C, #7BC353, #00b14f);
+    background: linear-gradient(75deg, #9dba5c, #7bc353, #00b14f);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     color: transparent;
 }
 
-.logo-app-auth {
+.logo-app-auth-1 {
     display: flex;
     justify-content: center;
-    img{
+    img {
         width: 4em;
         margin: 1em 1em;
     }
@@ -71,4 +72,17 @@
     font-size: 12px;
     margin-top: 4px;
     display: none;
+}
+
+.form-input-2 {
+    padding: 4px 8px 4px 32px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#dob2 {
+    padding: 6px 8px 6px 32px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
 }

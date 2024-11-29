@@ -198,6 +198,11 @@ public class PostingSpecifications {
                 criteriaBuilder.equal(root.get("status"), status);
     }
 
+    public static Specification<Posting> hasEmployer(Employer employer) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("employer"), employer);
+    }
+
     private PostingSpecifications() {
     }
 }

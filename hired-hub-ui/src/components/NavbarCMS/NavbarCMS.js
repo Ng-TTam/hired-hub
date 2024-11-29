@@ -57,7 +57,7 @@ const NavbarCMS = () => {
                     <ul>
                         <li>
                             <Link to="/business/update-company">
-                                <User2 size={20} /> &nbsp;&nbsp;&nbsp; Cập nhật thông tin
+                                <User2 size={20} /> &nbsp;&nbsp;&nbsp; Thông tin công ty
                             </Link>
                         </li>
                         <li>

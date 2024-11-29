@@ -6,12 +6,12 @@ import { clearRegisterState, registerEmployer } from '../../redux/employerSilce'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchProvinces } from '../../redux/provinceSlice';
+import images from '../../assets/images';
 
 const EmployerRegister = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
-    const [touched, setTouched] = useState({});
     const [selectedProvince, setSelectedProvince] = useState('');
     const [selectedDistrict, setSelectedDistrict] = useState('');
     const [districts, setDistricts] = useState([]);
@@ -95,95 +95,42 @@ const EmployerRegister = () => {
         }
     };
 
-    const validateField = (name, value) => {
-        if (!value && touched[name]) {
-            setErrors((prev) => ({
-                ...prev,
-                [name]: `${
-                    name === 'email'
-                        ? 'Email'
-                        : name === 'firstName'
-                        ? 'Họ'
-                        : name === 'lastName'
-                        ? 'Tên'
-                        : name === 'password'
-                        ? 'Mật khẩu'
-                        : name === 'confirmPassword'
-                        ? 'Nhập lại mật khẩu'
-                        : name === 'phoneNumber'
-                        ? 'Số điện thoại cá nhân'
-                        : name === 'companyName'
-                        ? 'Tên công ty'
-                        : name === 'province'
-                        ? 'Tỉnh/thành phố'
-                        : ''
-                } không được để trống`,
-            }));
-        } else {
-            setErrors((prev) => {
-                const newErrors = { ...prev };
-                delete newErrors[name];
-                return newErrors;
-            });
-        }
-    };
-
-    const handleBlur = (e) => {
-        const { name, value } = e.target;
-        setTouched((prev) => ({ ...prev, [name]: true }));
-        validateField(name, value);
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
+        const errors = {};
 
-        const fieldsToValidate = {
-            email: account.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            gender: user.gender,
-            password: account.password,
-            confirmPassword: account.confirmPassword,
-            phoneNumber: user.phoneNumber,
-            province: user.province,
+        if (!account.email || !/\S+@\S+\.\S+/.test(account.email)) errors.email = 'Email không hợp lệ';
+        if (!user.firstName?.trim()) errors.firstName = 'Họ không được để trống';
+        if (!user.lastName?.trim()) errors.lastName = 'Tên không được để trống';
+        // if (!user.dob) errors.dob = 'Ngày sinh không được để trống';
+        if (!user.gender) errors.gender = 'Giới tính không được để trống';
+        if (!user.phoneNumber || !/^\d{10,11}$/.test(user.phoneNumber))
+            errors.phoneNumber = 'Số điện thoại phải gồm 10-11 chữ số';
+        if (!user.companyName?.trim()) errors.companyName = 'Tên công ty không được để trống';
+        if (!user.province) errors.province = 'Tỉnh/Thành phố không được để trống';
+        if (user.province && !user.district) errors.district = 'Quận/Huyện không được để trống';
+        if (!account.password || account.password.length < 6) errors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        if (account.password !== account.confirmPassword) errors.confirmPassword = 'Mật khẩu không trùng khớp';
+
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
+        const formData = {
+            account: { ...account },
+            user: {
+                firstName: user.firstName.trim(),
+                lastName: user.lastName.trim(),
+                dob: '2002-11-11',
+                address: `${user.province.name}${user.district.name ? ` - ${user.district.name}` : ''}`,
+                phoneNumber: user.phoneNumber,
+                gender: user.gender,
+            },
             companyName: user.companyName,
+            position: 'HR',
         };
-
-        let isValid = true;
-        Object.keys(fieldsToValidate).forEach((fieldName) => {
-            if (!fieldsToValidate[fieldName]) {
-                validateField(fieldName, fieldsToValidate[fieldName]);
-                isValid = false;
-            }
-        });
-
-        if (account.password !== account.confirmPassword) {
-            setErrors((prev) => ({
-                ...prev,
-                confirmPassword: 'Mật khẩu không trùng khớp',
-            }));
-            isValid = false;
-        }
-
-        if (isValid) {
-            const formData = {
-                account: {
-                    ...account,
-                },
-                user: {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    dob: '2002-11-11',
-                    address: user.province.name + (user.district.name === '' ? '' : ' - ' + user.district.name),
-                    phoneNumber: user.phoneNumber,
-                    gender: user.gender,
-                },
-                companyName: user.companyName,
-                position: 'HR',
-            };
-            // console.log('Form Data:', formData);
-            dispatch(registerEmployer(formData));
-        }
+        console.log('Form Data:', formData);
+        // dispatch(registerEmployer(formData));
     };
 
     useEffect(() => {
@@ -199,8 +146,9 @@ const EmployerRegister = () => {
         <div className="register-container">
             <div className="register">
                 <div className="form-container">
+                    <img src={images.hiredHubLogoNoPadding} alt="logo-app" title="Logo của Hiredhub" />
                     <h2>Đăng ký dành cho nhà tuyển dụng</h2>
-                    <span>Cùng tạo dựng lợi thế cho doanh nghiệp bằng trải nghiệm tại hired hub</span>
+                    <span>Cùng tạo dựng lợi thế cho doanh nghiệp bằng trải nghiệm tại hiredhub</span>
                     <form style={{ marginTop: '30px' }} onSubmit={handleSubmit}>
                         {/* Email Section - Update input */}
                         <div className="form-group">
@@ -215,7 +163,6 @@ const EmployerRegister = () => {
                                     placeholder="Email"
                                     value={account.email}
                                     onChange={handleAccountChange}
-                                    onBlur={handleBlur}
                                 />
                                 <MailIcon size={20} className="input-icon" />
                             </div>
@@ -234,7 +181,6 @@ const EmployerRegister = () => {
                                     name="password"
                                     value={account.password}
                                     onChange={handleAccountChange}
-                                    onBlur={handleBlur}
                                     placeholder="Mật khẩu (từ 8 đến 25 ký tự)"
                                 />
                                 <Lock size={20} className="input-icon" />
@@ -243,18 +189,8 @@ const EmployerRegister = () => {
                                     className="toggle-password"
                                     onClick={() => setShowPassword(!showPassword)}
                                 >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d={
-                                                showPassword
-                                                    ? 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
-                                                    : 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21'
-                                            }
-                                        />
-                                    </svg>
+                                    {/* {showPassword && <Eye size={20}/>}
+                                    {!showPassword && <EyeOffIcon size={20}/>} */}
                                 </button>
                             </div>
                             <p className={`error-message ${errors.password ? 'show' : ''}`}>{errors.password}</p>
@@ -272,7 +208,6 @@ const EmployerRegister = () => {
                                     name="confirmPassword"
                                     value={account.confirmPassword}
                                     onChange={handleAccountChange}
-                                    onBlur={handleBlur}
                                     placeholder="Nhập lại mật khẩu"
                                 />
                                 <Lock size={20} className="input-icon" />
@@ -281,18 +216,8 @@ const EmployerRegister = () => {
                                     className="toggle-password"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                 >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d={
-                                                showConfirmPassword
-                                                    ? 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
-                                                    : 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21'
-                                            }
-                                        />
-                                    </svg>
+                                    {/* {showConfirmPassword && <Eye size={20}/>}
+                                    {!showConfirmPassword && <EyeOffIcon size={20}/>} */}
                                 </button>
                             </div>
                             <p className={`error-message ${errors.confirmPassword ? 'show' : ''}`}>
@@ -306,30 +231,48 @@ const EmployerRegister = () => {
                             <div className="form-grid">
                                 {/* Name inputs */}
                                 <div className="form-group">
-                                    <label className="form-label">
-                                        Họ và tên <span>*</span>
-                                    </label>
-                                    <div className="input-container-1" style={{ display: 'inline-flex' }}>
-                                        <input
-                                            type="text"
-                                            name="firstName"
-                                            className="form-input-1"
-                                            placeholder="Họ"
-                                            value={user.firstName}
-                                            onChange={handleUserChange}
-                                            onBlur={handleBlur}
-                                        />
-                                        <User2 size={20} className="input-icon" />
-                                        <input
-                                            type="text"
-                                            name="lastName"
-                                            className="form-input-1"
-                                            placeholder="Tên"
-                                            value={user.lastName}
-                                            onChange={handleUserChange}
-                                            onBlur={handleBlur}
-                                            style={{ marginLeft: '5px' }}
-                                        />
+                                    <div style={{ display: 'inline-flex' }}>
+                                        <div className="form-group" style={{ marginBottom: '0px' }}>
+                                            <label className="form-label">
+                                                Họ <span>*</span>
+                                            </label>
+                                            <div className="input-container-1">
+                                                <input
+                                                    type="text"
+                                                    name="firstName"
+                                                    className="form-input-1"
+                                                    placeholder="Họ"
+                                                    value={user.firstName}
+                                                    onChange={handleUserChange}
+                                                />
+                                                <User2 size={20} className="input-icon" />
+                                            </div>
+                                            <p className={`error-message ${errors.firstName ? 'show' : ''}`}>
+                                                {errors.firstName}
+                                            </p>
+                                        </div>
+                                        <div className="form-group" style={{ marginBottom: '0px' }}>
+                                            <label className="form-label" style={{ marginLeft: '5px' }}>
+                                                Tên <span>*</span>
+                                            </label>
+                                            <div className="input-container-1">
+                                                <input
+                                                    type="text"
+                                                    name="lastName"
+                                                    className="form-input-1"
+                                                    placeholder="Tên"
+                                                    value={user.lastName}
+                                                    onChange={handleUserChange}
+                                                    style={{ marginLeft: '5px', paddingLeft: '7px' }}
+                                                />
+                                            </div>
+                                            <p
+                                                className={`error-message ${errors.lastName ? 'show' : ''}`}
+                                                style={{ marginLeft: '5px' }}
+                                            >
+                                                {errors.lastName}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -338,7 +281,7 @@ const EmployerRegister = () => {
                                     <label className="form-label">
                                         Giới tính <span>*</span>
                                     </label>
-                                    <div className="radio-group">
+                                    <div className="radio-group" style={{ padding: '9px' }}>
                                         <label className="radio-label">
                                             <input
                                                 type="radio"
@@ -346,7 +289,6 @@ const EmployerRegister = () => {
                                                 value="MALE"
                                                 checked={user.gender === 'MALE'}
                                                 onChange={handleGenderChange}
-                                                onBlur={handleBlur}
                                             />
                                             <span>Nam</span>
                                         </label>
@@ -357,7 +299,6 @@ const EmployerRegister = () => {
                                                 value="FEMALE"
                                                 checked={user.gender === 'FEMALE'}
                                                 onChange={handleGenderChange}
-                                                onBlur={handleBlur}
                                             />
                                             <span>Nữ</span>
                                         </label>
@@ -378,7 +319,6 @@ const EmployerRegister = () => {
                                             placeholder="Số điện thoại cá nhân"
                                             value={user.phoneNumber}
                                             onChange={handleUserChange}
-                                            onBlur={handleBlur}
                                         />
                                         <PhoneIcon size={20} className="input-icon" />
                                     </div>
@@ -400,7 +340,6 @@ const EmployerRegister = () => {
                                             placeholder="Tên công ty"
                                             value={user.companyName}
                                             onChange={handleUserChange}
-                                            onBlur={handleBlur}
                                         />
                                         <Building size={20} className="input-icon" />
                                     </div>
@@ -420,7 +359,6 @@ const EmployerRegister = () => {
                                             name="province"
                                             value={selectedProvince.id}
                                             onChange={handleProvinceChange}
-                                            onBlur={handleBlur}
                                         >
                                             <option value="">Chọn Tỉnh/Thành phố</option>
                                             {data.map((province) => (
@@ -457,6 +395,9 @@ const EmployerRegister = () => {
                                         </select>
                                         <WarehouseIcon size={20} className="input-icon" />
                                     </div>
+                                    <p className={`error-message ${errors.district ? 'show' : ''}`}>
+                                        {errors.district}
+                                    </p>
                                 </div>
                             </div>
                         </div>

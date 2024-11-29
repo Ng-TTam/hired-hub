@@ -19,20 +19,14 @@ export const fetchPostings = createAsyncThunk(
     },
 );
 
-export const fetchEmployerPostings = createAsyncThunk(
-    'postings/fetchEmployerPostings',
-    async ({ page, size }, { rejectWithValue }) => {
-        const token = localStorage.getItem('token');
+export const fetchEmployerFilterPostings = createAsyncThunk(
+    'postings/fetchEmployerFilterPostings',
+    async ({ criteria, pageable }, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${apiUrl}/self`, {
-                params: { page, size },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosPro.get(`${apiUrl}/employer`, { params: { ...criteria, ...pageable } });
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.response?.data.data || error.message);
+            return rejectWithValue(error.response.data);
         }
     },
 );
@@ -188,23 +182,6 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            //fetch employer posting
-            .addCase(fetchEmployerPostings.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-                state.success = false;
-                state.postings = [];
-            })
-            .addCase(fetchEmployerPostings.fulfilled, (state, action) => {
-                state.loading = false;
-                state.postings = action.payload.data.data;
-                state.totalPages = action.payload.data.totalPages;
-                state.totalElements = action.payload.data.totalElements;
-            })
-            .addCase(fetchEmployerPostings.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
             //fetch postings
             .addCase(fetchPostings.pending, (state) => {
                 state.loading = true;
@@ -250,6 +227,23 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            //employer filter
+            .addCase(fetchEmployerFilterPostings.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.postings = null;
+            })
+            .addCase(fetchEmployerFilterPostings.fulfilled, (state, action) => {
+                state.loading = false;
+                state.postings = action.payload.data.data;
+                state.totalPages = action.payload.data.totalPages;
+                state.totalElements = action.payload.data.totalElements;
+            })
+            .addCase(fetchEmployerFilterPostings.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
+            })
+            //admin filter
             .addCase(fetchAdminPostings.pending, (state) => {
                 state.loading = true;
                 state.error = null;

@@ -14,6 +14,7 @@ import MenuItemProfileCV from '../../MenuProfileCV/MenuProfileCV';
 import NotificationBadge from '../../NotificationBadge';
 import { Wrapper as PopperWrapper } from '../../Popper';
 import styles from './Header.module.scss';
+import { Card, Modal } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -47,8 +48,16 @@ const MENU_ITEMS = [
 
 function Header() {
     const isLogin = localStorage.getItem('isLogin');
-
     const [openMenu, setOpenMenu] = useState(false);
+    const [visible, setVisible] = React.useState(false);
+
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
 
     return (
         <header className={cx('wrapper')}>
@@ -100,9 +109,30 @@ function Header() {
                             <Button to="/login" outline>
                                 Đăng nhập
                             </Button>
-                            <Button primary to="/register">
+                            <Button primary onClick={showModal}>
                                 Đăng ký
                             </Button>
+                            <Modal open={visible} onCancel={handleCancel} footer={null} width={800}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <h1 style={{ color: '#00b14f' }}>Đăng ký tài khoản</h1>
+                                    <h3 style={{ marginBottom: '0px' }}>Chào bạn,</h3>
+                                    <span>Bạn hãy dành ra vài giây để xác nhận thông tin dưới đây nhé!</span>
+                                </div>
+                                <div className={cx('container')} style={{ border: '0px' }}>
+                                    <Link to="/business/sign-up">
+                                        <Card className={cx('section')} style={{ border:'none' }} hoverable>
+                                            <img src={images.employer} alt="Người tuyển dụng" />
+                                            <Button style={{ marginTop: 10, color:'rgba(0, 0, 0, 0.88)' }}>Tôi là nhà tuyển dụng</Button>
+                                        </Card>
+                                    </Link>
+                                    <Link to="/sign-up">
+                                        <Card className={cx('section')} style={{ border:'none' }} hoverable>
+                                            <img src={images.jobSeeker} alt="Người tìm việc" />
+                                            <Button style={{ marginTop: 10, color:'rgba(0, 0, 0, 0.88)' }}>Tôi là người tìm việc</Button>
+                                        </Card>
+                                    </Link>
+                                </div>
+                            </Modal>
                         </div>
                     )}
                 </div>

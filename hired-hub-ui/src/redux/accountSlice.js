@@ -152,6 +152,7 @@ const accountSlice = createSlice({
                 localStorage.setItem('refresh-token', action.payload.data.refreshToken);
                 localStorage.setItem('email', action.meta.arg.email);
                 localStorage.setItem('isLogin', true);
+                localStorage.setItem('role', 'JOB_SEEKER');
                 state.isLogin = true;
                 state.loading = false;
                 state.accountInfo = action.payload;
