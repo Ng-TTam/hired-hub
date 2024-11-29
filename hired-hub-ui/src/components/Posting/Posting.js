@@ -97,25 +97,36 @@ function Posting({ className }) {
     useEffect(() => {
         const hasViewed = sessionStorage.getItem('hasViewedApplicationModal');
         if (!hasViewed && selectApplication) {
-            const getData = async() =>{
-                try{
-                    const result = await dispatch(fetchApplicationInPosting(id)).unwrap();
-                    if (result) {
-                        setIsModalOpen(true);
-                        setShowApplication(true);
-                    } else {
+            if(isLogin){
+                const getData = async() =>{
+                    try{
+                        const result = await dispatch(fetchApplicationInPosting(id)).unwrap();
+                        if (result) {
+                            setIsModalOpen(true);
+                            setShowApplication(true);
+                        } else {
+                            setIsModalOpen(true);
+                            setShowCreateApplication(true);
+                        }
+                    }catch{
                         setIsModalOpen(true);
                         setShowCreateApplication(true);
                     }
-                }catch{
-                    setIsModalOpen(true);
-                    setShowCreateApplication(true);
-                }
-            };
-            getData();
-            sessionStorage.setItem('hasViewedApplicationModal', 'true');
+                };
+                getData();
+                sessionStorage.setItem('hasViewedApplicationModal', 'true');
+            }else{
+                Modal.confirm({
+                    title: 'Bạn chưa đăng nhập!',
+                    content: 'Đăng nhập ngay nhé?',
+                    okText: 'Đồng ý',
+                    cancelText: 'Hủy',
+                    onOk() {
+                        navigate('/login')
+                    },
+                });
+            }
         };
-        
     }, [id, selectApplication, dispatch]);
 
     const handleApplication = (reload) => {
