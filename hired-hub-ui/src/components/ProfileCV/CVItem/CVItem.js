@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "./CVItem.scss";
+import HtmlRenderer from "../../HtmlRenderer";
 
 function CVItem({ cvId, titleBox, onDelete }) {
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -35,14 +36,14 @@ function CVItem({ cvId, titleBox, onDelete }) {
                     <div className="box-info">
                         <h4 className="description-cv">
                             <NavLink to={`../../job-seeker/cv-review/${cvId}`} className="select-cv">
-                                {titleBox}
+                                <HtmlRenderer content={titleBox}/>
                             </NavLink>
                         </h4>
                         <ul className="action">
                             <li>
                                 <button 
                                         onClick={handEdit}
-                                        className="confirm-button"
+                                        className="edit-button"
                                     >
                                     Chỉnh sửa
                                 </button>

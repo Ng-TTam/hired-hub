@@ -1,4 +1,4 @@
-import { faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as faHeartRegular, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import {
     faBriefcaseClock,
     faClock,
@@ -9,11 +9,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCommentsDollar } from '@fortawesome/free-solid-svg-icons/faCommentsDollar';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot';
+import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constants';
 import { resetAndSetDistrict, resetAndSetJobCategory, resetAndSetProvince } from '../../redux/filterSlice';
@@ -30,10 +31,12 @@ import CreateApplication from '../Application/CreateApplication/CreateApplicatio
 import GetApplication from '../Application/GetApplication/GetApplication';
 import { savePosting, savePostingStatus, unsavePosting } from '../../redux/savedPostingSlice';
 import HtmlRenderer from '../HtmlRenderer';
+import { Modal } from 'antd';
 
 const cx = classNames.bind(styles);
 
 function Posting({ className }) {
+    const isLogin = localStorage.getItem("isLogin");
     const { id } = useParams();
     const { application } = useSelector((state) => state.application);
     const posting = useSelector((state) => state.postings.posting);
@@ -72,11 +75,23 @@ function Posting({ className }) {
     };
 
     const handleClickApplication = () => {
-        setIsModalOpen(true);
-        if (application) {
-            setShowApplication(true);
-        } else {
-            setShowCreateApplication(true);
+        if (isLogin){
+            setIsModalOpen(true);
+            if (application) {
+                setShowApplication(true);
+            } else {
+                setShowCreateApplication(true);
+            }
+        }else{
+            Modal.confirm({
+                title: 'Bạn chưa đăng nhập!',
+                content: 'Đăng nhập ngay nhé?',
+                okText: 'Đồng ý',
+                cancelText: 'Hủy',
+                onOk() {
+                    navigate('/login')
+                },
+            });
         }
     };
     useEffect(() => {
@@ -101,7 +116,7 @@ function Posting({ className }) {
             sessionStorage.setItem('hasViewedApplicationModal', 'true');
         };
         
-    }, [selectApplication, dispatch]);
+    }, [id, selectApplication, dispatch]);
 
     const handleApplication = (reload) => {
         setShowCreateApplication(false);
@@ -123,13 +138,25 @@ function Posting({ className }) {
         }
     };
     const handSavePost = async () => {
-        const saved = { postId: id };
-        if (savedStatus) {
-            await dispatch(unsavePosting(saved)).unwrap();
-            window.location.reload();
-        } else {
-            await dispatch(savePosting(saved)).unwrap();
-            window.location.reload();
+        if(isLogin){
+            const saved = { postId: id };
+            if (savedStatus) {
+                await dispatch(unsavePosting(saved)).unwrap();
+                window.location.reload();
+            } else {
+                await dispatch(savePosting(saved)).unwrap();
+                window.location.reload();
+            }
+        }else{
+            Modal.confirm({
+                title: 'Bạn chưa đăng nhập!',
+                content: 'Đăng nhập ngay nhé?',
+                okText: 'Đồng ý',
+                cancelText: 'Hủy',
+                onOk() {
+                    navigate('/login')
+                },
+            });
         }
     };
 
@@ -176,7 +203,7 @@ function Posting({ className }) {
                         <Button
                             className={cx('btn-save')}
                             outline
-                            leftIcon={<FontAwesomeIcon icon={faHeart} />}
+                            leftIcon={<FontAwesomeIcon icon={savedStatus ? faHeartSolid : faHeartRegular} />}
                             onClick={handSavePost}
                         >
                             {savedStatus ? 'Đã lưu' : 'Lưu tin'}

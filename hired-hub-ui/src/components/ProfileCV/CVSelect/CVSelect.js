@@ -4,6 +4,7 @@ import { fetchCVs } from '../../../redux/cvSlice';
 import images from '../../../assets/images';
 import './CVSelect.scss';
 import { NavLink } from 'react-router-dom';
+import HtmlRenderer from '../../HtmlRenderer';
 
 const CVSelect = ({ onCVSelect }) => {
     const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const CVSelect = ({ onCVSelect }) => {
                             <div className="box-info-1">
                                 <h4 className="description-cv-1">
                                     <NavLink to={`../../job-seeker/cv-review/${cv.id}`} className="select-cv">
-                                        {cv.description}
+                                        <HtmlRenderer content={cv.description}/>
                                     </NavLink>
                                 </h4>
                             </div>

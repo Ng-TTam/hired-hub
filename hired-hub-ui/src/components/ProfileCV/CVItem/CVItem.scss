@@ -3,6 +3,7 @@
     border: 2px solid #ddd; 
     border-radius: 8px; 
     padding: 16px; 
+    margin-bottom: 10px;
 
     .box-info {
         display: flex; 
@@ -27,6 +28,7 @@
 
     .action {
         list-style: none;
+        min-width: 244px;
         padding: 0;
         display: flex;
         gap: 10px;
@@ -45,7 +47,7 @@
     text-align: center;
 }
 
-.confirm-button, .cancel-button, .del-button {
+.confirm-button, .cancel-button, .del-button, .edit-button {
     margin: 10px;
     padding: 10px 20px;
     border: 2px solid;
@@ -55,6 +57,17 @@
 }
 
 .confirm-button {
+    min-width: 119px;
+    border-color:  #28a745;
+    background-color: #28a745;
+    color: white;
+    &:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+}
+
+.edit-button {
     border-color:  #28a745;
     background-color: #28a745;
     color: white;

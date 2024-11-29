@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserInformation } from '../../../redux/userSlice';
 import images from '../../../assets/images';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import {useNavigate, useParams } from 'react-router-dom';
 import { fetchCV, updateCV } from '../../../redux/cvSlice';
-import './EditCV.scss'
+import '../CreateCV/CreateCV.scss'
 import Image from '../../Image';
+import EditorContent from '../../EditorContent/EditorContent';
 
 const EditCV = () => {
     const email = localStorage.getItem('email');
     const { cvId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { user } = useSelector(state => state.user);
+    const user = useSelector(state => state.user.user);
     const { cv } = useSelector(state => state.cv);
     
     const [description, setDescription] = useState('');
@@ -21,9 +21,40 @@ const EditCV = () => {
     const [experience, setExperience] = useState('');
     const [skill, setSkill] = useState('');
     const [others, setOthers] = useState('');
+    const [errors, setErrors] = useState({});
+
+    const isContentEmpty = (htmlContent) => {
+        if (!htmlContent) return true;
+    
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = htmlContent;
+    
+        const textContent = tempElement.textContent || tempElement.innerText || '';
+        return textContent.trim() === '';
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+    
+        if (isContentEmpty(description)) {
+            newErrors.description = 'Mô tả không được để trống.';
+        }
+        if (isContentEmpty(education)) {
+            newErrors.education = 'Học vấn không được để trống.';
+        }
+        if (isContentEmpty(experience)) {
+            newErrors.experience = 'Kinh nghiệm không được để trống.';
+        }
+        if (isContentEmpty(skill)) {
+            newErrors.skill = 'Kỹ năng không được để trống.';
+        }
+    
+        setErrors(newErrors);
+    
+        return Object.keys(newErrors).length === 0;
+    };
 
     useEffect(() => {
-        dispatch(fetchUserInformation());
         dispatch(fetchCV(cvId));
     }, [dispatch, cvId]);
 
@@ -37,14 +68,18 @@ const EditCV = () => {
         }
     }, [cv]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        setErrors({});
+        const isValid = validateForm();
+        if(!isValid){
+            return;
+        }
         const updatedCV = {
-            description,
-            education,
-            experience,
-            skill,
-            others,
+            description: description,
+            education: education,
+            experience: experience,
+            skill: skill,
+            others: others,
         };
         try {
             await dispatch(updateCV({ cvId, updatedCV })).unwrap();
@@ -58,7 +93,7 @@ const EditCV = () => {
     return (
         <div className='edit text'>
             <h3 className='title-edit'>{`Chỉnh sửa CV của ${user?.firstName || ""} ${user?.lastName || ""}`}</h3>
-            <form onSubmit={handleSubmit}>
+            <div >
                 <div className="cv-review">
                     <div className='header'>
                         <div className="left_header">
@@ -87,12 +122,13 @@ const EditCV = () => {
                                 </p>
                             </div>
                             <div className='cv-data'>
-                                <p>
-                                    <textarea className='input-mota'
+                                <div className='input-mota'>
+                                    <EditorContent className='input-cv-editor'
                                         value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
+                                        onChange={setDescription}
                                     />
-                                </p>
+                                </div>
+                                {errors.description && <span className="error-message-cv-crud">{errors.description}</span>}
                             </div>
                         </div>
                         <div className='right-body'>
@@ -126,71 +162,50 @@ const EditCV = () => {
                     </div>
                     <div className='body-cv-2'>
                         <div className='body-cv-left'>
-                            <div className='cv-text'>
-                                <p>
-                                    <strong>HỌC VẤN</strong>
-                                </p>
-                            </div>
-                            <div className='cv-data'>
-                            <p>
-                                <textarea className='input-cv'
+                            <div className='cv-text'><strong>HỌC VẤN</strong></div>
+                            <div className='input-cv'>
+                                <EditorContent className="input-cv-editor"
                                     value={education}
-                                    onChange={(e) => setEducation(e.target.value)}
+                                    onChange={setEducation}
                                 />
-                            </p>
                             </div>
+                            {errors.education && <span className="error-message-cv-crud">{errors.education}</span>}
                         </div>
                         <div className='body-cv-right'>
-                            <div className='cv-text'>
-                                <p>
-                                    <strong>KINH NGHIỆM</strong>
-                                </p>
+                            <div className='cv-text'><strong>KINH NGHIỆM</strong></div>
+                            <div className='input-cv'>
+                                <EditorContent className="input-cv-editor"
+                                    value={experience}
+                                    onChange={setExperience}
+                                />
                             </div>
-                            <div className='cv-data'>
-                                <p>
-                                    <textarea className='input-cv'
-                                        value={experience}
-                                        onChange={(e) => setExperience(e.target.value)}
-                                    />
-                                </p>
-                            </div>
+                            {errors.experience && <span className="error-message-cv-crud">{errors.experience}</span>}
                         </div>
                     </div>
                     <div className='body-cv-2'>
                         <div className='body-cv-left'>
-                            <div className='cv-text'>
-                                <p>
-                                    <strong>KỸ NĂNG</strong>
-                                </p>
+                            <div className='cv-text'><strong>KỸ NĂNG</strong></div>
+                            <div className='input-cv'>
+                                <EditorContent className="input-cv-editor"
+                                    value={skill}
+                                    onChange={setSkill}
+                                />
                             </div>
-                            <div className='cv-data'>
-                                <p>
-                                    <textarea className='input-cv'
-                                        value={skill}
-                                        onChange={(e) => setSkill(e.target.value)}
-                                    />
-                                </p>
-                            </div>
+                            {errors.skill && <span className="error-message-cv-crud">{errors.skill}</span>}
                         </div>
                         <div className='body-cv-right'>
-                            <div className='cv-text'>
-                                <p>
-                                    <strong>KHÁC</strong>
-                                </p>
-                            </div>
-                            <div className='cv-data'>
-                                <p>
-                                    <textarea className='input-cv'
-                                        value={others}
-                                        onChange={(e) => setOthers(e.target.value)}
-                                    />
-                                </p>
+                            <div className='cv-text'><strong>KHÁC</strong></div>
+                            <div className='input-cv'>
+                                <EditorContent className="input-cv-editor"
+                                    value={others}
+                                    onChange={setOthers}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
-                <button className='btn-submit' type="submit">Lưu Thay Đổi</button>
-            </form>
+                <button className='btn-submit' onClick={handleSubmit}>Lưu Thay Đổi</button>
+            </div>
         </div>
     );
 };

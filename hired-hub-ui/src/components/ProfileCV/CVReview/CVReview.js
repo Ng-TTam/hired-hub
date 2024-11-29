@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import './CVReview.scss';
+import '../CV/CV.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserInformation } from '../../../redux/userSlice';
 import images from '../../../assets/images';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useParams } from 'react-router-dom';
 import { fetchApplication, resetApplication } from '../../../redux/applicationSlice';
 import Image from '../../Image';
+import HtmlRenderer from '../../HtmlRenderer';
 
 const CVReview = () => {
     const { applicationId } = useParams();
@@ -54,7 +54,7 @@ const CVReview = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.description}</strong>
+                            <HtmlRenderer content={cv?.description}/>
                         </p>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ const CVReview = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.education}</strong>
+                            <HtmlRenderer content={cv?.education}/>
                         </p>
                     </div>
                 </div>
@@ -108,7 +108,7 @@ const CVReview = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.experience}</strong>
+                            <HtmlRenderer content={cv?.experience}/>
                         </p>
                     </div>
                 </div>
@@ -122,7 +122,7 @@ const CVReview = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.skill}</strong>
+                            <HtmlRenderer content={cv?.skill}/>
                         </p>
                     </div>
                 </div>
@@ -134,7 +134,7 @@ const CVReview = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.others}</strong>
+                            <HtmlRenderer content={cv?.others}/>
                         </p>
                     </div>
                 </div>

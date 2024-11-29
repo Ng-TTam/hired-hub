@@ -10,6 +10,7 @@ import ProgressSteps from '../../components/ProgressStep';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import UpdateEmployerCompany from '../../components/UpdateEmployerCompany';
 import UpdateInfor from '../../components/UpdateInfor/UpdateInfor';
+import { PostingDetail } from '../../components/PostingManagement';
 
 const Dashboard = () => {
     return (
@@ -25,6 +26,7 @@ const Dashboard = () => {
                         <Route path="/dashboard" element={<DashboardDefault />} />
                         <Route path="/posting-job" element={<PostingJob />} />
                         <Route path="/manage-candidate" element={<ManageCandidate />} />
+                        <Route path="/manage-candidate/posting/:id" element={<PostingDetail />} />
                         {/* <Route path="/posting-stat" element={<PostingStat />} /> */}
                         <Route path="/create-post" element={<ProgressSteps />} />
                         <Route path="/update-post/:id" element={<ProgressSteps />} />

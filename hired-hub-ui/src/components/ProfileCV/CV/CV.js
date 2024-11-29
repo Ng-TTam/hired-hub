@@ -7,6 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useParams } from 'react-router-dom';
 import { fetchCV } from '../../../redux/cvSlice';
 import Image from '../../Image';
+import HtmlRenderer from '../../HtmlRenderer';
 
 const CV = () => {
 
@@ -15,7 +16,7 @@ const CV = () => {
     const email = localStorage.getItem('email');
     const dispatch = useDispatch();
     const { user, loading, error } = useSelector(state => state.user);
-    const {cv:cv} = useSelector(state => state.cv)
+    const {cv} = useSelector(state => state.cv)
 
     useEffect(() => {
         dispatch(fetchUserInformation());
@@ -56,7 +57,7 @@ const CV = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.description}</strong>
+                            <HtmlRenderer content={cv?.description}/>
                         </p>
                     </div>
                 </div>
@@ -73,7 +74,7 @@ const CV = () => {
                     {[
                         { icon: 'fa-calendar', placeholder: 'YYYY/MM/DD', value: user?.dob || 'YYYY/MM/DD' },
                         { icon: 'fa-phone', placeholder: '0123 456 789', value: user?.phoneNumber || '0123 456 789' },
-                        { icon: 'fa-envelope', placeholder: 'tencuaban@example.com', value: email || 'tencuaban@example.com' },
+                        { icon: 'fa-envelope', placeholder: 'tencuaban@example.com', value: email || 'email@example.com' },
                         { icon: 'fa-location-dot', placeholder: 'Quận A, thành phố Hà Nội', value: user?.address || 'Quận A, thành phố Hà Nội' }
                     ].map((item, index) => (
                         <div 
@@ -98,7 +99,7 @@ const CV = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.education}</strong>
+                            <HtmlRenderer content={cv?.education}/>
                         </p>
                     </div>
                 </div>
@@ -110,7 +111,7 @@ const CV = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.experience}</strong>
+                            <HtmlRenderer content={cv?.experience}/>
                         </p>
                     </div>
                 </div>
@@ -124,7 +125,7 @@ const CV = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.skill}</strong>
+                            <HtmlRenderer content={cv?.skill}/>
                         </p>
                     </div>
                 </div>
@@ -136,7 +137,7 @@ const CV = () => {
                     </div>
                     <div className='cv-data-r'>
                         <p>
-                            <strong >{cv?.others}</strong>
+                            <HtmlRenderer content={cv?.others}/>
                         </p>
                     </div>
                 </div>

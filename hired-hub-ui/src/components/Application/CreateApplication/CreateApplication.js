@@ -5,10 +5,13 @@ import { faFeatherPointed } from "@fortawesome/free-solid-svg-icons/faFeatherPoi
 import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";
 import CVSelect from "../../ProfileCV/CVSelect/CVSelect";
 import { useDispatch } from "react-redux";
+import './CreateApplication.scss'
 
 const CreateApplication = ({postingSelect, applicationId, onApplication}) =>{
     const [selectedCV, setSelectedCV] = useState(null);
     const [message, setMessage] = useState('');
+    const [nullCV, setNullCV] = useState(false);
+    const [colorCV, setColorCV] = useState('#00b14f');
     const dispatch = useDispatch();
 
     const handleCVSelect = (cvId) => {
@@ -20,19 +23,21 @@ const CreateApplication = ({postingSelect, applicationId, onApplication}) =>{
     };  
     const handApplication = async () => {
         if (!selectedCV) {
-            return;
-        }
-        const newApplication = { postingId: postingSelect.id, cvId: selectedCV, message };
-        try {
-            if(applicationId){
-                await dispatch(deleteApplication(applicationId)).unwrap();
-            };
-            await dispatch(createApplication(newApplication)).unwrap();
-        } catch (error) {
-            console.error('Lỗi khi ứng tuyển:', error);
-        } finally {
-            const reload = true;
-            onApplication(reload);
+            setColorCV('#dc2f2f');
+            setNullCV(true);
+        }else{
+            const newApplication = { postingId: postingSelect.id, cvId: selectedCV, message };
+            try {
+                if(applicationId){
+                    await dispatch(deleteApplication(applicationId)).unwrap();
+                };
+                await dispatch(createApplication(newApplication)).unwrap();
+            } catch (error) {
+                console.error('Lỗi khi ứng tuyển:', error);
+            } finally {
+                const reload = true;
+                onApplication(reload);
+            }
         }
     };
     return(
@@ -50,9 +55,10 @@ const CreateApplication = ({postingSelect, applicationId, onApplication}) =>{
                     />
                     <span style={{ fontSize: '16px' }}>Chọn CV để ứng tuyển</span>
                 </div>
-                <div className="application_content">
+                <div className="application_content" style={{borderColor: colorCV}}>
                     <CVSelect onCVSelect={handleCVSelect} />
                 </div>
+                {nullCV && <span className="error-message-application-create">Bạn chưa chọn CV</span>}
                 <div className="application-message-appli">
                     <FontAwesomeIcon
                         icon={faFeatherPointed}

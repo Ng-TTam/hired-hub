@@ -6,6 +6,7 @@ import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFeatherPointed } from '@fortawesome/free-solid-svg-icons/faFeatherPointed';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
+import HtmlRenderer from '../../HtmlRenderer';
 
 const GetApplication = ({postingSelect, onApplicationAgain}) => {
     const dispatch = useDispatch();
@@ -49,8 +50,8 @@ const GetApplication = ({postingSelect, onApplicationAgain}) => {
                     style={{border:'none', color : '#00b14f', cursor:'auto'}}>
                         <div className="box-info-1">
                             <h4 className="description-cv-1">
-                                <NavLink to={`../../job-seeker/cv-review/${application.cv.id}`} className="select-cv">
-                                    {application.cv.description}
+                                <NavLink to={`../../job-seeker/cv-review/${application?.cv?.id}`} className="select-cv">
+                                    <HtmlRenderer content={application?.cv?.description}/>
                                 </NavLink>
                             </h4>
                         </div>

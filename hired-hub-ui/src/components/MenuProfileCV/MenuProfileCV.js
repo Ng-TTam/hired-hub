@@ -4,17 +4,35 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import { Wrapper as PopperWrapper } from '../Popper';
 import Menu from '../Menu/Menu';
 import './MenuProfileCV.scss'; 
+import { useNavigate } from 'react-router-dom';
+import { Modal } from 'antd';
 
 const MenuProfileCV = () => {
     const isLogin = localStorage.getItem('isLogin');
+    const navigate = useNavigate();
+
+    const handClickManager = () => {
+        if(isLogin){
+            return;
+        }
+        Modal.confirm({
+            title: 'Bạn chưa đăng nhập!',
+            content: 'Đăng nhập ngay nhé?',
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk() {
+                navigate('/login')
+            },
+        });
+    };
     const MENU_ITEMS = [
         {
             title: 'Tạo CV',
-            to: isLogin ? '../../job-seeker/cv-create': '../login',
+            to: isLogin ? '../../job-seeker/cv-create': '',
         },
         {
             title: 'Quản lý CV',
-            to: isLogin ?  '../../job-seeker/cv-management':'../login',
+            to: isLogin ?  '../../job-seeker/cv-management': '',
         },
     ];
 
@@ -25,7 +43,7 @@ const MenuProfileCV = () => {
             render={(attrs) => (
                 <div >
                     <PopperWrapper>
-                        <Menu items={MENU_ITEMS}/>
+                        <Menu items={MENU_ITEMS} onClickItem={handClickManager}/>
                     </PopperWrapper>
                 </div>
             )}

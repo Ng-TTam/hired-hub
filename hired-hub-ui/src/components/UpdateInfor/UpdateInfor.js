@@ -7,7 +7,6 @@ import { fetchUserInformation, updateInformation } from '../../redux/userSlice';
 const UpdateInfor = () => {
     const {user, error} = useSelector((state) => state.user);
     const dispatch = useDispatch();
-    const [isError, setIsError] = useState(false);
     const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({
@@ -46,7 +45,6 @@ const UpdateInfor = () => {
         }
     
         setErrors(newErrors);
-    
         return Object.keys(newErrors).length === 0;
     };
 
@@ -62,7 +60,7 @@ const UpdateInfor = () => {
                 avatar: null,
             });
         }
-    }, [user]);
+    },[user, error]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -95,7 +93,7 @@ const UpdateInfor = () => {
     
         const isValid = validateForm();
         if (!isValid) {
-            return;
+            return ;
         }
     
         const formDataU = new FormData();
@@ -113,9 +111,7 @@ const UpdateInfor = () => {
         try {
             await dispatch(updateInformation(formDataU)).unwrap();
             dispatch(fetchUserInformation());
-            setIsError(false);
         } catch (error) {
-            setIsError(true);
         }
     };
 

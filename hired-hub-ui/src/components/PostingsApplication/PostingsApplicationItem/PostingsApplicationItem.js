@@ -1,15 +1,14 @@
 import React from "react";
 import './PostingsApplicationItem.scss'
 import images from "../../../assets/images";
-import { format, formatDistanceToNow, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import HtmlRenderer from "../../HtmlRenderer";
 
 const PostingsApplicationItem = ({application}) =>{
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const formatdate = (date) =>{
@@ -31,7 +30,7 @@ const PostingsApplicationItem = ({application}) =>{
     return(
         <div className="pai-item">
             <div className="pai-avatar" style={{ alignSelf:"center"}}>
-                <img src={images.logoDefault} style={{width:"102px", height:"102px", borderRadius:"5%"}}/>
+                <img src={images.logoDefault} alt="avtar ứng viên" style={{width:"102px", height:"102px", borderRadius:"5%"}}/>
             </div>
             <div className="pai-data">
                 <div className="pai-title-block">
@@ -49,7 +48,8 @@ const PostingsApplicationItem = ({application}) =>{
                     {`Thời gian ứng tuyển: ${formatdate(application.createdAt)}`}
                 </div>
                 <div className="pai-time-save">
-                    CV ứng tuyển: <strong className="pai-cv-des">{application.cv.description}</strong>
+                    <div>CV ứng tuyển: </div>
+                    <div className="pai-cv-des"><HtmlRenderer content={application.cv.description}/></div>
                 </div>
                 <div className="pai-infor">
                     <div className="pai-infor-time">

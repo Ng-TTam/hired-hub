@@ -72,9 +72,11 @@
         }
 
         .pai-time-save{
+            display: flex;
             height: 20px;
             font-size: 15px;
             color: #424e5c;
+            gap: 10px;
             .pai-cv-des{
                 color: #00b14f;
                 cursor: pointer;

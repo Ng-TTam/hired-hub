@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Dropdown, Menu, Button } from 'antd'; // Import Ant Design components
+import { Dropdown, Menu, Button, Modal } from 'antd'; // Import Ant Design components
 import { fetchApplications, resetApplication, setApplicationStatus } from '../../redux/applicationSlice';
 import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
@@ -10,11 +10,14 @@ import images from '../../assets/images/index';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Pagination from '../Pagination';
+import { useNavigate } from 'react-router-dom';
+import HtmlRenderer from '../HtmlRenderer';
 
 const ITEMS_PER_PAGE = 5;
 
 const ManageCandidate = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { applications } = useSelector((state) => state.application);
     const [filterStatus, setFilterStatus] = useState(null);
     const [filterStatusLabel, setFilterStatusLabel] = useState('Tất cả');
@@ -43,19 +46,43 @@ const ManageCandidate = () => {
     };
 
     const handPosting = (application) => {
-        window.open(`../business/posting/${application.posting.id}`, '_blank');
+        navigate(`./posting/${application.posting.id}`);
     };
 
     const handApproved = async (applicationId) => {
-        const applicationStatus = { applicationStatus: 'APPROVED' };
-        await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
-        dispatch(fetchApplications());
+        var ok = false;
+        Modal.confirm({
+            title: 'Bạn có chắc chắn?',
+            content: 'Bạn có chắc chắn muốn cập nhật không?',
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk() {
+                ok = true;
+            },
+        });
+        if(ok){
+            const applicationStatus = { applicationStatus: 'APPROVED' };
+            await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
+            dispatch(fetchApplications());
+        }
     };
 
     const handRejected = async (applicationId) => {
-        const applicationStatus = { applicationStatus: 'REJECTED' };
-        await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
-        dispatch(fetchApplications());
+        var ok = false;
+        Modal.confirm({
+            title: 'Bạn có chắc chắn?',
+            content: 'Bạn có chắc chắn muốn cập nhật không?',
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk() {
+                ok = true;
+            },
+        });
+        if(ok){
+            const applicationStatus = { applicationStatus: 'REJECTED' };
+            await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
+            dispatch(fetchApplications());
+        }
     };
 
     const handPending = async (applicationId) => {
@@ -197,7 +224,7 @@ const ManageCandidate = () => {
                 </div>
             </div>
             {currentItems?.length > 0 ? (
-                <div style={{ width: '100%', marginTop: '10px' }}>
+                <div style={{ width: '100%', marginTop: '10px'}}>
                     <table className="custom-table-candidate">
                         <thead>
                             <tr>
@@ -227,7 +254,7 @@ const ManageCandidate = () => {
                                     </td>
                                     <td style={{ verticalAlign: 'middle' }}>
                                         <div className="cv-description" onClick={() => handCV(application)}>
-                                            {application?.cv?.description || 'CV Description'}
+                                            <HtmlRenderer content={application?.cv?.description || 'CV Description'}/>
                                         </div>
                                         <div className="cv-update-time">
                                             Cập nhật:{' '}

@@ -24,6 +24,7 @@ import styles from './PostingDetail.module.scss';
 const cx = classNames.bind(styles);
 
 const PostingDetail = () => {
+    const role = localStorage.getItem("role");
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -55,7 +56,7 @@ const PostingDetail = () => {
                 <Button icon={<FontAwesomeIcon icon={faChevronLeft} />} onClick={() => navigate(-1)}>
                     Trở lại
                 </Button>
-                <div className={cx('left-actions')}>
+                {role ==='ADMIN' && (<div className={cx('left-actions')}>
                     {posting?.status === 'PENDING' && (
                         <>
                             <Button
@@ -88,7 +89,7 @@ const PostingDetail = () => {
                             Hiện bài viết
                         </Button>
                     )}
-                </div>
+                </div>)}
             </div>
             <div className={cx('content')}>
                 <div className={cx('box-title', 'box')}>
