@@ -73,8 +73,8 @@ public class PostingService {
     @PreAuthorize("hasRole('EMPLOYER')")
     public PostingDetailResponse createPosting(PostingRequest postingRequest) {
         Employer employer = getEmployerByAccount();
-        if (employer.getAccount().getStatus() == Status.PENDING)
-            throw new AppException(ErrorCode.EMPLOYER_PENDING);
+        if (!employer.getAccount().getStatus().equals(Status.ACTIVATE))
+            throw new AppException(ErrorCode.EMPLOYER_NOT_ACTIVATE);
 
         Posting posting = postingMapper.toPosting(postingRequest);
         posting.setEmployer(employer);
@@ -360,8 +360,8 @@ public class PostingService {
     }
 
     // Lên lịch chạy mỗi ngày lúc 12 giờ đêm
-//    @Scheduled(cron = "0 0 0 * * ?")
-    @Scheduled(initialDelay = 5000, fixedDelay = Long.MAX_VALUE)
+    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = Long.MAX_VALUE)
     public void scheduleChangeStatusPostingExpire() {
         List<Posting> expiredPosts = postingRepository.findExpiredPosts();
         expiredPosts.forEach(posting -> posting.setStatus(PostingStatus.DEACTIVATE));
