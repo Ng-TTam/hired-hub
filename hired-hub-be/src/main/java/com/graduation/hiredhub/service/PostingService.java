@@ -7,6 +7,7 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
 import com.graduation.hiredhub.entity.*;
+import com.graduation.hiredhub.entity.enumeration.NotificationType;
 import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
@@ -22,18 +23,21 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.sqm.TemporalUnit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -336,10 +340,46 @@ public class PostingService {
             throw new AppException(ErrorCode.POSTING_PENDING);
         }
         posting.setStatus(postingStatusRequest.getStatus());
+
+        //another way is set posting in cache if exist (complex)
+        String redisKeyPattern = REDIS_POSTING_KEY + "*";
+        Set<String> keysToDelete = stringRedisTemplate.keys(redisKeyPattern);
+        if (keysToDelete != null) {
+            stringRedisTemplate.delete(keysToDelete);
+        }
+
         postingRepository.save(posting);
 
         if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+            // send notification for job-seeker follower company contain post
             notificationService.onCompanyNewPost(posting);
+
+            //send notification for employer owner post
+            notificationService.onPostingApproved(posting);
         }
+    }
+
+    // Lên lịch chạy mỗi ngày lúc 12 giờ đêm
+    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(initialDelay = 5000, fixedDelay = Long.MAX_VALUE)
+    public void scheduleChangeStatusPostingExpire(){
+        List<Posting> expiredPosts = postingRepository.findExpiredPosts();
+        expiredPosts.forEach(posting -> posting.setStatus(PostingStatus.DEACTIVATE));
+        postingRepository.saveAll(expiredPosts);
+
+        notificationService.onPostingExpired(expiredPosts);
+    }
+
+    // Gửi thông báo mỗi ngày lúc 12h
+    @Scheduled(cron = "0 0 12 * * ?")
+    public void notifyAboutExpiringPostings() {
+        List<Posting> expiringPostings = getExpiringPostingsWithinDays(2);
+        notificationService.onPostingExpiring(expiringPostings);
+    }
+
+    public List<Posting> getExpiringPostingsWithinDays(long days) {
+        Instant currentDate = Instant.now();
+        Instant futureDate = currentDate.plus(days, ChronoUnit.DAYS);
+        return postingRepository.findExpiringPostsWithinDays(currentDate, futureDate);
     }
 }
