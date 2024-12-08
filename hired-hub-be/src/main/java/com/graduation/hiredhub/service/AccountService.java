@@ -56,13 +56,6 @@ public class AccountService {
      * @param userAccountCreationRequest contain user, account to create
      * @return access token and refresh token
      */
-    /**
-     * Sign up for job_seeker
-     * Create account, jobSeeker and send otp -> gen token
-     *
-     * @param userAccountCreationRequest
-     * @return access token and refresh token
-     */
     @Transactional
     public AuthenticationResponse signUp(UserAccountCreationRequest userAccountCreationRequest) {
         if (accountRepository.existsByEmail(userAccountCreationRequest.getAccount().getEmail()))
@@ -98,14 +91,6 @@ public class AccountService {
      * @param employerAccountCreationRequest contain user, companyName, position to create account
      * @return access token and refresh token
      */
-
-    /**
-     * Sign up for employer
-     * create account, employer and send otp -> gen token
-     *
-     * @param employerAccountCreationRequest
-     * @return access token and refresh token
-     */
     @Transactional
     public AuthenticationResponse employerSignUp(EmployerAccountCreationRequest employerAccountCreationRequest) {
         if (accountRepository.existsByEmail(employerAccountCreationRequest.getAccount().getEmail()))
@@ -138,11 +123,6 @@ public class AccountService {
      * Resend otp when otp expire, otp invalid
      * Can resend otp if created account
      */
-
-    /**
-     * Resend otp when otp expire, otp invalid
-     * Can resend otp if created account
-     */
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public void resendOtpSignUp() {
         otpService.send(SIGNUP_OTP, getAccountInContext().getEmail());
@@ -151,11 +131,6 @@ public class AccountService {
     /**
      * Send otp to reset password
      * @param authResetPassRequest account contain new pass
-     */
-    /**
-     * Send otp to reset password
-     *
-     * @param authResetPassRequest
      */
     public void otpResetPassword(AuthResetPassRequest authResetPassRequest) {
         var account = accountRepository.findByEmail(authResetPassRequest.getEmail())

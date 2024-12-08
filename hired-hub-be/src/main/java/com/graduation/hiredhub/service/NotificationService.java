@@ -32,7 +32,6 @@ public class NotificationService {
     NotificationMapper notificationMapper;
     PushNotificationService pushNotificationService;
     UserRepository userRepository;
-    private final JobSeekerRepository jobSeekerRepository;
     private final SubscriptionRepository subscriptionRepository;
 
     /**
@@ -116,5 +115,23 @@ public class NotificationService {
             Notification notification = NotificationUtils.followedCompanyNewPost(posting, follower);
             createNotification(notification);
         });
+    }
+
+    public void onPostingExpired(List<Posting> postings){
+        postings.forEach(posting -> {
+            Notification notification = NotificationUtils.postingsExpired(posting);
+            createNotification(notification);
+        });
+    }
+
+    public void onPostingExpiring(List<Posting> postings){
+        postings.forEach(posting -> {
+            Notification notification = NotificationUtils.postingsExpiringSoon(posting);
+            createNotification(notification);
+        });
+    }
+
+    public void onPostingApproved(Posting posting) {
+        createNotification(NotificationUtils.postingApproved(posting));
     }
 }

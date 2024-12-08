@@ -17,6 +17,39 @@ public class NotificationUtils {
                 .build();
     }
 
+    public static Notification postingsExpired(Posting posting) {
+        return Notification.builder()
+                .title("Thông báo hết hạn")
+                .content(String.format("Bài đăng %s đã hết hạn", posting.getTitle()))
+                .type(NotificationType.JOB_POST_EXPIRED)
+                .isRead(Boolean.FALSE)
+                .referenceId(posting.getId())
+                .user(posting.getEmployer()) //notice for employer owner post is expiring soon
+                .build();
+    }
+
+    public static Notification postingsExpiringSoon(Posting posting) {
+        return Notification.builder()
+                .title("Thông báo sắp hết hạn")
+                .content(String.format("Bài đăng %s sắp hết hạn", posting.getTitle()))
+                .type(NotificationType.JOB_POST_EXPIRING)
+                .isRead(Boolean.FALSE)
+                .referenceId(posting.getId())
+                .user(posting.getEmployer()) //notice for employer owner post is expiring soon
+                .build();
+    }
+
+    public static Notification postingApproved(Posting posting) {
+        return Notification.builder()
+                .title("Xác nhận thành công")
+                .content(String.format("Bài đăng %s được xác nhận", posting.getTitle()))
+                .type(NotificationType.JOB_POST_APPROVED)
+                .isRead(Boolean.FALSE)
+                .referenceId(posting.getId())
+                .user(posting.getEmployer()) //notice for employer owner post is expiring soon
+                .build();
+    }
+
     private NotificationUtils() {
     }
 }
