@@ -39,14 +39,15 @@ public class ApplicationService {
     JobSeekerRepository jobSeekerRepository;
     AccountService accountService;
     EmployerRepository employerRepository;
+    NotificationService notificationService;
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public ApplicationResponse createApplication(ApplicationRequest applicationRequest,String postingId, String cvId){
+    public ApplicationResponse createApplication(ApplicationRequest applicationRequest, String postingId, String cvId) {
         Posting posting = postingRepository.findById(postingId)
                 .orElseThrow(() -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
         CV cv = cvRepository.findById(cvId)
                 .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
-        if (!cv.getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
+        if (!cv.getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
         applicationRepository.findByPostingAndCv(posting, cv)
@@ -65,29 +66,32 @@ public class ApplicationService {
         } catch (Exception e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
+
+        notificationService.onNewCandidate(application);
+
         return applicationMapper.toApplicationResponse(application);
     }
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public ApplicationResponse deleteApplication(Integer applicationId){
+    public ApplicationResponse deleteApplication(Integer applicationId) {
         Application application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED));
-        if (!application.getCv().getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
+        if (!application.getCv().getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
         try {
             applicationRepository.delete(application);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
         return applicationMapper.toApplicationResponse(application);
     }
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public List<ApplicationResponse> getApplicationByCVId(String cvId){
+    public List<ApplicationResponse> getApplicationByCVId(String cvId) {
         CV cv = cvRepository.findById(cvId)
                 .orElseThrow(() -> new AppException(ErrorCode.CV_NOT_FOUND));
-        if (!cv.getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())){
+        if (!cv.getJobSeeker().getId().equals(cvService.getJobSeekerByAccount().getId())) {
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
         List<Application> applications = applicationRepository.findByCv(cv);
@@ -107,7 +111,7 @@ public class ApplicationService {
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public PageResponse<ApplicationDTO> getApplicationsByEmployer(String postingId, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1,size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         var pageData = applicationRepository.findByPostingId(postingId, pageable);
         return PageResponse.<ApplicationDTO>builder()
                 .currentPage(page)
@@ -119,25 +123,26 @@ public class ApplicationService {
     }
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
-    public List<ApplicationResponse> getApplicationsByJobSeeker(){
+    public List<ApplicationResponse> getApplicationsByJobSeeker() {
         List<CV> cvs = cvRepository.findByJobSeeker(cvService.getJobSeekerByAccount());
         List<Application> applications = new ArrayList<Application>();
-        for (CV cv: cvs){
+        for (CV cv : cvs) {
             applications.addAll(applicationRepository.findByCv(cv));
         }
         return applications.stream()
                 .map(applicationMapper::toApplicationResponse)
                 .collect(Collectors.toList());
     }
+
     @PreAuthorize("hasRole('EMPLOYER')")
-    public List<ApplicationResponse> getApplicationsByEmployer(){
+    public List<ApplicationResponse> getApplicationsByEmployer() {
         List<Posting> postings = postingRepository.findByEmployerId(getEmployerByAccount().getId());
         List<Application> applications = new ArrayList<Application>();
-        for (Posting posting: postings){
+        for (Posting posting : postings) {
             applications.addAll(applicationRepository.findByPosting(posting));
         }
         List<ApplicationResponse> applicationResponses = new ArrayList<ApplicationResponse>();
-        for(Application application : applications){
+        for (Application application : applications) {
             String email = application.getCv().getJobSeeker().getAccount().getEmail();
             ApplicationResponse applicationResponse = applicationMapper.toApplicationResponse(application);
             applicationResponse.setEmail(email);
@@ -151,11 +156,11 @@ public class ApplicationService {
     public ApplicationStatisticsResponse getApplicationStatistics() {
         List<Posting> postings = postingRepository.findByEmployerId(getEmployerByAccount().getId());
         List<Application> applications = new ArrayList<>();
-        
+
         int posting_Active = 0;
         for (Posting posting : postings) {
             applications.addAll(applicationRepository.findByPosting(posting));
-            if(posting.getStatus() != null && posting.getStatus().toString().equals(Status.ACTIVATE.toString())){
+            if (posting.getStatus() != null && posting.getStatus().toString().equals(Status.ACTIVATE.toString())) {
                 posting_Active++;
             }
         }
@@ -164,7 +169,7 @@ public class ApplicationService {
         Integer cV_Pending = 0;
         Integer cV_Deactive = 0;
         Integer cV_Active = 0;
-        
+
         for (Application application : applications) {
             if (application.getStatus().toString().equals(ApplicationStatus.APPROVED.toString())) {
                 cV_Active++;
@@ -175,11 +180,11 @@ public class ApplicationService {
             }
         }
         return ApplicationStatisticsResponse.builder()
-            .posting_Count(posting_Count)
-            .cV_Active(cV_Active)
-            .cV_Deactive(cV_Deactive)
-            .cV_Pending(cV_Pending)
-            .build();
+                .posting_Count(posting_Count)
+                .cV_Active(cV_Active)
+                .cV_Deactive(cV_Deactive)
+                .cV_Pending(cV_Pending)
+                .build();
     }
 
     /**
@@ -195,7 +200,7 @@ public class ApplicationService {
         Application application = applicationRepository.findById(applicationId).orElseThrow(
                 () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
         );
-        if(!application.getPosting().getId().equals(postingId))
+        if (!application.getPosting().getId().equals(postingId))
             throw new AppException(ErrorCode.APPLICATION_NOT_EXISTED);
 
         return applicationMapper.toApplicationDTO(application);
@@ -211,22 +216,25 @@ public class ApplicationService {
         return applicationResponse;
     }
 
-    
+
     @PreAuthorize("hasRole('EMPLOYER')")
     public ApplicationResponse setApplicationStatus(ApplicationStatusRequest applicationStatusRequest, Integer applicationId) {
         Application application = applicationRepository.findById(applicationId).orElseThrow(
                 () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
         );
-        if(applicationStatusRequest.getApplicationStatus().equals("APPROVED")){
+        if (applicationStatusRequest.getApplicationStatus().equals("APPROVED")) {
             application.setStatus(ApplicationStatus.APPROVED);
-        }else if(applicationStatusRequest.getApplicationStatus().equals("REJECTED")){
+        } else if (applicationStatusRequest.getApplicationStatus().equals("REJECTED")) {
             application.setStatus(ApplicationStatus.REJECTED);
-        }else application.setStatus(ApplicationStatus.PENDING);
+        } else application.setStatus(ApplicationStatus.PENDING);
         try {
             applicationRepository.save(application);
         } catch (Exception e) {
             throw new AppException(ErrorCode.INTERNAL_ERROR);
         }
+
+        notificationService.onApplicationStatusChange(application);
+
         ApplicationResponse applicationResponse = applicationMapper.toApplicationResponse(application);
         applicationResponse.setEmail(application.getCv().getJobSeeker().getAccount().getEmail());
         return applicationResponse;
@@ -266,17 +274,21 @@ public class ApplicationService {
                 () -> new AppException(ErrorCode.APPLICATION_NOT_EXISTED)
         );
         applicationMapper.updateApplication(application, applicationDTO);
-        return applicationMapper.toApplicationDTO(applicationRepository.save(application));
+        applicationRepository.save(application);
+
+        notificationService.onCandidateUpdateApplication(application);
+
+        return applicationMapper.toApplicationDTO(application);
     }
 
 
-    JobSeeker getJobSeekerByAccount(){
+    JobSeeker getJobSeekerByAccount() {
         return jobSeekerRepository.findByAccountId(accountService.getAccountInContext().getId())
-                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));   
+                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
     }
 
-    Employer getEmployerByAccount(){
+    Employer getEmployerByAccount() {
         return employerRepository.findByAccountId(accountService.getAccountInContext().getId())
-        .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
     }
 }

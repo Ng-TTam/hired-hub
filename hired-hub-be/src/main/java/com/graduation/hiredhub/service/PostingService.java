@@ -7,7 +7,6 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.dto.response.PostingResponse;
 import com.graduation.hiredhub.entity.*;
-import com.graduation.hiredhub.entity.enumeration.NotificationType;
 import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
@@ -23,7 +22,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.query.sqm.TemporalUnit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -178,15 +176,15 @@ public class PostingService {
     }
 
     @PreAuthorize("permitAll()")
-    public PageResponse<PostingResponse> getAllPostings(int page, int size) {
+    public PageResponse<PostingDetailResponse> getAllPostings(int page, int size) {
         String cacheKey = REDIS_POSTING_KEY + "_page_" + page + "_size_" + size;
-        PageResponse<PostingResponse> pageResponse;
+        PageResponse<PostingDetailResponse> pageResponse;
 
         // Check in cache
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
             try {
                 pageResponse = objectMapper.readValue(stringRedisTemplate.opsForValue().get(cacheKey),
-                        new TypeReference<PageResponse<PostingResponse>>() {
+                        new TypeReference<PageResponse<PostingDetailResponse>>() {
                         });
             } catch (Exception e) {
                 throw new AppException(ErrorCode.ERROR_PARSING_JSON);
@@ -200,13 +198,13 @@ public class PostingService {
             );
             Page<Posting> pageData = postingRepository.findByStatus(PostingStatus.ACTIVATE, pageable);
 
-            pageResponse = PageResponse.<PostingResponse>builder()
+            pageResponse = PageResponse.<PostingDetailResponse>builder()
                     .currentPage(page)
                     .pageSize(pageData.getSize())
                     .totalPages(pageData.getTotalPages())
                     .totalElements(pageData.getTotalElements())
                     .data(pageData.getContent().stream()
-                            .map(postingMapper::toPostingResponse)
+                            .map(postingMapper::toPostingDetailResponse)
                             .toList())
                     .build();
 
@@ -339,6 +337,9 @@ public class PostingService {
                 || posting.getStatus().equals(PostingStatus.PENDING))) {
             throw new AppException(ErrorCode.POSTING_PENDING);
         }
+
+        PostingStatus oldStatus = posting.getStatus();
+
         posting.setStatus(postingStatusRequest.getStatus());
 
         //another way is set posting in cache if exist (complex)
@@ -350,19 +351,18 @@ public class PostingService {
 
         postingRepository.save(posting);
 
-        if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
-            // send notification for job-seeker follower company contain post
-            notificationService.onCompanyNewPost(posting);
-
-            //send notification for employer owner post
-            notificationService.onPostingApproved(posting);
+        if (oldStatus.equals(PostingStatus.PENDING)) {
+            if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+                notificationService.onCompanyNewPost(posting);
+            }
+            notificationService.onPostingStatusChange(posting, true);
         }
     }
 
     // Lên lịch chạy mỗi ngày lúc 12 giờ đêm
-    @Scheduled(cron = "0 0 0 * * ?")
-//    @Scheduled(initialDelay = 5000, fixedDelay = Long.MAX_VALUE)
-    public void scheduleChangeStatusPostingExpire(){
+//    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(initialDelay = 5000, fixedDelay = Long.MAX_VALUE)
+    public void scheduleChangeStatusPostingExpire() {
         List<Posting> expiredPosts = postingRepository.findExpiredPosts();
         expiredPosts.forEach(posting -> posting.setStatus(PostingStatus.DEACTIVATE));
         postingRepository.saveAll(expiredPosts);

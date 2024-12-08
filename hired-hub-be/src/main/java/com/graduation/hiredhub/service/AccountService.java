@@ -8,6 +8,8 @@ import com.graduation.hiredhub.dto.response.AuthenticationResponse;
 import com.graduation.hiredhub.entity.Account;
 import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.JobSeeker;
+import com.graduation.hiredhub.entity.Posting;
+import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
@@ -16,6 +18,7 @@ import com.graduation.hiredhub.mapper.UserMapper;
 import com.graduation.hiredhub.repository.AccountRepository;
 import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.JobSeekerRepository;
+import com.graduation.hiredhub.repository.PostingRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -42,6 +46,7 @@ public class AccountService {
     OtpService otpService;
     AuthenticationService authenticationService;
     UserMapper userMapper;
+    PostingRepository postingRepository;
 
     private static final String SIGNUP_OTP = "SIGNUP"; //type of otp
     private static final String RESET_OTP = "RESET";
@@ -232,12 +237,21 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public void updateStatus(AccountStatusRequest accountStatusRequest) {
-        accountRepository.findById(accountStatusRequest.getAccountId())
-                .map(existingAccount -> {
-                    existingAccount.setStatus(accountStatusRequest.getStatus());
-                    return existingAccount;
-                })
-                .map(accountRepository::save)
+        Account account = accountRepository.findById(accountStatusRequest.getAccountId())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXISTED));
+        account.setStatus(accountStatusRequest.getStatus());
+        accountRepository.save(account);
+
+        if (account.getStatus().equals(Status.DEACTIVATE) && account.getRole().equals(Role.EMPLOYER)) {
+            Employer employer = employerRepository.findByAccountId(account.getId())
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            List<Posting> postings = postingRepository.findByEmployerId(employer.getId());
+            postings.forEach(posting -> {
+                if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+                    posting.setStatus(PostingStatus.DEACTIVATE);
+                }
+            });
+            postingRepository.saveAll(postings);
+        }
     }
 }

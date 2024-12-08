@@ -11,12 +11,24 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout, Menu } from 'antd';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const { Sider } = Layout;
 
 const Sidebar = () => {
+    const location = useLocation();
+
+    const [selectedKeys, setSelectedKeys] = useState(() => {
+        return sessionStorage.getItem('sidebarSelectedKeys')
+            ? JSON.parse(sessionStorage.getItem('sidebarSelectedKeys'))
+            : [];
+    });
+
+    const [openKeys, setOpenKeys] = useState(() => {
+        return sessionStorage.getItem('sidebarOpenKeys') ? JSON.parse(sessionStorage.getItem('sidebarOpenKeys')) : [];
+    });
+
     const menuItems = [
         {
             key: 'posts',
@@ -41,7 +53,7 @@ const Sidebar = () => {
             label: 'Quản lý người dùng',
             children: [
                 {
-                    key: 'new-empoyers',
+                    key: 'new-employers',
                     icon: <FontAwesomeIcon icon={faUserPlus} />,
                     label: <Link to="/admin/dashboard/employers/pending">Nhà tuyển dụng mới</Link>,
                 },
@@ -96,11 +108,42 @@ const Sidebar = () => {
         },
     ];
 
+    useEffect(() => {
+        const matchedKey = menuItems
+            .flatMap((item) => (item.children ? item.children.map((child) => child.key) : [item.key]))
+            .find((key) => location.pathname.includes(key));
+
+        if (matchedKey) {
+            setSelectedKeys([matchedKey]);
+
+            const parentMenu = menuItems.find(
+                (item) => item.children && item.children.some((child) => child.key === matchedKey),
+            );
+
+            if (parentMenu) {
+                setOpenKeys([parentMenu.key]);
+            }
+        }
+    }, [location.pathname]);
+
+    const handleSelect = ({ key }) => {
+        setSelectedKeys([key]);
+        sessionStorage.setItem('sidebarSelectedKeys', JSON.stringify([key]));
+    };
+
+    const handleOpenChange = (keys) => {
+        setOpenKeys(keys);
+        sessionStorage.setItem('sidebarOpenKeys', JSON.stringify(keys));
+    };
+
     return (
         <Sider width={250} style={{ height: '100vh', backgroundColor: 'var(--white-color)' }} collapsible>
             <Menu
                 mode="inline"
-                defaultSelectedKeys={['new-posts']}
+                defaultSelectedKeys={selectedKeys}
+                defaultOpenKeys={openKeys}
+                onSelect={handleSelect}
+                onOpenChange={handleOpenChange}
                 style={{ height: '100%', borderRight: 0 }}
                 items={menuItems}
             />

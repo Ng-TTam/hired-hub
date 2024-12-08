@@ -26,53 +26,49 @@ function CompanyDetail() {
         dispatch(fetchCompany(id));
     }, [subscribed, id]);
 
-    if (!company) {
-        return <></>;
-    }
-
     return (
         <div className={cx('wrapper')}>
             <div className={cx('company-cover', 'content-box')}>
                 <Image
                     className={cx('cover-wrapper')}
-                    src={company.coverImage}
-                    alt={company.name}
+                    src={company?.coverImage}
+                    alt={company?.name}
                     fallback={images.defaultCompanyCover}
                 />
-                <Image className={cx('company-logo')} src={company.logo} fallback={images.logoDefault} />
+                <Image className={cx('company-logo')} src={company?.logo} fallback={images.logoDefault} />
                 <div className={cx('comapny-overview')}>
                     <div className={cx('box-detail')}>
-                        <h2 className={cx('company-name')}>{company.name}</h2>
+                        <h2 className={cx('company-name')}>{company?.name}</h2>
                         <div className={cx('box-subdetail')}>
-                            {company.website && (
+                            {company?.website && (
                                 <span className={cx('subdetail-info')}>
                                     <FontAwesomeIcon icon={faGlobe} />
-                                    <Link to={company.website}>{company.website}</Link>
+                                    <Link to={company?.website}>{company?.website}</Link>
                                 </span>
                             )}
                             <span className={cx('subdetail-info')}>
                                 <FontAwesomeIcon icon={faBuilding} />
                                 <p>
                                     {convertScaleCategory(
-                                        company.scaleCategory?.minEmployee,
-                                        company.scaleCategory?.maxEmployee,
+                                        company?.scaleCategory?.minEmployee,
+                                        company?.scaleCategory?.maxEmployee,
                                     )}
                                 </p>
                             </span>
                             <span className={cx('subdetail-info')}>
                                 <FontAwesomeIcon icon={faUserGroup} />
-                                <p>{company.followers} người theo dõi</p>
+                                <p>{company?.followers} người theo dõi</p>
                             </span>
                         </div>
                     </div>
-                    <FollowButton companyId={company.id} />
+                    <FollowButton />
                 </div>
             </div>
             <div className={cx('content-container')}>
                 <div className={cx('content-left')}>
                     <div className={cx('section-introduce', 'content-box')}>
                         <div className={cx('content-box__title')}>Giới thiệu công ty</div>
-                        <HtmlRenderer className={cx('section-content')} content={company.description} />
+                        <HtmlRenderer className={cx('section-content')} content={company?.description} />
                     </div>
                     <div className={cx('content-box')}>
                         <div className={cx('content-box__title')}>Tuyển dụng</div>
@@ -90,7 +86,7 @@ function CompanyDetail() {
                                     <FontAwesomeIcon className={cx('caption-icon')} icon={faLocationDot} />
                                     <span>Địa chỉ công ty</span>
                                 </div>
-                                <span className={cx('contact-item__des')}>{company.address}</span>
+                                <span className={cx('contact-item__des')}>{company?.address}</span>
                             </div>
                         </div>
                     </div>

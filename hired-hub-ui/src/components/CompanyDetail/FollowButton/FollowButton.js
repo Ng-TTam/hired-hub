@@ -6,23 +6,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createSubscription, deleteSubscription, fetchSubscipptionStatus } from '../../../redux/subscriptionSlice';
 import Button from '../../Button';
 import styles from './FollowButton.module.scss';
+import { useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function FollowButton({ companyId, className }) {
+function FollowButton({ className }) {
+    const { id } = useParams();
     const dispatch = useDispatch();
     const { subscribed } = useSelector((state) => state.subscriptions);
     const isLogin = !!localStorage.getItem('token');
 
     useEffect(() => {
-        if (isLogin) dispatch(fetchSubscipptionStatus(companyId));
-    }, [dispatch, companyId, isLogin]);
+        if (isLogin) dispatch(fetchSubscipptionStatus(id));
+    }, [dispatch, id, isLogin]);
 
     const handleOnClick = () => {
         if (subscribed) {
-            dispatch(deleteSubscription(companyId));
+            dispatch(deleteSubscription(id));
         } else {
-            dispatch(createSubscription(companyId));
+            dispatch(createSubscription(id));
         }
     };
 

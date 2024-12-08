@@ -1,27 +1,33 @@
 import classNames from 'classnames/bind';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentPage } from '../../redux/filterSlice';
-import { fetchPostings } from '../../redux/postingSlice';
+import { updatePageable } from '../../redux/filterSlice';
+import { fetchPostings, fetchPostingsDefault } from '../../redux/postingSlice';
+import WebsiteFooter from '../Footer/Footer';
 import Pagination from '../Pagination';
 import PostingCard from '../PostingCard';
 import Filter from './Filter';
 import styles from './PostingFilter.module.scss';
-import WebsiteFooter from '../Footer/Footer';
 
 const cx = classNames.bind(styles);
 
 function PostingFilter() {
     const dispatch = useDispatch();
-    const { criteria, pagination } = useSelector((state) => state.filter);
+    const { criteria, pageable } = useSelector((state) => state.filter);
     const { postings, totalPages } = useSelector((state) => state.postings);
 
     useEffect(() => {
-        dispatch(fetchPostings({ criteria: criteria, pageable: { sort: 'createdAt,desc', ...pagination } }));
-    }, [dispatch, criteria, pagination]);
+        const hasValidKeys = () => {
+            return Object.entries(criteria).some(([key, value]) => value !== null && value !== undefined);
+        };
+
+        if (hasValidKeys())
+            dispatch(fetchPostings({ criteria: criteria, pageable: { sort: 'createdAt,desc', ...pageable } }));
+        else dispatch(fetchPostingsDefault({ page: pageable.page + 1, size: pageable.size }));
+    }, [pageable]);
 
     const handleOnPageChange = (page) => {
-        dispatch(setCurrentPage(page - 1));
+        dispatch(updatePageable({ page: page - 1 }));
     };
 
     return (
@@ -33,11 +39,7 @@ function PostingFilter() {
                         <PostingCard key={posting.id} posting={posting} />
                     ))}
                 </div>
-                <Pagination
-                    currentPage={pagination.page + 1}
-                    totalPages={totalPages}
-                    onPageChange={handleOnPageChange}
-                />
+                <Pagination currentPage={pageable.page + 1} totalPages={totalPages} onPageChange={handleOnPageChange} />
             </div>
             <WebsiteFooter />
         </>

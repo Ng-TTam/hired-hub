@@ -13,8 +13,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/posting")
 @RequiredArgsConstructor
@@ -37,10 +35,10 @@ public class PostingController {
     }
 
     @GetMapping("/all")
-    ApiResponse<PageResponse<PostingResponse>> getAllPosting(
+    ApiResponse<PageResponse<PostingDetailResponse>> getAllPosting(
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
-        return ApiResponse.<PageResponse<PostingResponse>>builder()
+        return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
                 .data(postingService.getAllPostings(page, size))
                 .build();
     }
