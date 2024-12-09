@@ -17,6 +17,16 @@ function NotificationItem({ notification, onClick }) {
             switch (notification.type) {
                 case 'FOLLOWED_COMPANY_NEW_POST':
                     return `/posting/${notification.referenceId}`;
+                case 'APPLICATION_STATUS_UPDATE':
+                    return `/posting/${notification.referenceId}`;
+                case 'APPLICATION_CV_UPDATE':
+                    return '/business/manage-candidate';
+                case 'NEW_CANDIDATE':
+                    return 'business/manage-candidate';
+                case 'FAVORITE_JOB_REMINDER':
+                    return `/posting/${notification.referenceId}`;
+                case 'POSTING_STATUS_CHANGE':
+                    return '/business/posting-job';
             }
         })();
         navigate(redirect);

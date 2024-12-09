@@ -8,6 +8,8 @@ import com.graduation.hiredhub.dto.response.AuthenticationResponse;
 import com.graduation.hiredhub.entity.Account;
 import com.graduation.hiredhub.entity.Employer;
 import com.graduation.hiredhub.entity.JobSeeker;
+import com.graduation.hiredhub.entity.Posting;
+import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
@@ -16,6 +18,7 @@ import com.graduation.hiredhub.mapper.UserMapper;
 import com.graduation.hiredhub.repository.AccountRepository;
 import com.graduation.hiredhub.repository.EmployerRepository;
 import com.graduation.hiredhub.repository.JobSeekerRepository;
+import com.graduation.hiredhub.repository.PostingRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -42,6 +46,7 @@ public class AccountService {
     OtpService otpService;
     AuthenticationService authenticationService;
     UserMapper userMapper;
+    PostingRepository postingRepository;
 
     private static final String SIGNUP_OTP = "SIGNUP"; //type of otp
     private static final String RESET_OTP = "RESET";
@@ -54,13 +59,6 @@ public class AccountService {
      * Account job_seeker is verified by OTP code sent by email
      *
      * @param userAccountCreationRequest contain user, account to create
-     * @return access token and refresh token
-     */
-    /**
-     * Sign up for job_seeker
-     * Create account, jobSeeker and send otp -> gen token
-     *
-     * @param userAccountCreationRequest
      * @return access token and refresh token
      */
     @Transactional
@@ -98,14 +96,6 @@ public class AccountService {
      * @param employerAccountCreationRequest contain user, companyName, position to create account
      * @return access token and refresh token
      */
-
-    /**
-     * Sign up for employer
-     * create account, employer and send otp -> gen token
-     *
-     * @param employerAccountCreationRequest
-     * @return access token and refresh token
-     */
     @Transactional
     public AuthenticationResponse employerSignUp(EmployerAccountCreationRequest employerAccountCreationRequest) {
         if (accountRepository.existsByEmail(employerAccountCreationRequest.getAccount().getEmail()))
@@ -138,11 +128,6 @@ public class AccountService {
      * Resend otp when otp expire, otp invalid
      * Can resend otp if created account
      */
-
-    /**
-     * Resend otp when otp expire, otp invalid
-     * Can resend otp if created account
-     */
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public void resendOtpSignUp() {
         otpService.send(SIGNUP_OTP, getAccountInContext().getEmail());
@@ -151,11 +136,6 @@ public class AccountService {
     /**
      * Send otp to reset password
      * @param authResetPassRequest account contain new pass
-     */
-    /**
-     * Send otp to reset password
-     *
-     * @param authResetPassRequest
      */
     public void otpResetPassword(AuthResetPassRequest authResetPassRequest) {
         var account = accountRepository.findByEmail(authResetPassRequest.getEmail())
@@ -257,12 +237,21 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public void updateStatus(AccountStatusRequest accountStatusRequest) {
-        accountRepository.findById(accountStatusRequest.getAccountId())
-                .map(existingAccount -> {
-                    existingAccount.setStatus(accountStatusRequest.getStatus());
-                    return existingAccount;
-                })
-                .map(accountRepository::save)
+        Account account = accountRepository.findById(accountStatusRequest.getAccountId())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXISTED));
+        account.setStatus(accountStatusRequest.getStatus());
+        accountRepository.save(account);
+
+        if (account.getStatus().equals(Status.DEACTIVATE) && account.getRole().equals(Role.EMPLOYER)) {
+            Employer employer = employerRepository.findByAccountId(account.getId())
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            List<Posting> postings = postingRepository.findByEmployerId(employer.getId());
+            postings.forEach(posting -> {
+                if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+                    posting.setStatus(PostingStatus.DEACTIVATE);
+                }
+            });
+            postingRepository.saveAll(postings);
+        }
     }
 }

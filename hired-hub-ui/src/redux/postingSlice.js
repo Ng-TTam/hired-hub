@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { notification } from 'antd';
 import axios from 'axios';
 import axiosPro, { baseURL } from '../config/axios';
-import { notification } from 'antd';
 
 const apiUrl = `${baseURL}posting`;
 
@@ -11,6 +11,20 @@ export const fetchPostings = createAsyncThunk(
         try {
             const response = await axios.get(apiUrl, {
                 params: { ...criteria, ...pageable },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data.data || error.message);
+        }
+    },
+);
+
+export const fetchPostingsDefault = createAsyncThunk(
+    'postings/fetchPostingsDefault',
+    async ({ page, size }, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${apiUrl}/all`, {
+                params: { page, size },
             });
             return response.data;
         } catch (error) {
@@ -75,9 +89,7 @@ export const createPosting = createAsyncThunk('postings/createPosting', async (p
     } catch (error) {
         notification.error({
             message: 'Thất bại',
-            description: `Cập nhật thất bại - ${
-                error.response.data.message || error.response.data || 'lỗi bất định'
-            }`,
+            description: `Cập nhật thất bại - ${error.response.data.message || error.response.data || 'lỗi bất định'}`,
         });
         return rejectWithValue(error.response?.data);
     }
@@ -94,9 +106,7 @@ export const updatePosting = createAsyncThunk('postings/updatePosting', async (p
     } catch (error) {
         notification.error({
             message: 'Thất bại',
-            description: `Cập nhật thất bại - ${
-                error.response.data.message || error.response.data || 'lỗi bất định'
-            }`,
+            description: `Cập nhật thất bại - ${error.response.data.message || error.response.data || 'lỗi bất định'}`,
         });
         return rejectWithValue(error.response?.data);
     }
@@ -186,6 +196,7 @@ const postingSlice = createSlice({
             .addCase(fetchPostings.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.postings = [];
             })
             .addCase(fetchPostings.fulfilled, (state, action) => {
                 state.loading = false;
@@ -270,6 +281,22 @@ const postingSlice = createSlice({
                 state.success = true;
             })
             .addCase(updateStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            .addCase(fetchPostingsDefault.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.postings = [];
+            })
+            .addCase(fetchPostingsDefault.fulfilled, (state, action) => {
+                state.loading = false;
+                state.postings = action.payload.data.data;
+                state.totalPages = action.payload.data.totalPages;
+                state.totalElements = action.payload.data.totalElements;
+            })
+            .addCase(fetchPostingsDefault.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

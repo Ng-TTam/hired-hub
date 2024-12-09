@@ -52,7 +52,7 @@ public enum ErrorCode {
     POSTING_NOT_PENDING("ERROR_POST_001","Post is not in PENDING status",HttpStatus.BAD_REQUEST),
     POSTING_NOT_SAVED("ERROR_POST_002","Post is not saved",HttpStatus.BAD_REQUEST),
     POSTING_PENDING("ERROR_POST_003","Post is in PENDING",HttpStatus.BAD_REQUEST),
-    EMPLOYER_PENDING("ERROR_USER_002","Employer is in PENDING",HttpStatus.BAD_REQUEST),
+    EMPLOYER_NOT_ACTIVATE("ERROR_USER_002","Employer is not ACTIVATE",HttpStatus.BAD_REQUEST),
     POSTING_EXPIRED("ERROR_POST_004", "Posting is expired",HttpStatus.BAD_REQUEST),
 
     USER_NOT_EXISTED("EXISTED_001", "User not existed", HttpStatus.NOT_FOUND),

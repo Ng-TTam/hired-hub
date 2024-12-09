@@ -28,12 +28,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -71,8 +73,8 @@ public class PostingService {
     @PreAuthorize("hasRole('EMPLOYER')")
     public PostingDetailResponse createPosting(PostingRequest postingRequest) {
         Employer employer = getEmployerByAccount();
-        if (employer.getAccount().getStatus() == Status.PENDING)
-            throw new AppException(ErrorCode.EMPLOYER_PENDING);
+        if (!employer.getAccount().getStatus().equals(Status.ACTIVATE))
+            throw new AppException(ErrorCode.EMPLOYER_NOT_ACTIVATE);
 
         Posting posting = postingMapper.toPosting(postingRequest);
         posting.setEmployer(employer);
@@ -174,15 +176,15 @@ public class PostingService {
     }
 
     @PreAuthorize("permitAll()")
-    public PageResponse<PostingResponse> getAllPostings(int page, int size) {
+    public PageResponse<PostingDetailResponse> getAllPostings(int page, int size) {
         String cacheKey = REDIS_POSTING_KEY + "_page_" + page + "_size_" + size;
-        PageResponse<PostingResponse> pageResponse;
+        PageResponse<PostingDetailResponse> pageResponse;
 
         // Check in cache
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
             try {
                 pageResponse = objectMapper.readValue(stringRedisTemplate.opsForValue().get(cacheKey),
-                        new TypeReference<PageResponse<PostingResponse>>() {
+                        new TypeReference<PageResponse<PostingDetailResponse>>() {
                         });
             } catch (Exception e) {
                 throw new AppException(ErrorCode.ERROR_PARSING_JSON);
@@ -196,13 +198,13 @@ public class PostingService {
             );
             Page<Posting> pageData = postingRepository.findByStatus(PostingStatus.ACTIVATE, pageable);
 
-            pageResponse = PageResponse.<PostingResponse>builder()
+            pageResponse = PageResponse.<PostingDetailResponse>builder()
                     .currentPage(page)
                     .pageSize(pageData.getSize())
                     .totalPages(pageData.getTotalPages())
                     .totalElements(pageData.getTotalElements())
                     .data(pageData.getContent().stream()
-                            .map(postingMapper::toPostingResponse)
+                            .map(postingMapper::toPostingDetailResponse)
                             .toList())
                     .build();
 
@@ -335,11 +337,49 @@ public class PostingService {
                 || posting.getStatus().equals(PostingStatus.PENDING))) {
             throw new AppException(ErrorCode.POSTING_PENDING);
         }
+
+        PostingStatus oldStatus = posting.getStatus();
+
         posting.setStatus(postingStatusRequest.getStatus());
+
+        //another way is set posting in cache if exist (complex)
+        String redisKeyPattern = REDIS_POSTING_KEY + "*";
+        Set<String> keysToDelete = stringRedisTemplate.keys(redisKeyPattern);
+        if (keysToDelete != null) {
+            stringRedisTemplate.delete(keysToDelete);
+        }
+
         postingRepository.save(posting);
 
-        if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
-            notificationService.onCompanyNewPost(posting);
+        if (oldStatus.equals(PostingStatus.PENDING)) {
+            if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+                notificationService.onCompanyNewPost(posting);
+            }
+            notificationService.onPostingStatusChange(posting, true);
         }
+    }
+
+    // Lên lịch chạy mỗi ngày lúc 12 giờ đêm
+    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = Long.MAX_VALUE)
+    public void scheduleChangeStatusPostingExpire() {
+        List<Posting> expiredPosts = postingRepository.findExpiredPosts();
+        expiredPosts.forEach(posting -> posting.setStatus(PostingStatus.DEACTIVATE));
+        postingRepository.saveAll(expiredPosts);
+
+        notificationService.onPostingExpired(expiredPosts);
+    }
+
+    // Gửi thông báo mỗi ngày lúc 12h
+    @Scheduled(cron = "0 0 12 * * ?")
+    public void notifyAboutExpiringPostings() {
+        List<Posting> expiringPostings = getExpiringPostingsWithinDays(2);
+        notificationService.onPostingExpiring(expiringPostings);
+    }
+
+    public List<Posting> getExpiringPostingsWithinDays(long days) {
+        Instant currentDate = Instant.now();
+        Instant futureDate = currentDate.plus(days, ChronoUnit.DAYS);
+        return postingRepository.findExpiringPostsWithinDays(currentDate, futureDate);
     }
 }
