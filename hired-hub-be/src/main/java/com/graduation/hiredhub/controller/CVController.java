@@ -38,7 +38,6 @@ public class CVController {
     ApiResponse<CVResponse> updateCV(
             @PathVariable String cvId,
             @RequestBody @Valid CVRequest cvRequest) {
-        
         CVResponse updatedCV = cvService.updateCV(cvId, cvRequest);
         
         return ApiResponse.<CVResponse>builder()

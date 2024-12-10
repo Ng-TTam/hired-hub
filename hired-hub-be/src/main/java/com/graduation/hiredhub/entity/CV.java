@@ -43,7 +43,6 @@ public class CV {
     @Lob
     String others;
 
-    @LastModifiedDate
     Instant updatedAt;
 
     @ManyToOne

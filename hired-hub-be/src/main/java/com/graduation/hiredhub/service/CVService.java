@@ -59,7 +59,9 @@ public class CVService {
         }
         cvMapper.updateCV(cv, cvRequest);
         cv.setJobSeeker(getJobSeekerByAccount());
-        cv.setUpdatedAt(Instant.now());
+        if (cv.getName() == cvRequest.getName()){
+            cv.setUpdatedAt(Instant.now());
+        }
         try {
             cVRepository.save(cv);
         } catch (Exception e) {

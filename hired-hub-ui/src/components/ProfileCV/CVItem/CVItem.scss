@@ -36,7 +36,7 @@
 }
 .confirm-dialog {
     position: fixed;
-    top: 50%;
+    top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
@@ -95,6 +95,14 @@
         color: #ffffff;
         background-color: #7e2e2e;
         border-color: #7e2e2e;
+    }
+}
+.edit-name-cv{
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    &:hover{
+        color: #28a745;
     }
 }
 

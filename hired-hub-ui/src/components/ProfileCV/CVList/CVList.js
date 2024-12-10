@@ -13,6 +13,10 @@ const CVList = () => {
         dispatch(fetchCVs());
     };
 
+    const handleChange = (cvId) => {
+        dispatch(fetchCVs());
+    }
+
     useEffect(() => {
         dispatch(fetchCVs());
     }, [dispatch]);
@@ -25,10 +29,10 @@ const CVList = () => {
             {cvList.length > 0 ? (
                 cvList.map(cv => (
                     <CVItem 
-                        key={cv.id}
-                        cvId={cv.id}
-                        titleBox={cv.description}
+                        key={cv?.id}
+                        cv={cv}
                         onDelete={handleDelete}
+                        onChange={handleChange}
                     />
                 ))
             ) : (
