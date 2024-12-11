@@ -22,17 +22,25 @@ public class CV {
     @Column(length = 40)
     String id;
 
+    @Column(length = 150, nullable = false)
+    String name;
+
+    @Lob
     String description;
 
+    @Lob
     @Column(nullable = false)
     String experience;
 
+    @Lob
     @Column(nullable = false)
     String education;
 
+    @Lob
     @Column(nullable = false)
     String skill;
 
+    @Lob
     String others;
 
     @LastModifiedDate
