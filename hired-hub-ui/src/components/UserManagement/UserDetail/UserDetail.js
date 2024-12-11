@@ -1,9 +1,9 @@
-import { faCheck, faLock, faTimes, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar, Button, Card, Descriptions, Modal, Tag } from 'antd';
+import { Avatar, Button, Card, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import images from '../../../assets/images';
 import { updateStatus } from '../../../redux/accountSlice';
 import { fetchUserById } from '../../../redux/userSlice';
@@ -59,6 +59,20 @@ const UserDetail = () => {
                 <Descriptions.Item label="Địa chỉ">{user?.address}</Descriptions.Item>
                 <Descriptions.Item label="Giới tính">{user?.gender}</Descriptions.Item>
                 <Descriptions.Item label="Role">{user?.account.role}</Descriptions.Item>
+
+                {user?.account?.role === 'EMPLOYER' && (
+                    <>
+                        <Descriptions.Item label="Công ty">
+                            <Space>
+                                <Link to={`/admin/dashboard/companies/${user?.company?.id}`}>{user?.company.name}</Link>
+                                <Tag color={user?.company?.isActive ? 'green' : 'orange'}>
+                                    {user?.company?.isActive ? 'ACTIVATE' : 'PENDING'}
+                                </Tag>
+                            </Space>
+                        </Descriptions.Item>
+                    </>
+                )}
+
                 <Descriptions.Item label="Trạng thái">
                     <Tag
                         color={
@@ -76,27 +90,36 @@ const UserDetail = () => {
                 <Descriptions.Item label="Cập nhật lần cuối">
                     {formatDateTime(user?.account.updatedAt)}
                 </Descriptions.Item>
-                {user?.account.status !== 'PENDING' && (
-                    <Descriptions.Item label="Tác vụ">
-                        {user?.account.status === 'ACTIVATE' ? (
-                            <Button
-                                danger
-                                icon={<FontAwesomeIcon icon={faLock} />}
-                                onClick={() => handleShowConfirm({ accountId: user.account.id, status: 'DEACTIVATE' })}
-                            >
-                                Khóa
-                            </Button>
-                        ) : (
+                <Descriptions.Item label="Tác vụ">
+                    {user?.account?.role === 'EMPLOYER' && user?.account?.status === 'PENDING' ? (
+                        <Tooltip title={!user?.company?.isActive ? 'Cần phê duyệt công ty trước' : ''} placement="top">
                             <Button
                                 type="primary"
-                                icon={<FontAwesomeIcon icon={faUnlock} />}
+                                icon={<FontAwesomeIcon icon={faCheck} />}
                                 onClick={() => handleShowConfirm({ accountId: user.account.id, status: 'ACTIVATE' })}
+                                disabled={!user?.company?.isActive}
                             >
-                                Mở khóa
+                                Phê duyệt
                             </Button>
-                        )}
-                    </Descriptions.Item>
-                )}
+                        </Tooltip>
+                    ) : user?.account.status === 'ACTIVATE' ? (
+                        <Button
+                            danger
+                            icon={<FontAwesomeIcon icon={faLock} />}
+                            onClick={() => handleShowConfirm({ accountId: user.account.id, status: 'DEACTIVATE' })}
+                        >
+                            Khóa
+                        </Button>
+                    ) : (
+                        <Button
+                            type="primary"
+                            icon={<FontAwesomeIcon icon={faUnlock} />}
+                            onClick={() => handleShowConfirm({ accountId: user.account.id, status: 'ACTIVATE' })}
+                        >
+                            Mở khóa
+                        </Button>
+                    )}
+                </Descriptions.Item>
             </Descriptions>
         </Card>
     );

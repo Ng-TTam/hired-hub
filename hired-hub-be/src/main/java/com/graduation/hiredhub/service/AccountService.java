@@ -5,10 +5,7 @@ import com.graduation.hiredhub.dto.request.AuthResetPassRequest;
 import com.graduation.hiredhub.dto.request.EmployerAccountCreationRequest;
 import com.graduation.hiredhub.dto.request.UserAccountCreationRequest;
 import com.graduation.hiredhub.dto.response.AuthenticationResponse;
-import com.graduation.hiredhub.entity.Account;
-import com.graduation.hiredhub.entity.Employer;
-import com.graduation.hiredhub.entity.JobSeeker;
-import com.graduation.hiredhub.entity.Posting;
+import com.graduation.hiredhub.entity.*;
 import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
@@ -32,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -135,6 +133,7 @@ public class AccountService {
 
     /**
      * Send otp to reset password
+     *
      * @param authResetPassRequest account contain new pass
      */
     public void otpResetPassword(AuthResetPassRequest authResetPassRequest) {
@@ -239,19 +238,29 @@ public class AccountService {
     public void updateStatus(AccountStatusRequest accountStatusRequest) {
         Account account = accountRepository.findById(accountStatusRequest.getAccountId())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_EXISTED));
-        account.setStatus(accountStatusRequest.getStatus());
-        accountRepository.save(account);
 
-        if (account.getStatus().equals(Status.DEACTIVATE) && account.getRole().equals(Role.EMPLOYER)) {
+        if (account.getRole().equals(Role.EMPLOYER)) {
             Employer employer = employerRepository.findByAccountId(account.getId())
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-            List<Posting> postings = postingRepository.findByEmployerId(employer.getId());
-            postings.forEach(posting -> {
-                if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
-                    posting.setStatus(PostingStatus.DEACTIVATE);
-                }
-            });
-            postingRepository.saveAll(postings);
+
+            Company company = Optional.ofNullable(employer.getCompany())
+                    .orElseThrow(() -> new AppException(ErrorCode.EMPLOYER_COMPANY_NOT_EXISTS));
+
+            if (Boolean.FALSE.equals(company.getIsActive()))
+                throw new AppException(ErrorCode.EMPLOYER_COMPANY_NOT_APPROVED);
+
+            if (accountStatusRequest.getStatus().equals(Status.DEACTIVATE)) {
+                List<Posting> postings = postingRepository.findByEmployerId(employer.getId());
+                postings.forEach(posting -> {
+                    if (posting.getStatus().equals(PostingStatus.ACTIVATE)) {
+                        posting.setStatus(PostingStatus.DEACTIVATE);
+                    }
+                });
+                postingRepository.saveAll(postings);
+            }
         }
+        
+        account.setStatus(accountStatusRequest.getStatus());
+        accountRepository.save(account);
     }
 }
