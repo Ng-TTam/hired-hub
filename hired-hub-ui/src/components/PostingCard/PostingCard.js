@@ -45,7 +45,14 @@ function PostingCard({ posting }) {
                     </Link>
                 </Tippy>
                 <div className={cx('job-description')}>
-                    <div className={cx('jd-item')}>{convertSalary(posting?.minimumSalary, posting?.maximumSalary)}</div>
+                    <Tippy
+                        content={convertSalary(posting?.minimumSalary, posting?.maximumSalary, posting?.currencyUnit)}
+                        placement="bottom"
+                    >
+                        <div className={cx('jd-item')}>
+                            {convertSalary(posting?.minimumSalary, posting?.maximumSalary, posting?.currencyUnit)}
+                        </div>
+                    </Tippy>
                     <Tippy content={convertWorkAddress(posting?.jobDescription?.workAddress)} placement="bottom">
                         <div className={cx('jd-item')}>
                             {convertWorkAddressSumary(posting?.jobDescription?.workAddress)}

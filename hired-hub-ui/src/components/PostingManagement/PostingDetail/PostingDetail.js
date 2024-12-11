@@ -24,7 +24,7 @@ import styles from './PostingDetail.module.scss';
 const cx = classNames.bind(styles);
 
 const PostingDetail = () => {
-    const role = localStorage.getItem("role");
+    const role = localStorage.getItem('role');
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -56,40 +56,45 @@ const PostingDetail = () => {
                 <Button icon={<FontAwesomeIcon icon={faChevronLeft} />} onClick={() => navigate(-1)}>
                     Trở lại
                 </Button>
-                {role ==='ADMIN' && (<div className={cx('left-actions')}>
-                    {posting?.status === 'PENDING' && (
-                        <>
+                {role === 'ADMIN' && (
+                    <div className={cx('left-actions')}>
+                        {posting?.status === 'PENDING' && (
+                            <>
+                                <Button
+                                    type="primary"
+                                    icon={<FontAwesomeIcon icon={faCheck} />}
+                                    onClick={() => handleShowConfirm('ACTIVATE')}
+                                >
+                                    Phê duyệt
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    danger
+                                    icon={<FontAwesomeIcon icon={faBan} />}
+                                    onClick={() => handleShowConfirm('REJECTED')}
+                                >
+                                    Từ chối
+                                </Button>
+                            </>
+                        )}
+                        {posting?.status === 'ACTIVATE' && (
                             <Button
-                                type="primary"
-                                icon={<FontAwesomeIcon icon={faCheck} />}
+                                icon={<FontAwesomeIcon icon={faEyeSlash} />}
+                                onClick={() => handleShowConfirm('DEACTIVATE')}
+                            >
+                                Ẩn bài viết
+                            </Button>
+                        )}
+                        {posting?.status === 'DEACTIVATE' && (
+                            <Button
+                                icon={<FontAwesomeIcon icon={faEye} />}
                                 onClick={() => handleShowConfirm('ACTIVATE')}
                             >
-                                Phê duyệt
+                                Hiện bài viết
                             </Button>
-                            <Button
-                                type="primary"
-                                danger
-                                icon={<FontAwesomeIcon icon={faBan} />}
-                                onClick={() => handleShowConfirm('REJECTED')}
-                            >
-                                Từ chối
-                            </Button>
-                        </>
-                    )}
-                    {posting?.status === 'ACTIVATE' && (
-                        <Button
-                            icon={<FontAwesomeIcon icon={faEyeSlash} />}
-                            onClick={() => handleShowConfirm('DEACTIVATE')}
-                        >
-                            Ẩn bài viết
-                        </Button>
-                    )}
-                    {posting?.status === 'DEACTIVATE' && (
-                        <Button icon={<FontAwesomeIcon icon={faEye} />} onClick={() => handleShowConfirm('ACTIVATE')}>
-                            Hiện bài viết
-                        </Button>
-                    )}
-                </div>)}
+                        )}
+                    </div>
+                )}
             </div>
             <div className={cx('content')}>
                 <div className={cx('box-title', 'box')}>
@@ -109,7 +114,9 @@ const PostingDetail = () => {
                         </div>
                         <div className={cx('subdetail-item')}>
                             <FontAwesomeIcon className={cx('subdetail-item__icon')} icon={faDollarSign} />
-                            <span>{convertSalary(posting?.minimumSalary, posting?.maximumSalary)}</span>
+                            <span>
+                                {convertSalary(posting?.minimumSalary, posting?.maximumSalary, posting?.currencyUnit)}
+                            </span>
                         </div>
                         <div className={cx('subdetail-item')}>
                             <FontAwesomeIcon className={cx('subdetail-item__icon')} icon={faClock} />

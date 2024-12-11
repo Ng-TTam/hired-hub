@@ -29,7 +29,7 @@ function SingleCard({ posting, className }) {
                     <h2 className={cx('title')}>{posting.title}</h2>
                     <span className={cx('box-salary')}>
                         <FontAwesomeIcon icon={faCircleDollarToSlot} />
-                        {convertSalary(posting.minimumSalary, posting.maximumSalary)}
+                        {convertSalary(posting.minimumSalary, posting.maximumSalary, posting.currencyUnit)}
                     </span>
                 </div>
                 <Link id="company-link" className={cx('company-name')} to={`/company/${posting.company.id}`}>

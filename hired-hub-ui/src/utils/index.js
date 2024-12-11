@@ -1,17 +1,39 @@
 import { format, parseISO } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
-export const convertSalary = (minSalary, maxSalary) => {
-    if (minSalary == null && maxSalary == null) {
+export const convertSalary = (minSalary, maxSalary, currencyUnit = 'VND') => {
+    const unitLabels = {
+        VND: ['đồng', 'nghìn', 'triệu', 'tỉ'],
+        USD: ['USD', 'nghìn USD', 'triệu USD', 'tỉ USD'],
+    };
+
+    const labels = unitLabels[currencyUnit.toUpperCase()] || ['đơn vị không xác định'];
+
+    const getReadableValue = (value) => {
+        if (value === null || value === undefined) return null;
+
+        let level = 0;
+        while (value >= 1000 && level < labels.length - 1) {
+            value /= 1000;
+            level++;
+        }
+
+        return `${value.toFixed(2).replace(/\.00$/, '')} ${labels[level]}`;
+    };
+
+    const min = getReadableValue(minSalary);
+    const max = getReadableValue(maxSalary);
+
+    if (!min && !max) {
         return 'Thỏa thuận';
     }
-    if (minSalary != null && maxSalary != null) {
-        return `${minSalary / 1_000_000} - ${maxSalary / 1_000_000} triệu`;
+    if (min && max) {
+        return `${min} - ${max}`;
     }
-    if (minSalary != null) {
-        return `Trên ${minSalary / 1_000_000} triệu`;
+    if (min) {
+        return `Trên ${min}`;
     }
-    return `Tới ${maxSalary / 1_000_000} triệu`;
+    return `Tới ${max}`;
 };
 
 export const convertWorkAddressSumary = (workAddresses) => {
