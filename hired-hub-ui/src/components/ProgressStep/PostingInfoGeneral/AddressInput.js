@@ -1,11 +1,13 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Input, Select } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 const AddressInput = ({ address = {}, provinces = [], onChange, onRemove }) => {
     const [districts, setDistricts] = useState([]);
-    
+    const [currentLocation, setCurrentLocation] = useState(address.location || '');
+    const debounceTimeout = useRef(null);
+
     useEffect(() => {
         const province = provinces.find((item) => item.id === address.province?.id);
         if (province) {
@@ -38,10 +40,18 @@ const AddressInput = ({ address = {}, provinces = [], onChange, onRemove }) => {
 
     const handleLocationChange = (e) => {
         const newLocation = e.target.value;
-        onChange({
-            ...address,
-            location: newLocation || '',
-        });
+        setCurrentLocation(newLocation);
+
+        if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current);
+        }
+
+        debounceTimeout.current = setTimeout(() => {
+            onChange({
+                ...address,
+                location: newLocation.trim(),
+            });
+        }, 2000);
     };
 
     return (
@@ -67,7 +77,7 @@ const AddressInput = ({ address = {}, provinces = [], onChange, onRemove }) => {
                 allowClear
             />
             <Input
-                value={address.location || ''}
+                value={currentLocation}
                 placeholder="Địa chỉ cụ thể"
                 onChange={handleLocationChange}
                 allowClear

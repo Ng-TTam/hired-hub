@@ -4,6 +4,7 @@ import com.graduation.hiredhub.entity.Posting;
 import com.graduation.hiredhub.entity.enumeration.PostingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,8 @@ public interface PostingRepository extends JpaRepository<Posting, String>, JpaSp
                                            @Param("futureDate") Instant futureDate);
 
     Page<Posting> findByStatus(PostingStatus status, Pageable pageable);
+
+    List<Posting> findByStatus(PostingStatus status, Sort sort);
 
     List<Posting> findByEmployerId(String employerId);
 }

@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduation.hiredhub.dto.request.*;
@@ -52,11 +53,14 @@ public class PostingService {
     JobDescriptionRepository jobDescriptionRepository;
     AccountRepository accountRepository;
     PostingMapper postingMapper;
+    UserRepository userRepository;
     JobDescriptionMapper jobDescriptionMapper;
     WorkAddressMapper workAddressMapper;
-    ObjectMapper objectMapper;
     AccountService accountService;
     NotificationService notificationService;
+    RecommendationService recommendationService;
+
+    ObjectMapper objectMapper;
 
     StringRedisTemplate stringRedisTemplate;
 
@@ -180,7 +184,7 @@ public class PostingService {
         String cacheKey = REDIS_POSTING_KEY + "_page_" + page + "_size_" + size;
         PageResponse<PostingDetailResponse> pageResponse;
 
-        // Check in cache
+//         Check in cache
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
             try {
                 pageResponse = objectMapper.readValue(stringRedisTemplate.opsForValue().get(cacheKey),
@@ -281,13 +285,6 @@ public class PostingService {
 
     @PreAuthorize("hasRole('EMPLOYER')")
     public PageResponse<PostingResponse> employerFilter(EmployerPostingFilterCriteria criteria, Pageable pageable) {
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                Sort.by(
-                        Sort.Order.desc("createdAt"),
-                        Sort.Order.asc("title"),
-                        Sort.Order.asc("expiredAt")
-                )
-        );
         Specification<Posting> spec = Specification.where(null);
         if (criteria.getSearchValue() != null) {
             spec = spec.and(PostingSpecifications.withSearchText(criteria.getSearchValue()));
@@ -296,7 +293,7 @@ public class PostingService {
             spec = spec.and(PostingSpecifications.hasStatus(criteria.getStatus()));
         }
         spec = spec.and(PostingSpecifications.hasEmployer(getEmployerByAccount()));
-        Page<PostingResponse> page = postingRepository.findAll(spec, sortedPageable)
+        Page<PostingResponse> page = postingRepository.findAll(spec, pageable)
                 .map(postingMapper::toPostingResponse);
         return PageUtils.toPageResponse(page);
     }
@@ -381,5 +378,21 @@ public class PostingService {
         Instant currentDate = Instant.now();
         Instant futureDate = currentDate.plus(days, ChronoUnit.DAYS);
         return postingRepository.findExpiringPostsWithinDays(currentDate, futureDate);
+    }
+
+    public PageResponse<PostingDetailResponse> recommend(int page, int size) throws JsonProcessingException {
+        var context = SecurityContextHolder.getContext();
+        var accountId = context.getAuthentication().getName();
+
+        User user = userRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        List<Posting> postings = postingRepository.findByStatus(PostingStatus.ACTIVATE,
+                Sort.by(
+                        Sort.Order.desc("createdAt"),
+                        Sort.Order.asc("title"),
+                        Sort.Order.asc("expiredAt")
+                ));
+        return recommendationService.recommendPosts(user, postings, page, size);
     }
 }

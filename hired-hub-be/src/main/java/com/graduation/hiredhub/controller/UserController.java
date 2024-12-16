@@ -8,12 +8,15 @@ import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.UserResponse;
 import com.graduation.hiredhub.service.ApplicationService;
+import com.graduation.hiredhub.service.UserPreferenceService;
 import com.graduation.hiredhub.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.List;
 public class UserController {
     UserService userService;
     ApplicationService applicationService;
+    UserPreferenceService userPreferenceService;
 
     @PostMapping("/update-profile")
     ApiResponse<UserResponse> updateProfile(@ModelAttribute @Valid UserRequest userRequest) {
@@ -84,5 +88,21 @@ public class UserController {
         return ApiResponse.<PageResponse<UserResponse>>builder()
                 .data(userService.filter(criteria, pageable))
                 .build();
+    }
+
+    @PostMapping("/{userId}/action")
+    public ResponseEntity<?> logUserAction(
+            @PathVariable String userId,
+            @RequestParam String job,
+            @RequestParam String position,
+            @RequestParam String companyId,
+            @RequestParam String action) {
+
+        try {
+            userPreferenceService.updatePreferences(userId, job, position, companyId, action);
+            return ResponseEntity.ok("User preferences updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating preferences: " + e.getMessage());
+        }
     }
 }

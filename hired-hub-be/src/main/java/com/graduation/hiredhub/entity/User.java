@@ -52,4 +52,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Notification> notifications;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "json")
+    private String preferences;
 }

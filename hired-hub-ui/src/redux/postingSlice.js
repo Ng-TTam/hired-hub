@@ -253,7 +253,7 @@ const postingSlice = createSlice({
             })
             .addCase(fetchEmployerFilterPostings.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message;
+                state.error = action.payload;
             })
             //admin filter
             .addCase(fetchAdminPostings.pending, (state) => {
