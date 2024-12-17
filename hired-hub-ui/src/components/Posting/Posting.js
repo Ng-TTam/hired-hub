@@ -196,7 +196,7 @@ function Posting({ className }) {
                         <ContentIcon
                             icon={<FontAwesomeIcon icon={faCommentsDollar} />}
                             title="Mức lương"
-                            content={convertSalary(posting.minimumSalary, posting.maximumSalary)}
+                            content={convertSalary(posting.minimumSalary, posting.maximumSalary, posting.currencyUnit)}
                         />
                         <ContentIcon
                             icon={<FontAwesomeIcon icon={faLocationDot} />}
