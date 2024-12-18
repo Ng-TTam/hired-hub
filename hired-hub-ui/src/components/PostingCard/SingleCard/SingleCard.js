@@ -8,6 +8,7 @@ import images from '../../../assets/images';
 import { convertSalary, convertWorkAddressSumary, getRemainingTime } from '../../../utils';
 import Image from '../../Image';
 import styles from './SingleCard.module.scss';
+import { Tooltip } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -26,7 +27,9 @@ function SingleCard({ posting, className }) {
             <Image className={cx('company-logo')} src={posting.company.logo} alt="" fallback={images.logoDefault} />
             <div className={cx('card-info')}>
                 <div className={cx('section-title')}>
-                    <h2 className={cx('title')}>{posting.title}</h2>
+                    <Tooltip title={posting.title}>
+                        <div className={cx('title')}>{posting.title}</div>
+                    </Tooltip>
                     <span className={cx('box-salary')}>
                         <FontAwesomeIcon icon={faCircleDollarToSlot} />
                         {convertSalary(posting.minimumSalary, posting.maximumSalary, posting.currencyUnit)}
@@ -37,12 +40,14 @@ function SingleCard({ posting, className }) {
                 </Link>
                 <div className={cx('section-info')}>
                     <div className={cx('label-content')}>
-                        <span className={cx('label-section')}>
-                            {convertWorkAddressSumary(posting.jobDescription.workAddress)}
-                        </span>
-                        <span className={cx('label-section')}>
+                        <Tooltip title={convertWorkAddressSumary(posting.jobDescription.workAddress)}>
+                            <div className={cx('label-section')}>
+                                {convertWorkAddressSumary(posting.jobDescription.workAddress)}
+                            </div>
+                        </Tooltip>
+                        <div className={cx('label-section')}>
                             {getRemainingTime(posting.expiredAt).message} để ứng tuyển
-                        </span>
+                        </div>
                     </div>
                     <div className={cx('actions')}>
                         <button className={cx('btn-apply')}>Ứng tuyển</button>
