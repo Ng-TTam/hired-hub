@@ -18,7 +18,9 @@
     border-radius: 4px;
 }
 
-.company-name__sectioin {
+.company-name__section {
+    flex: 1;
+
     h2 {
         margin: 0;
         font-size: 18px;
@@ -30,4 +32,10 @@
         color: #666;
         font-size: 14px;
     }
+}
+
+.name__section {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
 }
