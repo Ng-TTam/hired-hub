@@ -18,7 +18,10 @@ function Postings({ status }) {
     const navigate = useNavigate();
     const { postings, totalPages, loading, success } = useSelector((state) => state.postings);
 
-    const [criteria, setCriteria] = useState({ status: status?.toUpperCase() || null });
+    const [criteria, setCriteria] = useState({
+        status: status?.toUpperCase() || null,
+        isPending: status?.toUpperCase() === 'PENDING',
+    });
     const [pageable, setPageable] = useState({ page: 0, size: 10, sort: 'createdAt,desc' });
 
     useEffect(() => {

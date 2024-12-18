@@ -14,4 +14,5 @@ public class AdminPostingFilterCriteria {
     Integer provinceId;
     Integer jobCategoryId;
     PostingStatus status;
+    Boolean isPending;
 }

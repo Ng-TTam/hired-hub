@@ -61,16 +61,18 @@ const UserDetail = () => {
                 <Descriptions.Item label="Role">{user?.account.role}</Descriptions.Item>
 
                 {user?.account?.role === 'EMPLOYER' && (
-                    <>
-                        <Descriptions.Item label="Công ty">
+                    <Descriptions.Item label="Công ty">
+                        {user?.company ? (
                             <Space>
                                 <Link to={`/admin/dashboard/companies/${user?.company?.id}`}>{user?.company.name}</Link>
                                 <Tag color={user?.company?.isActive ? 'green' : 'orange'}>
                                     {user?.company?.isActive ? 'ACTIVATE' : 'PENDING'}
                                 </Tag>
                             </Space>
-                        </Descriptions.Item>
-                    </>
+                        ) : (
+                            <Tag color="red">Chưa cập nhật</Tag>
+                        )}
+                    </Descriptions.Item>
                 )}
 
                 <Descriptions.Item label="Trạng thái">

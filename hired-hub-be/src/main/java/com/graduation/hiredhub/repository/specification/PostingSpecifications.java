@@ -4,7 +4,6 @@ import com.graduation.hiredhub.entity.*;
 import com.graduation.hiredhub.entity.enumeration.ExperienceRequire;
 import com.graduation.hiredhub.entity.enumeration.JobType;
 import com.graduation.hiredhub.entity.enumeration.PostingStatus;
-import com.graduation.hiredhub.entity.enumeration.Status;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
@@ -201,6 +200,11 @@ public class PostingSpecifications {
     public static Specification<Posting> hasEmployer(Employer employer) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("employer"), employer);
+    }
+
+    public static Specification<Posting> isNotPending() {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.notEqual(root.get("status"), PostingStatus.PENDING);
     }
 
     private PostingSpecifications() {

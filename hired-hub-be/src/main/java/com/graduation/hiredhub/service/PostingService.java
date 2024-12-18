@@ -315,6 +315,8 @@ public class PostingService {
         }
         if (criteria.getStatus() != null) {
             spec = spec.and(PostingSpecifications.hasStatus(criteria.getStatus()));
+        } else if (Boolean.FALSE.equals(criteria.getIsPending())) {
+            spec = spec.and(PostingSpecifications.isNotPending());
         }
 
         Page<PostingDetailResponse> page = postingRepository.findAll(spec, pageable)
