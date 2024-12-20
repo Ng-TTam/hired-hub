@@ -26,7 +26,7 @@ public class Posting {
     @Column(length = 40)
     String id;
 
-    @Column(length = 100, nullable = false)
+    @Column(nullable = false)
     String title;
 
     @Column(nullable = false)

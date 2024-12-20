@@ -18,7 +18,6 @@ public class WorkAddress {
     @Column(length = 40)
     String id;
 
-    @Column(length = 50)
     String location;
 
     @ManyToOne

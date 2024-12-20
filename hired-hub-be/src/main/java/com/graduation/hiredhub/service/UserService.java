@@ -55,7 +55,7 @@ public class UserService {
     @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
     public UserResponse updateUserProfile(UserRequest userRequest) {
         User user = getUserInContext();
-        if (user.getAccount().getStatus() == Status.PENDING)
+        if (user.getAccount().getStatus() == Status.DEACTIVATE)
             throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFY);
 
         userMapper.updateUser(user, userRequest);
