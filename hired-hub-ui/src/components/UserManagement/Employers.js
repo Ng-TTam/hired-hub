@@ -1,9 +1,10 @@
-import { faBan, faCheck, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Modal, Space, Table, Tag } from 'antd';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { updateStatus } from '../../redux/accountSlice';
 import { fetchAllUsers } from '../../redux/userSlice';
 import { formatDateTime } from '../../utils';
@@ -33,10 +34,7 @@ const Emloyers = ({ status }) => {
     const handleShowConfirm = ({ accountId, status }) => {
         Modal.confirm({
             title: 'Bạn có chắc chắn?',
-            content:
-                status === 'DEACTIVATE'
-                    ? 'Hành động này sẽ khiến người dùng không thể tiếp tục truy cập vào tài khoản của mình. Bạn có muốn tiếp tục không?'
-                    : 'Bạn có chắc chắn muốn cập nhật không?',
+            content: 'Bạn có chắc chắn muốn cập nhật không?',
             okText: 'Đồng ý',
             cancelText: 'Hủy',
             onOk() {
@@ -55,6 +53,9 @@ const Emloyers = ({ status }) => {
             title: 'Email',
             dataIndex: ['account', 'email'],
             key: 'email',
+            render: (text, record) => (
+                <Link to={`/admin/dashboard/employers/${record.id}`}>{record?.account?.email}</Link>
+            ),
         },
         {
             title: 'Số điện thoại',
@@ -112,27 +113,9 @@ const Emloyers = ({ status }) => {
                                 Mở khóa
                             </Button>
                         ) : (
-                            <>
-                                <Button
-                                    type="primary"
-                                    icon={<FontAwesomeIcon icon={faCheck} />}
-                                    onClick={() =>
-                                        handleShowConfirm({ accountId: record.account.id, status: 'ACTIVATE' })
-                                    }
-                                >
-                                    Phê duyệt
-                                </Button>
-                                <Button
-                                    type="primary"
-                                    danger
-                                    icon={<FontAwesomeIcon icon={faBan} />}
-                                    onClick={() =>
-                                        handleShowConfirm({ accountId: record.account.id, status: 'DEACTIVATE' })
-                                    }
-                                >
-                                    Từ chối
-                                </Button>
-                            </>
+                            <Button icon={<FontAwesomeIcon icon={faEye} />}>
+                                <Link to={`/admin/dashboard/employers/${record.id}`}>Xem chi tiết</Link>
+                            </Button>
                         )}
                     </Space>
                 );

@@ -130,7 +130,7 @@ const EmployerRegister = () => {
             position: 'HR',
         };
         console.log('Form Data:', formData);
-        // dispatch(registerEmployer(formData));
+        dispatch(registerEmployer(formData));
     };
 
     useEffect(() => {

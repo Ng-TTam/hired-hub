@@ -11,6 +11,7 @@ import org.mapstruct.MappingTarget;
 public interface ApplicationMapper {
     ApplicationDTO toApplicationDTO(Application application);
 
+    @Mapping(source = "cv.name", target = "cv.name")
     @Mapping(source = "cv", target = "cv")
     @Mapping(source = "posting", target = "posting")
     @Mapping(source = "posting.employer.company", target = "posting.company")

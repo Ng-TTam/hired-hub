@@ -27,7 +27,7 @@ public class Company {
     @Column(length = 70, nullable = false)
     String name;
 
-    @Column(name = "tax_code", length = 20, nullable = false)
+    @Column(name = "tax_code", length = 20, nullable = false, unique = true)
     String taxCode;
 
     Instant establishYear;
@@ -37,12 +37,12 @@ public class Company {
     @Column(length = 150, nullable = false)
     String address;
 
-    @Column(length = 50, nullable = false)
+    @Column(nullable = false)
     String website;
 
     String coverImage;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     String description;
 
     @CreatedDate

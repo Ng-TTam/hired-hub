@@ -12,7 +12,7 @@ import { faCommentsDollar } from '@fortawesome/free-solid-svg-icons/faCommentsDo
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons/faLocationDot';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -49,6 +49,18 @@ function Posting({ className }) {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     var selectApplication = queryParams.get('selectApplication') === 'true';
+    const containerRef = useRef(null);
+
+    const handleClickOutside = (event) => {
+        if (containerRef.current && !containerRef.current.contains(event.target)) {
+            setShowCreateApplication(false);
+            setShowApplication(false);
+            setIsModalOpen(false);
+            dispatch(fetchPosting(id));
+            dispatch(fetchApplicationInPosting(id));
+            dispatch(savePostingStatus(id));
+        }
+    };
 
     useEffect(() => {
         dispatch(fetchPosting(id));
@@ -58,6 +70,15 @@ function Posting({ className }) {
             dispatch(resetApplication());
         };
     }, [dispatch, id]);
+
+    useEffect(() => {
+        if(isModalOpen){
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }
+    }, [isModalOpen]);
 
     const handleSearchByTag = (criteria) => {
         dispatch(setCriteria(criteria));
@@ -175,7 +196,7 @@ function Posting({ className }) {
                         <ContentIcon
                             icon={<FontAwesomeIcon icon={faCommentsDollar} />}
                             title="Mức lương"
-                            content={convertSalary(posting.minimumSalary, posting.maximumSalary)}
+                            content={convertSalary(posting.minimumSalary, posting.maximumSalary, posting.currencyUnit)}
                         />
                         <ContentIcon
                             icon={<FontAwesomeIcon icon={faLocationDot} />}
@@ -308,15 +329,16 @@ function Posting({ className }) {
                     </div>
                 </div>
             </div>
-
+            <div ref={containerRef}>
             {showApplication && <GetApplication postingSelect={posting} onApplicationAgain={handApplicationAgain} />}
             {showCreateApplication && (
-                <CreateApplication
+                <CreateApplication ref={containerRef}
                     postingSelect={posting}
                     applicationId={application ? application.id : null}
                     onApplication={handleApplication}
                 />
             )}
+            </div>
         </div>
     );
 }

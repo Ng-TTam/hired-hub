@@ -25,25 +25,21 @@ public class CV {
     @Column(length = 150, nullable = false)
     String name;
 
-    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     String description;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     String experience;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     String education;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     String skill;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     String others;
 
-    @LastModifiedDate
     Instant updatedAt;
 
     @ManyToOne

@@ -49,7 +49,7 @@ const PostingsApplicationItem = ({application}) =>{
                 </div>
                 <div className="pai-time-save">
                     <div>CV ứng tuyển: </div>
-                    <div className="pai-cv-des"><HtmlRenderer content={application.cv.description}/></div>
+                    <div className="pai-cv-des"><HtmlRenderer content={application.cv?.name || "None name CV"}/></div>
                 </div>
                 <div className="pai-infor">
                     <div className="pai-infor-time">

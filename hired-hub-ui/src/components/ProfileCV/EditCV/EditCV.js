@@ -75,6 +75,7 @@ const EditCV = () => {
             return;
         }
         const updatedCV = {
+            name: cv?.name,
             description: description,
             education: education,
             experience: experience,

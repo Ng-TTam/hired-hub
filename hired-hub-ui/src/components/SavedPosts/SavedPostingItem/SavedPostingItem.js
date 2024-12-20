@@ -1,13 +1,14 @@
-import React from 'react';
-import './SavedPostingItem.scss';
-import images from '../../../assets/images';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { unsavePosting } from '../../../redux/savedPostingSlice';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import images from '../../../assets/images';
+import { unsavePosting } from '../../../redux/savedPostingSlice';
+import { convertSalary } from '../../../utils';
+import './SavedPostingItem.scss';
 
 const SavedPostingItem = ({ savedPosting }) => {
     const dispatch = useDispatch();
@@ -42,7 +43,11 @@ const SavedPostingItem = ({ savedPosting }) => {
                         {savedPosting?.posting.title || 'Title'}
                     </div>
                     <div className="sp-money">
-                        {`${savedPosting.posting.minimumSalary} - ${savedPosting.posting.maximumSalary} ${savedPosting.posting.currencyUnit}`}
+                        {convertSalary(
+                            savedPosting?.posting?.minimumSalary,
+                            savedPosting?.posting?.maximumSalary,
+                            savedPosting?.posting?.currencyUnit,
+                        )}
                     </div>
                 </div>
                 <div className="sp-comany-name" onClick={handCompany}>

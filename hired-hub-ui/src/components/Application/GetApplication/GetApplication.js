@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFeatherPointed } from '@fortawesome/free-solid-svg-icons/faFeatherPointed';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
 import HtmlRenderer from '../../HtmlRenderer';
+import { Modal } from 'antd';
 
 const GetApplication = ({postingSelect, onApplicationAgain}) => {
     const dispatch = useDispatch();
@@ -26,8 +27,17 @@ const GetApplication = ({postingSelect, onApplicationAgain}) => {
     }; 
 
     const handleClickAppliAgain = () => {
-        const reload = true;
-        onApplicationAgain(reload);
+        Modal.confirm({
+            title: 'Bạn có chắc chắn!',
+            content: 'Bạn có chắc chắn muốn ứng tuyển lại không? Dữ liệu về lần ứng tuyển trước sẽ bị xóa!',
+            okText: 'Đồng ý',
+            cancelText: 'Hủy',
+            onOk() {
+                const reload = true;
+                onApplicationAgain(reload);
+            },
+        });
+        
     };
 
     return (
@@ -51,7 +61,7 @@ const GetApplication = ({postingSelect, onApplicationAgain}) => {
                         <div className="box-info-1">
                             <h4 className="description-cv-1">
                                 <NavLink to={`../../job-seeker/cv-review/${application?.cv?.id}`} className="select-cv">
-                                    <HtmlRenderer content={application?.cv?.description}/>
+                                    {application?.cv?.name}
                                 </NavLink>
                             </h4>
                         </div>
@@ -120,29 +130,13 @@ const GetApplication = ({postingSelect, onApplicationAgain}) => {
                 </button>
                 <button
                     onClick={() => {
-                        setShowConfirmDialog(true);
+                        handleClickAppliAgain();
                     }}
                     className="del-button"
                 >
                     Ứng Tuyển Lại
                 </button>
             </div>
-            {showConfirmDialog && (
-                <div className="confirm-dialog">
-                    <p>Bạn có chắc chắn muốn ứng tuyển lại không?</p>
-                    <button onClick={handleClickAppliAgain} className="del-button">
-                        Xác Nhận
-                    </button>
-                    <button
-                        onClick={() => {
-                            setShowConfirmDialog(false);
-                        }}
-                        className="cancel-button"
-                    >
-                        Hủy
-                    </button>
-                </div>
-            )}
         </div>
     );
 };

@@ -17,17 +17,19 @@ function AdminLayout() {
             <Sidebar />
             <div className={cx('content')}>
                 <Routes>
-                    <Route path="/postings/pending" key={'pending-posts'} element={<Postings status={'PENDING'} />} />
-                    <Route path="/postings" key={'posts'} element={<Postings />} />
+                    <Route path="/postings/pending" element={<Postings key={'pending-posts'} status={'PENDING'} />} />
+                    <Route path="/postings" element={<Postings key={'posts'} />} />
                     <Route path="/postings/:id" element={<PostingDetail />} />
 
                     <Route path="/users" element={<Users />} />
+                    <Route path="/users/:id" element={<UserDetail />} />
+
                     <Route
                         path="/employers/pending"
                         element={<Employers key={'pending-employers'} status={'PENDING'} />}
                     />
                     <Route path="/employers" key={'employers'} element={<Employers />} />
-                    <Route path="/users/:id" element={<UserDetail />} />
+                    <Route path="/employers/:id" element={<UserDetail />} />
 
                     <Route path="/companies/pending" element={<CompanyManagement key={'pending'} />} />
                     <Route path="/companies" element={<CompanyManagement key={'all'} isActive />} />

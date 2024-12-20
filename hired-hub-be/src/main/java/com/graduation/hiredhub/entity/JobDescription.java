@@ -19,13 +19,13 @@ public class JobDescription {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     String description;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     String requirement;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")    
     String benefit;
 
     @OneToMany(mappedBy = "jobDescription")

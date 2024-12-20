@@ -252,7 +252,7 @@ const ManageCandidate = () => {
                                     </td>
                                     <td style={{ verticalAlign: 'middle' }}>
                                         <div className="cv-description" onClick={() => handCV(application)}>
-                                            <HtmlRenderer content={application?.cv?.description || 'CV Description'}/>
+                                            <HtmlRenderer content={application?.cv?.name || 'CV Name'}/>
                                         </div>
                                         <div className="cv-update-time">
                                             Cập nhật:{' '}

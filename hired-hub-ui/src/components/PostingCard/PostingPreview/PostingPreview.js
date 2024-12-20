@@ -29,7 +29,7 @@ function PostingPreview({ posting }) {
                     <h3 className={cx('title')}>{posting?.title}</h3>
                     <a className={cx('company-name')}>{posting?.company?.name}</a>
                     <span className={cx('header-content__salary')}>
-                        {convertSalary(posting?.minimumSalary, posting?.maximumSalary)}
+                        {convertSalary(posting?.minimumSalary, posting?.maximumSalary, posting?.currencyUnit)}
                     </span>
                 </div>
             </div>

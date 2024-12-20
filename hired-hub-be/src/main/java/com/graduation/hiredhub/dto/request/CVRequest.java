@@ -16,6 +16,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CVRequest {
+    @NotBlank(message = "BLANK NAME")
+    String name;
 
     @NotBlank(message = "BLANK DESCRIPTION")
     String description;

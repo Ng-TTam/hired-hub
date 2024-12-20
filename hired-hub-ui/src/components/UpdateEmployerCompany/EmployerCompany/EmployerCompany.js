@@ -1,4 +1,4 @@
-import { Col, Divider, Row, Typography } from 'antd';
+import { Col, Divider, Row, Tag, Typography } from 'antd';
 import classNames from 'classnames/bind';
 import images from '../../../assets/images';
 import Image from '../../Image';
@@ -18,8 +18,13 @@ function EmployerCompany({ company, className }) {
                     alt={company?.name}
                     fallback={images.logoDefault}
                 />
-                <div className={cx('company-name__sectioin')}>
-                    <h2>{company?.name}</h2>
+                <div className={cx('company-name__section')}>
+                    <div className={cx('name__section')}>
+                        <h2>{company?.name}</h2>
+                        <Tag color={company.isActive ? 'green' : 'orange'}>
+                            {company.isActive ? 'ACTIVATE' : 'PENDING'}
+                        </Tag>
+                    </div>
                     <span>Quy mô công ty: {company?.scaleCategory?.name}</span>
                 </div>
             </div>

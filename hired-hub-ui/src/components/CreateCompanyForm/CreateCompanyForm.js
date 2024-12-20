@@ -17,6 +17,7 @@ const { Option } = Select;
 const CreateCompanyForm = () => {
     const dispatch = useDispatch();
     const scaleCategories = useSelector((state) => state.scaleCategories.list);
+    const { loading } = useSelector((state) => state.companies);
 
     const [form] = Form.useForm();
     const [logoPreview, setLogoPreview] = useState(null);
@@ -174,7 +175,7 @@ const CreateCompanyForm = () => {
             </Form.Item>
             {/* Footer */}
             <Form.Item>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" loading={loading}>
                     Lưu
                 </Button>
             </Form.Item>

@@ -1,9 +1,10 @@
-import { Button, Input, Select } from 'antd';
+import { Button, Input, Select, Tooltip } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import styles from './FilterPosting.module.scss';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
@@ -29,8 +30,8 @@ const StatusOptions = Object.freeze([
 function FilterPosting({ criteria, onSearchValueChange, onSelectedStatusChange, filterStatus = false, onClickSearch, className }) {
     const [searchValue, setSearchValue] = useState(criteria?.searchValue || '');
     const [status, setStatus] = useState(criteria?.status || '');
+    const user = useSelector(state => state.user.user);
 
-    // Đồng bộ hóa state khi props `criteria` thay đổi
     useEffect(() => {
         if (criteria?.searchValue !== undefined) {
             setSearchValue(criteria.searchValue);
@@ -76,9 +77,11 @@ function FilterPosting({ criteria, onSearchValueChange, onSelectedStatusChange, 
             <Button type="primary" icon={<SearchOutlined />} onClick={onClickSearch}>
                 Tìm kiếm
             </Button>
-            <Link to="/business/create-post">
-                <Button type="primary">Đăng tuyển</Button>
-            </Link>
+            <Tooltip title = {user?.account?.status !== "ACTIVATE"? "Cần xác thực tài khoản trước khi đăng tuyển" : "Đăng tuyển"}>
+                <Link to="/business/create-post">
+                    <Button disabled={user?.account?.status !== "ACTIVATE"} type="primary">Đăng tuyển</Button>
+                </Link>
+            </Tooltip>
         </div>
     );
 }
