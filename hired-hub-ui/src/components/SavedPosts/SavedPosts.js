@@ -20,14 +20,12 @@ const SavedPosts = () =>{
     }, [dispatch]);
 
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentItems = savedPostings?.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentItems = savedPostings?.filter(app => app.posting.status !== "DEACTIVATE").slice(startIndex, startIndex + ITEMS_PER_PAGE);
     const totalPages = Math.ceil(savedPostings?.length / ITEMS_PER_PAGE);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
-
-    console.log("abcd", savedPostings)
     return(
         <div className="savedpost-container">
             <div className="savedpost-data">

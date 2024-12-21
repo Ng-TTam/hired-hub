@@ -61,7 +61,7 @@ const PostingsApplication = () => {
         : applications;
 
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentItems = filteredApplications?.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentItems = filteredApplications?.filter(app => app.posting.status !== "DEACTIVATE").slice(startIndex, startIndex + ITEMS_PER_PAGE);
     const totalPages = Math.ceil(filteredApplications?.length / ITEMS_PER_PAGE);
 
     const handlePageChange = (page) => {

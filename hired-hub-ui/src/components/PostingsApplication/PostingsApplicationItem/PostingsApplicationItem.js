@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/faEye";
 import { useNavigate } from "react-router-dom";
 import HtmlRenderer from "../../HtmlRenderer";
+import { convertSalary } from "../../../utils";
+import Image from "../../Image";
 
 const PostingsApplicationItem = ({application}) =>{
     const navigate = useNavigate();
@@ -30,7 +32,12 @@ const PostingsApplicationItem = ({application}) =>{
     return(
         <div className="pai-item">
             <div className="pai-avatar" style={{ alignSelf:"center"}}>
-                <img src={images.logoDefault} alt="avtar ứng viên" style={{width:"102px", height:"102px", borderRadius:"5%"}}/>
+                <Image className='img-cv-1'
+                    src={application?.posting.company.logo? application?.posting.company.logo : images.logoDefault}
+                    alt="Logo company"
+                    fallback={images.logoDefault}
+                    style={{width:"102px", height:"102px", borderRadius:"5%"}}
+                />
             </div>
             <div className="pai-data">
                 <div className="pai-title-block">
@@ -38,7 +45,11 @@ const PostingsApplicationItem = ({application}) =>{
                         {application?.posting.title || "Title"}
                     </div>
                     <div className="pai-money">
-                        {`${application.posting.minimumSalary} - ${application.posting.maximumSalary} ${application.posting.currencyUnit}`}
+                        {convertSalary(
+                            application?.posting?.minimumSalary,
+                            application?.posting?.maximumSalary,
+                            application?.posting?.currencyUnit,
+                        )}
                     </div>
                 </div>
                 <div className="pai-comany-name" onClick={handCompany}>

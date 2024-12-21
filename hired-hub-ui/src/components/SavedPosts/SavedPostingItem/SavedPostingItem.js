@@ -9,6 +9,7 @@ import images from '../../../assets/images';
 import { unsavePosting } from '../../../redux/savedPostingSlice';
 import { convertSalary } from '../../../utils';
 import './SavedPostingItem.scss';
+import Image from '../../Image';
 
 const SavedPostingItem = ({ savedPosting }) => {
     const dispatch = useDispatch();
@@ -35,7 +36,12 @@ const SavedPostingItem = ({ savedPosting }) => {
     return (
         <div className="sp-item">
             <div className="spost-avatar" style={{ alignSelf: 'center' }}>
-                <img src={images.logoDefault} style={{ width: '102px', height: '102px', borderRadius: '5%' }} />
+                <Image className='img-cv-1'
+                    src={savedPosting?.posting.company.logo? savedPosting?.posting.company.logo : images.logoDefault}
+                    alt="Logo company"
+                    fallback={images.logoDefault}
+                    style={{width:"102px", height:"102px", borderRadius:"5%"}}
+                />
             </div>
             <div className="sp-data">
                 <div className="sp-title-block">

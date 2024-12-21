@@ -4,6 +4,7 @@ import { KeySquareIcon, LoaderCircleIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resendOtp } from '../../redux/accountSlice';
 import classNames from 'classnames/bind';
+import { useLocation } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -12,12 +13,20 @@ const OTP = ({ length = 6, onComplete, error }) => {
     const inputRefs = useRef([]);
     const dispatch = useDispatch();
     const { otpResendLoading, otpResendError, otpResendSuccess } = useSelector((state) => state.account);
-
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    var resend = queryParams.get('resend') === 'true';
 
     const handleResend = (event) => {
         event.preventDefault();
         dispatch(resendOtp());
     }
+
+    useEffect(() =>{
+        if(resend){
+            dispatch(resendOtp());
+        }
+    }, [dispatch]);
 
     useEffect(() => {
         // Focus on first input when component mounts

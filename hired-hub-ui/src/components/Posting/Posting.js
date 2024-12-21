@@ -50,6 +50,7 @@ function Posting({ className }) {
     const queryParams = new URLSearchParams(location.search);
     var selectApplication = queryParams.get('selectApplication') === 'true';
     const containerRef = useRef(null);
+    const user = useSelector(state => state.user.user);
 
     const handleClickOutside = (event) => {
         if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -87,13 +88,25 @@ function Posting({ className }) {
 
     const handleClickApplication = () => {
         if (isLogin) {
-            setIsModalOpen(true);
-            if (application) {
-                setShowApplication(true);
-            } else {
-                setShowCreateApplication(true);
+            if(user?.account.status !== "ACTIVATE"){
+                Modal.confirm({
+                    title: 'Bạn chưa xác thực tài khoản!',
+                    content: 'Xác thực ngay nhé?',
+                    okText: 'Đồng ý',
+                    cancelText: 'Hủy',
+                    onOk() {
+                        navigate('/verify-otp?resend=true');
+                    },
+                });
+            }else{
+                setIsModalOpen(true);
+                if (application) {
+                    setShowApplication(true);
+                } else {
+                    setShowCreateApplication(true);
+                }
             }
-        } else {
+        }else {
             Modal.confirm({
                 title: 'Bạn chưa đăng nhập!',
                 content: 'Đăng nhập ngay nhé?',

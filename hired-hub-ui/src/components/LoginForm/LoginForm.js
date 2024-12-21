@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import images from '../../assets/images';
 import gLogo from '../../assets/images/google.png';
-import { loginThunk } from '../../redux/authenticationSlice';
+import { loginThunk, logout, logoutThunk } from '../../redux/authenticationSlice';
 import './LoginForm.scss';
+import { fetchUserInformation } from '../../redux/userSlice';
 
 const LoginForm = () => {
     const dispatch = useDispatch();
@@ -16,19 +17,33 @@ const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const urlSignUp = 'http://localhost:3000/sign-up';
+    const [errorDeactivate, setErroDeactivate] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem('isLogin')) {
             const token = localStorage.getItem('token');
             let role = jwtDecode(token).scope;
             localStorage.setItem('role', role);
-            if (role === 'JOB_SEEKER') window.location.replace('/');
-            else if (role === 'ADMIN') window.location.replace('/admin/dashboard');
-            else window.location.replace('/business/dashboard');
+            if (role === 'ADMIN') window.location.replace('/admin/dashboard');
+            else{
+                const loginAccess = async() => {
+                    const user = await dispatch(fetchUserInformation()).unwrap();
+                    if(user.data.account.status === "DEACTIVATE"){
+                        setErroDeactivate(true);
+                        dispatch(logout());
+                    }else{
+                        if (role === 'JOB_SEEKER') window.location.replace('/');
+                        else window.location.replace('/business/dashboard');
+                    }
+                };
+                loginAccess();
+            }
         }
-    }, [isLogin, error, success]);
+    }, [dispatch, isLogin, error, success]);
+    
 
     const handleSubmit = (e) => {
+        setErroDeactivate(false);
         dispatch(loginThunk({ email, password }));
     };
 
@@ -78,6 +93,7 @@ const LoginForm = () => {
                     />
                 </div>
                 {error && <p className="error-message show">Tài khoản hoặc mật khẩu không đúng.</p>}
+                {errorDeactivate && <p className="error-message show">Tài khoản đã bị vô hiệu hóa.</p>}
 
                 <div className="flex-row">
                     <div></div>
