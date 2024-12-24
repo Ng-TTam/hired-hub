@@ -2,7 +2,6 @@ package com.graduation.hiredhub.entity;
 
 import com.graduation.hiredhub.entity.enumeration.Gender;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Past;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;

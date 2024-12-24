@@ -7,6 +7,7 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.PostingDetailResponse;
 import com.graduation.hiredhub.entity.Posting;
 import com.graduation.hiredhub.entity.User;
+import com.graduation.hiredhub.entity.enumeration.UserPreferences;
 import com.graduation.hiredhub.mapper.PostingMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,30 +23,15 @@ import java.util.stream.Collectors;
 public class RecommendationService {
     PostingMapper postingMapper;
 
-    private static final String PREFERENCES_JOB = "job";
-    private static final String PREFERENCES_POSITION = "position";
-    private static final String PREFERENCES_COMPANY_ID = "companyId";
-
-    public int calculateScore(Posting posting, Map<String, Map<String, Integer>> preferences) {
+    private int calculateScore(Posting posting,
+                               Map<String, Integer> jobWeights,
+                               Map<String, Integer> positionWeights,
+                               Map<String, Integer> companyWeights) {
         int score = 0;
 
-        // Add job weight
-        if (preferences.containsKey(PREFERENCES_JOB) &&
-                preferences.get(PREFERENCES_JOB).containsKey(posting.getMainJob().getName())) {
-            score += preferences.get(PREFERENCES_JOB).get(posting.getMainJob().getName());
-        }
-
-        // Add position weight
-        if (preferences.containsKey(PREFERENCES_POSITION) &&
-                preferences.get(PREFERENCES_POSITION).containsKey(posting.getPosition().getName())) {
-            score += preferences.get(PREFERENCES_POSITION).get(posting.getPosition().getName());
-        }
-
-        // Add company weight
-        if (preferences.containsKey(PREFERENCES_COMPANY_ID) &&
-                preferences.get(PREFERENCES_COMPANY_ID).containsKey(String.valueOf(posting.getEmployer().getCompany().getId()))) {
-            score += preferences.get(PREFERENCES_COMPANY_ID).get(String.valueOf(posting.getEmployer().getCompany().getId()));
-        }
+        score += jobWeights.getOrDefault(posting.getMainJob().getName(), 0);
+        score += positionWeights.getOrDefault(posting.getPosition().getName(), 0);
+        score += companyWeights.getOrDefault(posting.getEmployer().getCompany().getId(), 0);
 
         return score;
     }
@@ -62,13 +47,16 @@ public class RecommendationService {
         Map<String, Map<String, Integer>> preferences = mapper.readValue(preferencesJson, new TypeReference<>() {
         });
 
-        // Calculate scores and sort postings
+        // Tiền xử lý trọng số
+        Map<String, Integer> jobWeights = preferences.getOrDefault(UserPreferences.JOB.getKey(), Map.of());
+        Map<String, Integer> positionWeights = preferences.getOrDefault(UserPreferences.POSITION.getKey(), Map.of());
+        Map<String, Integer> companyWeights = preferences.getOrDefault(UserPreferences.COMPANYID.getKey(), Map.of());
+
         List<Posting> recommendedPostings = postings.stream()
-                .map(post -> Map.entry(post, calculateScore(post, preferences))) // Map each posting to its score
-                .filter(entry -> entry.getValue() > 0) // Filter out postings with a score of 0
-                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue())) // Sort by score in descending order
-                .map(Map.Entry::getKey) // Extract postings
-                .collect(Collectors.toList()); // Collect into a list
+                .map(post -> Map.entry(post, calculateScore(post, jobWeights, positionWeights, companyWeights)))
+                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
+                .map(Map.Entry::getKey)
+                .toList();
 
         return getPagedResult(recommendedPostings.isEmpty() ? postings : recommendedPostings, page, size); // Return paged result
     }
@@ -76,7 +64,7 @@ public class RecommendationService {
     private PageResponse<PostingDetailResponse> getPagedResult(List<Posting> postings, int page, int size) {
         int totalElements = postings.size();
         int totalPages = (int) Math.ceil((double) totalElements / size);
-        int start = page * size;
+        int start = (page - 1) * size;
         int end = Math.min(start + size, totalElements);
 
         // Create the paginated response

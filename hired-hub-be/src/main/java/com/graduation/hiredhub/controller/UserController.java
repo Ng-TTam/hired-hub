@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graduation.hiredhub.dto.request.EmployerCompanyUpdateRequest;
 import com.graduation.hiredhub.dto.request.UserFilterCriteria;
 import com.graduation.hiredhub.dto.request.UserRequest;
@@ -15,8 +16,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -90,19 +89,13 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping("/{userId}/action")
-    public ResponseEntity<?> logUserAction(
-            @PathVariable String userId,
-            @RequestParam String job,
-            @RequestParam String position,
-            @RequestParam String companyId,
-            @RequestParam String action) {
-
-        try {
-            userPreferenceService.updatePreferences(userId, job, position, companyId, action);
-            return ResponseEntity.ok("User preferences updated successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating preferences: " + e.getMessage());
-        }
-    }
+//    @PostMapping("/action")
+//    public ApiResponse<Void> logUserAction(
+//            @RequestParam String job,
+//            @RequestParam String position,
+//            @RequestParam String companyId,
+//            @RequestParam String action) throws JsonProcessingException {
+//        userPreferenceService.updatePreferences(job, position, companyId, action);
+//        return ApiResponse.<Void>builder().build();
+//    }
 }

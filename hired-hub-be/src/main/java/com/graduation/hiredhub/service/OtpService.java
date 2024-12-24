@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -27,10 +28,8 @@ public class OtpService {
     /**
      * Send otp when sign up or reset pass
      * type: SIGN_UP, RESET_PASS
-     *
-     * @param type
-     * @param email
      */
+    @Async("taskExecutor")
     public void send(String type, String email){
         try {
             String key = "OTP_" + type + "_" + email;
@@ -48,11 +47,6 @@ public class OtpService {
 
     /**
      * Verify otp in server
-     *
-     * @param type
-     * @param email
-     * @param otp
-     * @return
      */
     public boolean verify(String type, String email, String otp){
         String key = "OTP_" + type+ "_" + email;

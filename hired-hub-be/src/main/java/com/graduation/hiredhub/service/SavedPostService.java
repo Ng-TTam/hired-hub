@@ -34,6 +34,7 @@ public class SavedPostService {
     SavedPostMapper savedPostMapper;
     JobSeekerRepository jobSeekerRepository;
     PostingRepository postingRepository;
+    UserPreferenceService userPreferenceService;
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public PageResponse<SavedPostResponse> findAllByJobSeeker(Pageable pageable) {
@@ -50,14 +51,17 @@ public class SavedPostService {
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
         Posting posting = postingRepository.findById(savePostRequest.getPostId())
                 .orElseThrow(() -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
-        SavedPost savedPost = savedPostRepository.findByJobSeekerIdAndPostingId(jobSeeker.getId(), posting.getId())
-                .map(existingSavedPost -> {
-                    existingSavedPost.setSavedAt(Instant.now());
-                    return existingSavedPost;
-                }).orElse(SavedPost.builder()
-                        .jobSeeker(jobSeeker)
-                        .posting(posting)
-                        .savedAt(Instant.now()).build());
+
+        SavedPost savedPost = savedPostRepository.findByJobSeekerIdAndPostingId(jobSeeker.getId(), posting.getId());
+        if(savedPost != null) throw new AppException(ErrorCode.POSTING_SAVED);
+        else savedPost = SavedPost.builder()
+                .jobSeeker(jobSeeker)
+                .posting(posting)
+                .build();
+
+        userPreferenceService.updatePreferences(jobSeeker, posting.getMainJob().getName(),
+                posting.getPosition().getName(), posting.getEmployer().getCompany().getId(), "save");
+
         savedPostRepository.save(savedPost);
     }
 

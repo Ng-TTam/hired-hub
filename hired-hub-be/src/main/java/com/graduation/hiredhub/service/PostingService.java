@@ -31,6 +31,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +61,8 @@ public class PostingService {
     AccountService accountService;
     NotificationService notificationService;
     RecommendationService recommendationService;
+    UserPreferenceService userPreferenceService;
+    UserService userService;
 
     ObjectMapper objectMapper;
 
@@ -231,6 +235,13 @@ public class PostingService {
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            User user = userService.getUserInContext();
+            userPreferenceService.updatePreferences(user, posting.getMainJob().getName(),posting.getPosition().getName(),
+                    posting.getEmployer().getCompany().getId(), "view");
+        }
+
         return postingMapper.toPostingDetailResponse(posting);
     }
 
@@ -358,7 +369,7 @@ public class PostingService {
         }
     }
 
-    // Lên lịch chạy mỗi ngày lúc 12 giờ đêm
+    // Schedule at 12h every night
     @Scheduled(cron = "0 0 0 * * ?")
 //    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = Long.MAX_VALUE)
     public void scheduleChangeStatusPostingExpire() {
@@ -369,7 +380,7 @@ public class PostingService {
         notificationService.onPostingExpired(expiredPosts);
     }
 
-    // Gửi thông báo mỗi ngày lúc 12h
+    // Notify at 12h every day
     @Scheduled(cron = "0 0 12 * * ?")
     public void notifyAboutExpiringPostings() {
         List<Posting> expiringPostings = getExpiringPostingsWithinDays(2);

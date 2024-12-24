@@ -52,7 +52,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/log-out")
-    ResponseEntity<String> logout(@RequestBody LogoutRequest logoutRequest) throws ParseException, JOSEException {
+    ResponseEntity<String> logout(@RequestBody LogoutRequest logoutRequest){
         authenticationService.logout(logoutRequest);
         return ResponseEntity.ok("Log out successful");
     }

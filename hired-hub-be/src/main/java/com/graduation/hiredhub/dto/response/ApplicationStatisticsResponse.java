@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApplicationStatisticsResponse {
-    Integer cV_Pending;
-    Integer cV_Deactive;
-    Integer cV_Active;
-    Integer posting_Count;
+    Integer cVPending;
+    Integer cVDeactive;
+    Integer cVActive;
+    Integer postingCount;
 }

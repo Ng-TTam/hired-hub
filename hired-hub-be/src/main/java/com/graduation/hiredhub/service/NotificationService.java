@@ -7,7 +7,6 @@ import com.graduation.hiredhub.entity.enumeration.NotificationType;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.NotificationMapper;
-import com.graduation.hiredhub.repository.JobSeekerRepository;
 import com.graduation.hiredhub.repository.NotificationRepository;
 import com.graduation.hiredhub.repository.SubscriptionRepository;
 import com.graduation.hiredhub.repository.UserRepository;
