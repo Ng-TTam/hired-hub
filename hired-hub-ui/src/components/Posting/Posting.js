@@ -22,7 +22,7 @@ import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constan
 import { fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
 import { setCriteria } from '../../redux/filterSlice';
 import { fetchPosting } from '../../redux/postingSlice';
-import { savePosting, savePostingStatus, unsavePosting } from '../../redux/savedPostingSlice';
+import { resetSavePost, savePosting, savePostingStatus, unsavePosting } from '../../redux/savedPostingSlice';
 import { convertSalary, convertWorkAddressDetail, convertWorkAddressSumary, formatDate } from '../../utils';
 import CreateApplication from '../Application/CreateApplication/CreateApplication';
 import GetApplication from '../Application/GetApplication/GetApplication';
@@ -69,6 +69,7 @@ function Posting({ className }) {
         dispatch(savePostingStatus(id));
         return () => {
             dispatch(resetApplication());
+            dispatch(resetSavePost())
         };
     }, [dispatch, id]);
 

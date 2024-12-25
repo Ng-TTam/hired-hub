@@ -83,7 +83,13 @@ const savedPostingSlice = createSlice({
         error:null,
         count:null,
     },
-    reducers: {},
+    reducers: {
+        resetSavePost: (state) => {
+            state.savedPostings = null;
+            state.savedStatus = null;
+            state.count = null;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchSavedPosts.pending, (state) => {
@@ -113,5 +119,5 @@ const savedPostingSlice = createSlice({
             });
     },
 });
-
+export const { resetSavePost } = savedPostingSlice.actions;
 export default savedPostingSlice.reducer;
