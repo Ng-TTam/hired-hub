@@ -8,6 +8,7 @@ import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.NotificationMapper;
 import com.graduation.hiredhub.repository.NotificationRepository;
+import com.graduation.hiredhub.repository.SavedPostRepository;
 import com.graduation.hiredhub.repository.SubscriptionRepository;
 import com.graduation.hiredhub.repository.UserRepository;
 import com.graduation.hiredhub.service.util.NotificationUtils;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class NotificationService {
     PushNotificationService pushNotificationService;
     UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final SavedPostRepository savedPostRepository;
 
     /**
      * Retrieves a paginated list of notifications for the currently logged-in user.
@@ -105,6 +108,7 @@ public class NotificationService {
         pushNotificationService.push(notification);
     }
 
+    @Async("taskExecutor")
     public void onCompanyNewPost(Posting posting) {
         Company company = posting.getEmployer().getCompany();
         List<JobSeeker> followers = subscriptionRepository.findAllByCompanyId(company.getId())
@@ -116,40 +120,55 @@ public class NotificationService {
         });
     }
 
-    public void onPostingExpired(List<Posting> postings){
+    @Async("taskExecutor")
+    public void onPostingExpired(List<Posting> postings) {
         postings.forEach(posting -> {
             Notification notification = NotificationUtils.postingsExpired(posting);
             createNotification(notification);
         });
     }
 
-    public void onPostingExpiring(List<Posting> postings){
+    @Async("taskExecutor")
+    public void onPostingExpiring(List<Posting> postings) {
         postings.forEach(posting -> {
+            // Notice to post owner
             Notification notification = NotificationUtils.postingsExpiringSoon(posting);
             createNotification(notification);
+
+            // Notice to JobSeekers who saved this post
+            List<SavedPost> savedPosts = savedPostRepository.findAllByPostingId(posting.getId());
+            savedPosts.forEach(savedPost -> {
+                Notification notificationToJobSeeker = NotificationUtils.savedPostReminder(savedPost);
+                createNotification(notificationToJobSeeker);
+            });
         });
     }
 
+    @Async("taskExecutor")
     public void onApplicationStatusChange(Application application) {
         Notification notification = NotificationUtils.applicationStatusChanged(application);
         createNotification(notification);
     }
 
+    @Async("taskExecutor")
     public void onNewCandidate(Application application) {
         Notification notification = NotificationUtils.newCandidate(application);
         createNotification(notification);
     }
 
+    @Async("taskExecutor")
     public void onCandidateUpdateApplication(Application application) {
         Notification notification = NotificationUtils.candidateUpdateApplication(application);
         createNotification(notification);
     }
 
+    @Async("taskExecutor")
     public void savedPostReminder(SavedPost savedPost) {
         Notification notification = NotificationUtils.savedPostReminder(savedPost);
         createNotification(notification);
     }
 
+    @Async("taskExecutor")
     public void onPostingStatusChange(Posting posting, boolean isApprove) {
         Notification notification = NotificationUtils.postingStatusChange(posting, isApprove);
         createNotification(notification);
