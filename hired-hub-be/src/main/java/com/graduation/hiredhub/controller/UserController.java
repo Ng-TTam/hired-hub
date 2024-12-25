@@ -1,6 +1,5 @@
 package com.graduation.hiredhub.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graduation.hiredhub.dto.request.EmployerCompanyUpdateRequest;
 import com.graduation.hiredhub.dto.request.UserFilterCriteria;
 import com.graduation.hiredhub.dto.request.UserRequest;
@@ -88,14 +87,4 @@ public class UserController {
                 .data(userService.filter(criteria, pageable))
                 .build();
     }
-
-//    @PostMapping("/action")
-//    public ApiResponse<Void> logUserAction(
-//            @RequestParam String job,
-//            @RequestParam String position,
-//            @RequestParam String companyId,
-//            @RequestParam String action) throws JsonProcessingException {
-//        userPreferenceService.updatePreferences(job, position, companyId, action);
-//        return ApiResponse.<Void>builder().build();
-//    }
 }
