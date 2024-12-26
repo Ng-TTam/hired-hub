@@ -21,25 +21,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationService {
     ApplicationRepository applicationRepository;
-    ApplicationMapper applicationMapper;
     PostingRepository postingRepository;
-    CVRepository cvRepository;
-    CVService cvService;
-    JobSeekerRepository jobSeekerRepository;
-    AccountService accountService;
     EmployerRepository employerRepository;
+    CVRepository cvRepository;
+    JobSeekerRepository jobSeekerRepository;
+    ApplicationMapper applicationMapper;
+    CVService cvService;
+    AccountService accountService;
     NotificationService notificationService;
+    UserPreferenceService userPreferenceService;
 
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest, String postingId, String cvId) {
@@ -51,16 +50,16 @@ public class ApplicationService {
             throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
         applicationRepository.findByPostingAndCv(posting, cv)
-                .ifPresent((application) -> {
+                .ifPresent(application -> {
                     throw new AppException(ErrorCode.APPLICATION_ALREADY_EXISTS);
                 });
-        Application application = new Application();
-        application.setPosting(posting);
-        application.setStatus(ApplicationStatus.PENDING);
-        application.setMessage(applicationRequest.getMessage());
-        application.setCreatedAt(Instant.now());
-        application.setUpdatedAt(Instant.now());
-        application.setCv(cv);
+
+        Application application = Application.builder()
+                .posting(posting)
+                .status(ApplicationStatus.PENDING)
+                .message(applicationRequest.getMessage())
+                .cv(cv)
+                .build();
         try {
             applicationRepository.save(application);
         } catch (Exception e) {
@@ -68,6 +67,9 @@ public class ApplicationService {
         }
 
         notificationService.onNewCandidate(application);
+
+        userPreferenceService.updatePreferences(cv.getJobSeeker(), posting.getMainJob().getName(),
+                posting.getPosition().getName(), posting.getEmployer().getCompany().getId(), "apply");
 
         return applicationMapper.toApplicationResponse(application);
     }
@@ -97,17 +99,13 @@ public class ApplicationService {
         List<Application> applications = applicationRepository.findByCv(cv);
         return applications.stream()
                 .map(applicationMapper::toApplicationResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
      * Get applications in posting of employer
      * Only employer posting can be seen applications in post
      *
-     * @param postingId
-     * @param page
-     * @param size
-     * @return
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public PageResponse<ApplicationDTO> getApplicationsByEmployer(String postingId, int page, int size) {
@@ -125,23 +123,23 @@ public class ApplicationService {
     @PreAuthorize("hasRole('JOB_SEEKER')")
     public List<ApplicationResponse> getApplicationsByJobSeeker() {
         List<CV> cvs = cvRepository.findByJobSeeker(cvService.getJobSeekerByAccount());
-        List<Application> applications = new ArrayList<Application>();
+        List<Application> applications = new ArrayList<>();
         for (CV cv : cvs) {
             applications.addAll(applicationRepository.findByCv(cv));
         }
         return applications.stream()
                 .map(applicationMapper::toApplicationResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PreAuthorize("hasRole('EMPLOYER')")
     public List<ApplicationResponse> getApplicationsByEmployer() {
         List<Posting> postings = postingRepository.findByEmployerId(getEmployerByAccount().getId());
-        List<Application> applications = new ArrayList<Application>();
+        List<Application> applications = new ArrayList<>();
         for (Posting posting : postings) {
             applications.addAll(applicationRepository.findByPosting(posting));
         }
-        List<ApplicationResponse> applicationResponses = new ArrayList<ApplicationResponse>();
+        List<ApplicationResponse> applicationResponses = new ArrayList<>();
         for (Application application : applications) {
             String email = application.getCv().getJobSeeker().getAccount().getEmail();
             ApplicationResponse applicationResponse = applicationMapper.toApplicationResponse(application);
@@ -157,43 +155,38 @@ public class ApplicationService {
         List<Posting> postings = postingRepository.findByEmployerId(getEmployerByAccount().getId());
         List<Application> applications = new ArrayList<>();
 
-        int posting_Active = 0;
+        int postingActive = 0;
         for (Posting posting : postings) {
             applications.addAll(applicationRepository.findByPosting(posting));
             if (posting.getStatus() != null && posting.getStatus().toString().equals(Status.ACTIVATE.toString())) {
-                posting_Active++;
+                postingActive++;
             }
         }
-        Integer posting_Count = posting_Active;
-        // Integer posting_Count = postings.size();
-        Integer cV_Pending = 0;
-        Integer cV_Deactive = 0;
-        Integer cV_Active = 0;
+        Integer postingCount = postingActive;
+        Integer cVPending = 0;
+        Integer cVDeactive = 0;
+        Integer cVActive = 0;
 
         for (Application application : applications) {
             if (application.getStatus().toString().equals(ApplicationStatus.APPROVED.toString())) {
-                cV_Active++;
+                cVActive++;
             } else if (application.getStatus().toString().equals(ApplicationStatus.REJECTED.toString())) {
-                cV_Deactive++;
+                cVDeactive++;
             } else {
-                cV_Pending++;
+                cVPending++;
             }
         }
         return ApplicationStatisticsResponse.builder()
-                .posting_Count(posting_Count)
-                .cV_Active(cV_Active)
-                .cV_Deactive(cV_Deactive)
-                .cV_Pending(cV_Pending)
+                .postingCount(postingCount)
+                .cVActive(cVActive)
+                .cVDeactive(cVDeactive)
+                .cVPending(cVPending)
                 .build();
     }
 
     /**
      * Get application detail in posting of employer
      * Only employer posting can be seen application detail in post
-     *
-     * @param postingId
-     * @param applicationId
-     * @return applications
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")
     public ApplicationDTO getApplicationByEmployer(String postingId, Integer applicationId) {
@@ -262,10 +255,6 @@ public class ApplicationService {
     /**
      * Update application -> review and comment for cv of user
      * Only employer posting can be review and cmt applications in post
-     *
-     * @param postingId
-     * @param applicationId
-     * @param applicationDTO
      * @return application is reviewed
      */
     @PreAuthorize("@postingSecurity.isPostingOwner(#postingId,  authentication.name)")

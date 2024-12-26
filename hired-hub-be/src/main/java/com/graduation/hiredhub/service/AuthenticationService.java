@@ -54,13 +54,14 @@ public class AuthenticationService {
     @Value("${jwt.refreshable}")
     protected int jwtRefreshable;
 
+    static final JWSHeader JWS_HEADER = new JWSHeader(JWSAlgorithm.HS256);
     static final String PRE_TOKEN = "TOKEN_";
     static final String PRE_REFRESH_TOKEN = "REFRESH_TOKEN_";
 
     /**
      * authenticate account
      *
-     * @param authenticationRequest
+     * @param authenticationRequest email and pass to create new account
      * @return access token and refresh
      */
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
@@ -77,23 +78,18 @@ public class AuthenticationService {
     /**
      * gen token for account
      *
-     * @param account
+     * @param account gen token
      * @return token
      */
     public String generateToken(Account account) {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
-
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(account.getId())
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now()
-                        .plus(jwtExpiration, ChronoUnit.MINUTES).toEpochMilli()))
+                .expirationTime(Date.from(Instant.now().plus(jwtExpiration, ChronoUnit.MINUTES)))
                 .claim("scope", account.getRole())
                 .build();
 
-        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
-        JWSObject jwsObject = new JWSObject(header, payload);
+        JWSObject jwsObject = new JWSObject(JWS_HEADER, new Payload(jwtClaimsSet.toJSONObject()));
 
         try {
             jwsObject.sign(new MACSigner(jwtSecret.getBytes()));
@@ -119,7 +115,7 @@ public class AuthenticationService {
     /**
      * Gen access token to refresh token
      *
-     * @param refreshRequest
+     * @param refreshRequest refresh token to refresh access token
      * @return access token
      */
     public TokenResponse refreshToken(RefreshRequest refreshRequest) {
@@ -158,7 +154,7 @@ public class AuthenticationService {
     }
 
     //need update
-    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+    public void logout(LogoutRequest request) {
         try {
             stringRedisTemplate.delete(request.getToken());
         } catch (RuntimeException e) {
@@ -169,7 +165,7 @@ public class AuthenticationService {
     /**
      * create access token and refresh token for account to sign in and sign up
      *
-     * @param account
+     * @param account to create token
      * @return access token and refresh
      */
     public AuthenticationResponse createTokenBase(Account account){

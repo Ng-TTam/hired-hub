@@ -2,7 +2,6 @@ package com.graduation.hiredhub.entity;
 
 import com.graduation.hiredhub.entity.enumeration.Gender;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Past;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -52,4 +51,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Notification> notifications;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "json")
+    private String preferences;
 }

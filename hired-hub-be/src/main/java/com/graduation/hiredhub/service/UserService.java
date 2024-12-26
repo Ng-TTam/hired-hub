@@ -136,7 +136,7 @@ public class UserService {
         return PageUtils.toPageResponse(page);
     }
 
-    private User getUserInContext() {
+    public User getUserInContext() {
         var context = SecurityContextHolder.getContext();
         var accountId = context.getAuthentication().getName();
 

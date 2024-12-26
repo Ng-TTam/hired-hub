@@ -34,8 +34,8 @@ public class MinioService {
     /**
      * Upload file to Minio server
      *
-     * @param file
-     * @param folder
+     * @param file file need upload
+     * @param folder name of folder contain file
      * @return url of file already upload
      */
     public String uploadFile(MultipartFile file, String folder) {

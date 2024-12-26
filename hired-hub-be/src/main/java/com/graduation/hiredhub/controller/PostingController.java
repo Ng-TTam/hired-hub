@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graduation.hiredhub.dto.request.*;
 import com.graduation.hiredhub.dto.response.ApiResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
@@ -103,5 +104,15 @@ public class PostingController {
     public ApiResponse<Void> updatePostingStatus(@RequestBody PostingStatusRequest postingStatusRequest) {
         postingService.updatePostingStatus(postingStatusRequest);
         return ApiResponse.<Void>builder().build();
+    }
+
+    @GetMapping("/recommend")
+    public ApiResponse<PageResponse<PostingDetailResponse>> recommend(
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page)
+            throws JsonProcessingException {
+        return ApiResponse.<PageResponse<PostingDetailResponse>>builder()
+                .data(postingService.recommend(page, size))
+                .build();
     }
 }

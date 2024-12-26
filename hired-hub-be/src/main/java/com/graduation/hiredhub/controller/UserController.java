@@ -8,6 +8,7 @@ import com.graduation.hiredhub.dto.response.ApplicationResponse;
 import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.UserResponse;
 import com.graduation.hiredhub.service.ApplicationService;
+import com.graduation.hiredhub.service.UserPreferenceService;
 import com.graduation.hiredhub.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -25,6 +26,7 @@ import java.util.List;
 public class UserController {
     UserService userService;
     ApplicationService applicationService;
+    UserPreferenceService userPreferenceService;
 
     @PostMapping("/update-profile")
     ApiResponse<UserResponse> updateProfile(@ModelAttribute @Valid UserRequest userRequest) {

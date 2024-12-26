@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface SavedPostRepository extends JpaRepository<SavedPost, Integer> {
     Page<SavedPost> findAllByJobSeekerId(String jobSeekerId, Pageable pageable);
 
-    Optional<SavedPost> findByJobSeekerIdAndPostingId(String jobSeekerId, String postingId);
+    SavedPost findByJobSeekerIdAndPostingId(String jobSeekerId, String postingId);
 
     boolean existsByJobSeekerIdAndPostingId(String jobSeekerId, String postingId);
 

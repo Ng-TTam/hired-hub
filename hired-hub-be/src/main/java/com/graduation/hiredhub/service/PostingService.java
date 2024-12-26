@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graduation.hiredhub.dto.request.*;
@@ -30,6 +31,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,11 +55,16 @@ public class PostingService {
     JobDescriptionRepository jobDescriptionRepository;
     AccountRepository accountRepository;
     PostingMapper postingMapper;
+    UserRepository userRepository;
     JobDescriptionMapper jobDescriptionMapper;
     WorkAddressMapper workAddressMapper;
-    ObjectMapper objectMapper;
     AccountService accountService;
     NotificationService notificationService;
+    RecommendationService recommendationService;
+    UserPreferenceService userPreferenceService;
+    UserService userService;
+
+    ObjectMapper objectMapper;
 
     StringRedisTemplate stringRedisTemplate;
 
@@ -180,7 +188,7 @@ public class PostingService {
         String cacheKey = REDIS_POSTING_KEY + "_page_" + page + "_size_" + size;
         PageResponse<PostingDetailResponse> pageResponse;
 
-        // Check in cache
+//         Check in cache
         if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
             try {
                 pageResponse = objectMapper.readValue(stringRedisTemplate.opsForValue().get(cacheKey),
@@ -226,6 +234,13 @@ public class PostingService {
 
         Posting posting = postingRepository.findById(postingId).orElseThrow(
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            User user = userService.getUserInContext();
+            userPreferenceService.updatePreferences(user, posting.getMainJob().getName(),posting.getPosition().getName(),
+                    posting.getEmployer().getCompany().getId(), "view");
+        }
 
         return postingMapper.toPostingDetailResponse(posting);
     }
@@ -281,13 +296,6 @@ public class PostingService {
 
     @PreAuthorize("hasRole('EMPLOYER')")
     public PageResponse<PostingResponse> employerFilter(EmployerPostingFilterCriteria criteria, Pageable pageable) {
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                Sort.by(
-                        Sort.Order.desc("createdAt"),
-                        Sort.Order.asc("title"),
-                        Sort.Order.asc("expiredAt")
-                )
-        );
         Specification<Posting> spec = Specification.where(null);
         if (criteria.getSearchValue() != null) {
             spec = spec.and(PostingSpecifications.withSearchText(criteria.getSearchValue()));
@@ -296,7 +304,7 @@ public class PostingService {
             spec = spec.and(PostingSpecifications.hasStatus(criteria.getStatus()));
         }
         spec = spec.and(PostingSpecifications.hasEmployer(getEmployerByAccount()));
-        Page<PostingResponse> page = postingRepository.findAll(spec, sortedPageable)
+        Page<PostingResponse> page = postingRepository.findAll(spec, pageable)
                 .map(postingMapper::toPostingResponse);
         return PageUtils.toPageResponse(page);
     }
@@ -361,7 +369,7 @@ public class PostingService {
         }
     }
 
-    // Lên lịch chạy mỗi ngày lúc 12 giờ đêm
+    // Schedule at 12h every night
     @Scheduled(cron = "0 0 0 * * ?")
 //    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = Long.MAX_VALUE)
     public void scheduleChangeStatusPostingExpire() {
@@ -372,7 +380,7 @@ public class PostingService {
         notificationService.onPostingExpired(expiredPosts);
     }
 
-    // Gửi thông báo mỗi ngày lúc 12h
+    // Notify at 12h every day
     @Scheduled(cron = "0 0 12 * * ?")
     public void notifyAboutExpiringPostings() {
         List<Posting> expiringPostings = getExpiringPostingsWithinDays(2);
@@ -383,5 +391,21 @@ public class PostingService {
         Instant currentDate = Instant.now();
         Instant futureDate = currentDate.plus(days, ChronoUnit.DAYS);
         return postingRepository.findExpiringPostsWithinDays(currentDate, futureDate);
+    }
+
+    public PageResponse<PostingDetailResponse> recommend(int page, int size) throws JsonProcessingException {
+        var context = SecurityContextHolder.getContext();
+        var accountId = context.getAuthentication().getName();
+
+        User user = userRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        List<Posting> postings = postingRepository.findByStatus(PostingStatus.ACTIVATE,
+                Sort.by(
+                        Sort.Order.desc("createdAt"),
+                        Sort.Order.asc("title"),
+                        Sort.Order.asc("expiredAt")
+                ));
+        return recommendationService.recommendPosts(user, postings, page, size);
     }
 }

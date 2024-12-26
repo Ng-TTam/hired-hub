@@ -33,6 +33,20 @@ export const fetchPostingsDefault = createAsyncThunk(
     },
 );
 
+export const fetchPostingsRecommend = createAsyncThunk(
+    'postings/fetchPostingsRecommend',
+    async ({ page, size }, { rejectWithValue }) => {
+        try {
+            const response = await axiosPro.get(`${apiUrl}/recommend`, {
+                params: { page, size },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data.data || error.message);
+        }
+    },
+);
+
 export const fetchEmployerFilterPostings = createAsyncThunk(
     'postings/fetchEmployerFilterPostings',
     async ({ criteria, pageable }, { rejectWithValue }) => {
@@ -71,7 +85,7 @@ export const fetchAdminPostings = createAsyncThunk(
 
 export const fetchPosting = createAsyncThunk('postings/fetchPosting', async (id, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${apiUrl}/${id}`);
+        const response = await axiosPro.get(`${apiUrl}/${id}`);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response);
@@ -253,7 +267,7 @@ const postingSlice = createSlice({
             })
             .addCase(fetchEmployerFilterPostings.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message;
+                state.error = action.payload;
             })
             //admin filter
             .addCase(fetchAdminPostings.pending, (state) => {
@@ -285,6 +299,7 @@ const postingSlice = createSlice({
                 state.error = action.payload;
             })
 
+            //fetch postings default
             .addCase(fetchPostingsDefault.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -297,6 +312,23 @@ const postingSlice = createSlice({
                 state.totalElements = action.payload.data.totalElements;
             })
             .addCase(fetchPostingsDefault.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            //fetch postings recommend
+            .addCase(fetchPostingsRecommend.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.postings = [];
+            })
+            .addCase(fetchPostingsRecommend.fulfilled, (state, action) => {
+                state.loading = false;
+                state.postings = action.payload.data.data;
+                state.totalPages = action.payload.data.totalPages;
+                state.totalElements = action.payload.data.totalElements;
+            })
+            .addCase(fetchPostingsRecommend.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });
