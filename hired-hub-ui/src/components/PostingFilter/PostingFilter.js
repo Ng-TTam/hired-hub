@@ -17,34 +17,45 @@ function PostingFilter() {
     const dispatch = useDispatch();
     const { criteria, pageable } = useSelector((state) => state.filter);
     const { postings, totalPages } = useSelector((state) => state.postings);
-    const [active, setActive] = useState(true);
+    const [active, setActive] = useState(false);
 
     useEffect(() => {
         const hasValidKeys = () => {
             return Object.entries(criteria).some(([key, value]) => value !== null && value !== undefined);
         };
 
-        if (hasValidKeys())
+        if (active) {
+            dispatch(fetchPostingsRecommend({ page: pageable.page + 1, size: pageable.size }));
+        } 
+        else if (hasValidKeys()) {
             dispatch(fetchPostings({ criteria: criteria, pageable: { sort: 'createdAt,desc', ...pageable } }));
-        else dispatch(fetchPostingsDefault({ page: pageable.page + 1, size: pageable.size }));
-    }, [pageable]);
+        } 
+        else {
+            dispatch(fetchPostingsDefault({ page: pageable.page + 1, size: pageable.size }));
+        }
+    }, [pageable, active]);
 
     const handleOnPageChange = (page) => {
         dispatch(updatePageable({ page: page - 1 }));
     };
 
-    const onGuess = () => {
-        setActive(!active);
-        if (active) dispatch(fetchPostingsRecommend({ page: pageable.page + 1, size: pageable.size }));
-        else dispatch(fetchPostingsDefault({ page: pageable.page + 1, size: pageable.size }));
+    const onRecommend = () => {
+        const newActive = !active;
+        setActive(newActive);
+        dispatch(updatePageable({ page: 0 }));
+    };
+
+    const onSearch = () => {
+        dispatch(updatePageable({ page: 0 }));
+        setActive(false);
     };
 
     return (
         <>
             <div className={cx('wrapper')}>
-                <Filter />
+                <Filter onChangeRecommend={onSearch}/>
                 {localStorage.getItem('email') && (
-                    <Button className={cx('recommend-button')} onClick={onGuess} type={active ? '' : 'primary'}>
+                    <Button className={cx('recommend-button')} onClick={onRecommend} type={active ? 'primary' : ''}>
                         <CircleFadingArrowUpIcon size={20}/>
                         Đề xuất
                     </Button>

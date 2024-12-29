@@ -37,7 +37,7 @@ const SalaryRanges = [
 const jobTypes = [{ id: 'DEFAULT', name: 'Hình thức' }, ...Object.values(config.constants.JobTypes)];
 const expOptions = [{ id: 'DEFAULT', name: 'Kinh nghiệm' }, ...Object.values(config.constants.ExperienceRequire)];
 
-function Filter() {
+const Filter = ({ onChangeRecommend }) => {
     const dispatch = useDispatch();
 
     const provinceList = useSelector((state) => state.provinces.list);
@@ -129,6 +129,7 @@ function Filter() {
             jobType: selectedJobType.id !== 'DEFAULT' ? selectedJobType.id : null,
         };
 
+        onChangeRecommend();
         dispatch(setCriteria(criteria));
     };
 

@@ -222,7 +222,7 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-
+            //fetch one posting
             .addCase(fetchPosting.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -237,6 +237,7 @@ const postingSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload.message;
             })
+            //fetch postings in comany
             .addCase(fetchCompanyPostings.pending, (state, action) => {
                 state.loading = true;
                 state.postings = [];
@@ -256,7 +257,7 @@ const postingSlice = createSlice({
             .addCase(fetchEmployerFilterPostings.pending, (state) => {
                 state.loading = true;
                 state.error = null;
-                state.postings = null;
+                state.postings = [];
                 state.success = false;
             })
             .addCase(fetchEmployerFilterPostings.fulfilled, (state, action) => {
