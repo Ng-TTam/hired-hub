@@ -69,7 +69,7 @@ function CompanyManagement({ isActive = false }) {
             key: 'name',
             dataIndex: 'name',
             title: 'Tên',
-            render: (text, record) => <Link to={`/admin/dashboard/companies/${record.id}`}>{text}</Link>,
+            render: (text, record) => <Link to={`/admin/companies/${record.id}`}>{text}</Link>,
         },
         {
             key: 'taxCode',
@@ -107,7 +107,7 @@ function CompanyManagement({ isActive = false }) {
                     <Button
                         variant="outlined"
                         icon={<FontAwesomeIcon icon={faEye} />}
-                        onClick={() => navigate(`/admin/dashboard/companies/${record.id}`)}
+                        onClick={() => navigate(`/admin/companies/${record.id}`)}
                     >
                         Xem chi tiết
                     </Button>

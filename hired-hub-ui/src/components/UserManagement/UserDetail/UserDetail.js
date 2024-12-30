@@ -64,7 +64,7 @@ const UserDetail = () => {
                     <Descriptions.Item label="Công ty">
                         {user?.company ? (
                             <Space>
-                                <Link to={`/admin/dashboard/companies/${user?.company?.id}`}>{user?.company.name}</Link>
+                                <Link to={`/admin/companies/${user?.company?.id}`}>{user?.company.name}</Link>
                                 <Tag color={user?.company?.isActive ? 'green' : 'orange'}>
                                     {user?.company?.isActive ? 'ACTIVATE' : 'PENDING'}
                                 </Tag>

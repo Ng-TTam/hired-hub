@@ -4,6 +4,7 @@ import {
     faBuilding,
     faBuildingShield,
     faGears,
+    faHouse,
     faUserGroup,
     faUserPlus,
     faUsers,
@@ -11,7 +12,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Layout, Menu } from 'antd';
-import React, { useState, useEffect } from 'react';
+import { LayoutDashboard } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const { Sider } = Layout;
@@ -31,6 +33,11 @@ const Sidebar = () => {
 
     const menuItems = [
         {
+            key: 'dashboard',
+            icon: <FontAwesomeIcon icon={faHouse} />,
+            label: <Link to="/admin/dashboard">Trang chủ</Link>,
+        },
+        {
             key: 'posts',
             icon: <AppstoreOutlined />,
             label: 'Quản lý bài viết',
@@ -38,12 +45,12 @@ const Sidebar = () => {
                 {
                     key: 'new-posts',
                     icon: <FileAddOutlined />,
-                    label: <Link to="/admin/dashboard/postings/pending">Bài viết mới</Link>,
+                    label: <Link to="/admin/postings/pending">Bài viết mới</Link>,
                 },
                 {
                     key: 'all-posts',
                     icon: <FileTextOutlined />,
-                    label: <Link to="/admin/dashboard/postings">Tất cả bài viết</Link>,
+                    label: <Link to="/admin/postings">Tất cả bài viết</Link>,
                 },
             ],
         },
@@ -55,17 +62,17 @@ const Sidebar = () => {
                 {
                     key: 'new-employers',
                     icon: <FontAwesomeIcon icon={faUserPlus} />,
-                    label: <Link to="/admin/dashboard/employers/pending">Nhà tuyển dụng mới</Link>,
+                    label: <Link to="/admin/employers/pending">Nhà tuyển dụng mới</Link>,
                 },
                 {
                     key: 'employers',
                     icon: <FontAwesomeIcon icon={faUserTie} />,
-                    label: <Link to="/admin/dashboard/employers">Nhà tuyển dụng</Link>,
+                    label: <Link to="/admin/employers">Nhà tuyển dụng</Link>,
                 },
                 {
                     key: 'all-job-seekers',
                     icon: <FontAwesomeIcon icon={faUserGroup} />,
-                    label: <Link to="/admin/dashboard/users">Người tìm việc</Link>,
+                    label: <Link to="/admin/users">Người tìm việc</Link>,
                 },
             ],
         },
@@ -77,12 +84,12 @@ const Sidebar = () => {
                 {
                     key: 'new-companies',
                     icon: <AppstoreAddOutlined />,
-                    label: <Link to="/admin/dashboard/companies/pending">Chờ duyệt</Link>,
+                    label: <Link to="/admin/companies/pending">Chờ duyệt</Link>,
                 },
                 {
                     key: 'all-companies',
                     icon: <FontAwesomeIcon icon={faBuildingShield} />,
-                    label: <Link to="/admin/dashboard/companies">Danh sách công ty</Link>,
+                    label: <Link to="/admin/companies">Danh sách công ty</Link>,
                 },
             ],
         },
@@ -93,11 +100,11 @@ const Sidebar = () => {
             children: [
                 {
                     key: 'job-categories',
-                    label: <Link to="/admin/dashboard/job-categories">Ngành nghề</Link>,
+                    label: <Link to="/admin/job-categories">Ngành nghề</Link>,
                 },
                 {
                     key: 'positions',
-                    label: <Link to="/admin/dashboard/positions">Vị trí công việc</Link>,
+                    label: <Link to="/admin/positions">Vị trí công việc</Link>,
                 },
             ],
         },

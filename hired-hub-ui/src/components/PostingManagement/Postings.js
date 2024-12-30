@@ -63,13 +63,13 @@ function Postings({ status }) {
             title: 'Tiêu đề',
             dataIndex: 'title',
             key: 'title',
-            render: (text, record) => <Link to={`/admin/dashboard/postings/${record.id}`}>{text}</Link>,
+            render: (text, record) => <Link to={`/admin/postings/${record.id}`}>{text}</Link>,
         },
         {
             title: 'Công ty',
             dataIndex: ['company', 'name'],
             key: 'companyName',
-            render: (text, record) => <Link to={`/admin/dashboard/companies/${record.company.id}`}>{text}</Link>,
+            render: (text, record) => <Link to={`/admin/companies/${record.company.id}`}>{text}</Link>,
         },
         {
             title: 'Ngày tạo',
@@ -140,7 +140,7 @@ function Postings({ status }) {
                         ) : (
                             <Button
                                 icon={<FontAwesomeIcon icon={faEye} />}
-                                onClick={() => navigate(`/admin/dashboard/postings/${record.id}`)}
+                                onClick={() => navigate(`/admin/postings/${record.id}`)}
                             >
                                 Xem chi tiết
                             </Button>

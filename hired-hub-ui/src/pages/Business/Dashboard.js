@@ -11,6 +11,7 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import UpdateEmployerCompany from '../../components/UpdateEmployerCompany';
 import UpdateInfor from '../../components/UpdateInfor/UpdateInfor';
 import { PostingDetail } from '../../components/PostingManagement';
+import PageNotFound from '../404';
 
 const Dashboard = () => {
     return (
@@ -31,7 +32,8 @@ const Dashboard = () => {
                         <Route path="/create-post" element={<ProgressSteps />} />
                         <Route path="/update-post/:id" element={<ProgressSteps />} />
                         <Route path="/update-company" element={<UpdateEmployerCompany />} />
-                        <Route path="/update-information" element={<UpdateInfor/>} />
+                        <Route path="/update-information" element={<UpdateInfor />} />
+                        <Route path="*" element={<PageNotFound />} />
                     </Routes>
                 </div>
             </div>

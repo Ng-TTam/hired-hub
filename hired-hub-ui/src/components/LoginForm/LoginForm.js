@@ -25,13 +25,13 @@ const LoginForm = () => {
             let role = jwtDecode(token).scope;
             localStorage.setItem('role', role);
             if (role === 'ADMIN') window.location.replace('/admin/dashboard');
-            else{
-                const loginAccess = async() => {
+            else {
+                const loginAccess = async () => {
                     const user = await dispatch(fetchUserInformation()).unwrap();
-                    if(user.data.account.status === "DEACTIVATE"){
+                    if (user.data.account.status === 'DEACTIVATE') {
                         setErroDeactivate(true);
                         dispatch(logout());
-                    }else{
+                    } else {
                         if (role === 'JOB_SEEKER') window.location.replace('/');
                         else window.location.replace('/business/dashboard');
                     }
@@ -40,7 +40,6 @@ const LoginForm = () => {
             }
         }
     }, [dispatch, isLogin, error, success]);
-    
 
     const handleSubmit = (e) => {
         setErroDeactivate(false);

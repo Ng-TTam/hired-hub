@@ -1,5 +1,7 @@
 import classNames from 'classnames/bind';
 import { Route, Routes } from 'react-router-dom';
+import PageNotFound from '../../pages/404';
+import AdminDashboard from '../AdminDashboard';
 import { CompanyDetail, default as CompanyManagement } from '../CompanyManagement';
 import JobCategoryManagement from '../JobCategoryManagement';
 import PositionCategoryManagement from '../PositionCategoryManagement';
@@ -17,6 +19,8 @@ function AdminLayout() {
             <Sidebar />
             <div className={cx('content')}>
                 <Routes>
+                    <Route path="/dashboard" element={<AdminDashboard />} />
+
                     <Route path="/postings/pending" element={<Postings key={'pending-posts'} status={'PENDING'} />} />
                     <Route path="/postings" element={<Postings key={'posts'} />} />
                     <Route path="/postings/:id" element={<PostingDetail />} />
@@ -39,6 +43,8 @@ function AdminLayout() {
                     <Route path="/positions" element={<PositionCategoryManagement />} />
 
                     <Route path="company-update" element={<UpdateEmployerCompany />} />
+
+                    <Route path="*" element={<PageNotFound />} />
                 </Routes>
             </div>
         </div>

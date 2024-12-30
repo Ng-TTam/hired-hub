@@ -236,10 +236,13 @@ public class PostingService {
                 () -> new AppException(ErrorCode.POSTING_NOT_EXISTED));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(!(authentication instanceof AnonymousAuthenticationToken)){
-            User user = userService.getUserInContext();
-            userPreferenceService.updatePreferences(user, posting.getMainJob().getName(),posting.getPosition().getName(),
-                    posting.getEmployer().getCompany().getId(), "view");
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            Account account = accountService.getAccountInContext();
+            if (account.getRole().equals(Role.JOB_SEEKER)) {
+                User user = userService.getUserInContext();
+                userPreferenceService.updatePreferences(user, posting.getMainJob().getName(), posting.getPosition().getName(),
+                        posting.getEmployer().getCompany().getId(), "view");
+            }
         }
 
         return postingMapper.toPostingDetailResponse(posting);

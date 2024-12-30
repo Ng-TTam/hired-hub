@@ -5,7 +5,7 @@ import AdminLayout from '../components/AdminLayout';
 const CMSRoutes = () => {
     return (
         <Routes>
-            <Route path="/dashboard/*" element={<AdminLayout />} />
+            <Route path="/*" element={<AdminLayout />} />
         </Routes>
     );
 };

@@ -1,10 +1,10 @@
-import './App.scss';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import CMSRoutes from '../routes/CMSRoutes';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import PageNotFound from '../pages/404';
 import BussinessRoutes from '../routes/BussinessRoutes';
-import JobSeekerRoutes from '../routes/JobSeekerRoutes';
+import CMSRoutes from '../routes/CMSRoutes';
 import GuessRoutes from '../routes/GuessRoutes';
-import ProgressSteps from '../components/ProgressStep';
+import JobSeekerRoutes from '../routes/JobSeekerRoutes';
+import './App.scss';
 
 function App() {
     const role = localStorage.getItem('role');
@@ -16,6 +16,7 @@ function App() {
                 {role === 'EMPLOYER' && <Route path="/business/*" element={<BussinessRoutes />} />}
                 {role === 'JOB_SEEKER' && <Route path="/job-seeker/*" element={<JobSeekerRoutes />} />}
                 <Route path="/*" element={<GuessRoutes />} />
+                <Route path="*" element={<PageNotFound />} />
             </Routes>
         </Router>
     );

@@ -71,7 +71,7 @@ const Users = () => {
             title: 'Email',
             dataIndex: ['account', 'email'],
             key: 'email',
-            render: (text, record) => <Link to={`/admin/dashboard/users/${record.id}`}>{text}</Link>,
+            render: (text, record) => <Link to={`/admin/users/${record.id}`}>{text}</Link>,
         },
         {
             title: 'Số điện thoại',

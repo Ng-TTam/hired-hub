@@ -53,9 +53,7 @@ const Emloyers = ({ status }) => {
             title: 'Email',
             dataIndex: ['account', 'email'],
             key: 'email',
-            render: (text, record) => (
-                <Link to={`/admin/dashboard/employers/${record.id}`}>{record?.account?.email}</Link>
-            ),
+            render: (text, record) => <Link to={`/admin/employers/${record.id}`}>{record?.account?.email}</Link>,
         },
         {
             title: 'Số điện thoại',
@@ -114,7 +112,7 @@ const Emloyers = ({ status }) => {
                             </Button>
                         ) : (
                             <Button icon={<FontAwesomeIcon icon={faEye} />}>
-                                <Link to={`/admin/dashboard/employers/${record.id}`}>Xem chi tiết</Link>
+                                <Link to={`/admin/employers/${record.id}`}>Xem chi tiết</Link>
                             </Button>
                         )}
                     </Space>

@@ -9,6 +9,7 @@ import PostingFilter from '../components/PostingFilter';
 import Auth from '../pages/Home/Auth';
 import SignUp from '../pages/Home/SignUp';
 import VerifyOtp from '../pages/Home/VerifyOtp';
+import PageNotFound from '../pages/404';
 
 const GuessRoutes = () => {
     return (
@@ -25,6 +26,7 @@ const GuessRoutes = () => {
 
             <Route path="/posting/:id" exact element={<DefaultLayout children={<Posting />} />} />
             <Route path="/company/:id" element={<DefaultLayout children={<CompanyDetail />} />} />
+            <Route path="*" element={<PageNotFound />} />
         </Routes>
     );
 };
