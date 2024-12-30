@@ -119,16 +119,20 @@ function Header() {
                                     <span>Bạn hãy dành ra vài giây để xác nhận thông tin dưới đây nhé!</span>
                                 </div>
                                 <div className={cx('container')} style={{ border: '0px' }}>
-                                    <Link to="/business/sign-up">
-                                        <Card className={cx('section')} style={{ border:'none' }} hoverable>
+                                    <Link to="/business-sign-up">
+                                        <Card className={cx('section')} style={{ border: 'none' }} hoverable>
                                             <img src={images.employer} alt="Người tuyển dụng" />
-                                            <Button style={{ marginTop: 10, color:'rgba(0, 0, 0, 0.88)' }}>Tôi là nhà tuyển dụng</Button>
+                                            <Button style={{ marginTop: 10, color: 'rgba(0, 0, 0, 0.88)' }}>
+                                                Tôi là nhà tuyển dụng
+                                            </Button>
                                         </Card>
                                     </Link>
                                     <Link to="/sign-up">
-                                        <Card className={cx('section')} style={{ border:'none' }} hoverable>
+                                        <Card className={cx('section')} style={{ border: 'none' }} hoverable>
                                             <img src={images.jobSeeker} alt="Người tìm việc" />
-                                            <Button style={{ marginTop: 10, color:'rgba(0, 0, 0, 0.88)' }}>Tôi là người tìm việc</Button>
+                                            <Button style={{ marginTop: 10, color: 'rgba(0, 0, 0, 0.88)' }}>
+                                                Tôi là người tìm việc
+                                            </Button>
                                         </Card>
                                     </Link>
                                 </div>

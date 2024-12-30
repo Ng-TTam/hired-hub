@@ -21,7 +21,7 @@ const GuessRoutes = () => {
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/reset-password" element />
 
-            <Route path="/business/sign-up" element={<EmployerRegister />} />
+            <Route path="/business-sign-up" element={<EmployerRegister />} />
 
             <Route path="/posting/:id" exact element={<DefaultLayout children={<Posting />} />} />
             <Route path="/company/:id" element={<DefaultLayout children={<CompanyDetail />} />} />
