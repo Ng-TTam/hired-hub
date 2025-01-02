@@ -121,13 +121,13 @@ const EmployerRegister = () => {
             user: {
                 firstName: user.firstName.trim(),
                 lastName: user.lastName.trim(),
-                dob: '2002-11-11',
+                dob: '1990-01-01',
                 address: `${user.province.name}${user.district.name ? ` - ${user.district.name}` : ''}`,
                 phoneNumber: user.phoneNumber,
                 gender: user.gender,
             },
             companyName: user.companyName,
-            position: 'HR',
+            position: null,
         };
         console.log('Form Data:', formData);
         dispatch(registerEmployer(formData));
@@ -409,11 +409,11 @@ const EmployerRegister = () => {
                                 <label htmlFor="terms">
                                     Tôi đã đọc và đồng ý với{' '}
                                     <a href="#" className="primary-link">
-                                        Điều khoản dịch vụ
+                                        <b>Điều khoản dịch vụ</b>
                                     </a>{' '}
                                     và{' '}
                                     <a href="#" className="primary-link">
-                                        Chính sách bảo mật
+                                        <b>Chính sách bảo mật</b>
                                     </a>{' '}
                                 </label>
                             </div>

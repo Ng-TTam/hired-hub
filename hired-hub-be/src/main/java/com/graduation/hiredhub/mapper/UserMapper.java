@@ -19,6 +19,7 @@ public interface UserMapper {
     JobSeeker toJobSeeker(UserRequest userCreationRequest);
 
     @Mapping(target = "avatar", ignore = true)
+    @Mapping(target = "position", ignore = true)
     Employer toEmployer(UserRequest userRequest);
 
     @Mapping(target = "company", source = "company")

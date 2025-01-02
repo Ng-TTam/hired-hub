@@ -49,7 +49,6 @@ import java.util.concurrent.TimeUnit;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostingService {
     PostingRepository postingRepository;
-    EmployerRepository employerRepository;
     JobDescriptionRepository descriptionRepository;
     WorkAddressRepository workAddressRepository;
     JobDescriptionRepository jobDescriptionRepository;
@@ -80,7 +79,7 @@ public class PostingService {
     @Transactional
     @PreAuthorize("hasRole('EMPLOYER')")
     public PostingDetailResponse createPosting(PostingRequest postingRequest) {
-        Employer employer = getEmployerByAccount();
+        Employer employer = userService.getEmployerByAccount();
         if (!employer.getAccount().getStatus().equals(Status.ACTIVATE))
             throw new AppException(ErrorCode.EMPLOYER_NOT_ACTIVATE);
 
@@ -248,11 +247,6 @@ public class PostingService {
         return postingMapper.toPostingDetailResponse(posting);
     }
 
-    private Employer getEmployerByAccount() {
-        return employerRepository.findByAccountId(accountService.getAccountInContext().getId())
-                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_NOT_EXISTED));
-    }
-
     public PageResponse<PostingDetailResponse> filter(PostingFilterCriteria criteria, Pageable pageable) {
         Specification<Posting> spec = Specification
                 .where(PostingSpecifications.hasStatus(PostingStatus.ACTIVATE));
@@ -306,7 +300,7 @@ public class PostingService {
         if (criteria.getStatus() != null) {
             spec = spec.and(PostingSpecifications.hasStatus(criteria.getStatus()));
         }
-        spec = spec.and(PostingSpecifications.hasEmployer(getEmployerByAccount()));
+        spec = spec.and(PostingSpecifications.hasEmployer(userService.getEmployerByAccount()));
         Page<PostingResponse> page = postingRepository.findAll(spec, pageable)
                 .map(postingMapper::toPostingResponse);
         return PageUtils.toPageResponse(page);

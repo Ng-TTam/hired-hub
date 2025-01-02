@@ -3,25 +3,30 @@ import './UpdateInfor.scss';
 import ProfileJobSeeker from '../ProfileCV/ProfileJobSeeker/ProfileJobSeeker';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserInformation, updateInformation } from '../../redux/userSlice';
+import { fetchPostions } from '../../redux/postionCategorySlice';
 
 const UpdateInfor = () => {
-    const {user, error} = useSelector((state) => state.user);
+    const { user, error } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const [errors, setErrors] = useState({});
+    const [availablePositions, setAvailablePositions] = useState(null);
 
     const [formData, setFormData] = useState({
-        firstName: `${user?.firstName}`,
-        lastName: `${user?.lastName}`,
-        phoneNumber: `${user?.phoneNumber}`,
-        dob: `${user?.dob}`,
-        gender: `${user?.gender}`,
-        address: `${user?.address}`,
-        avatar: null,
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        dob: '',
+        gender: '',
+        address: '',
+        position: null,
+        avatar: '',
     });
+
+    const isEmployer = user?.account.role === 'EMPLOYER';
 
     const validateForm = () => {
         const newErrors = {};
-    
+
         if (!formData.firstName.trim()) {
             newErrors.firstName = 'Họ không được để trống.';
         }
@@ -30,8 +35,7 @@ const UpdateInfor = () => {
         }
         if (!formData.phoneNumber.trim()) {
             newErrors.phoneNumber = 'Số điện thoại không được để trống.';
-        }
-        if (formData.phoneNumber.trim().length < 7 || formData.phoneNumber.trim().length > 13) {
+        } else if (formData.phoneNumber.trim().length < 7 || formData.phoneNumber.trim().length > 13) {
             newErrors.phoneNumber = 'Số điện thoại phải từ 7 đến 13 ký tự.';
         }
         if (!formData.dob.trim()) {
@@ -43,7 +47,10 @@ const UpdateInfor = () => {
         if (!formData.address.trim()) {
             newErrors.address = 'Địa chỉ không được để trống.';
         }
-    
+        if (isEmployer && !formData.position) {
+            newErrors.position = 'Vui lòng chọn vị trí.';
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -51,32 +58,32 @@ const UpdateInfor = () => {
     useEffect(() => {
         if (!error) {
             setFormData({
-                firstName: user?.firstName,
-                lastName: user?.lastName,
-                phoneNumber: user?.phoneNumber,
-                dob: user?.dob,
-                gender: user?.gender,
-                address: user?.address,
-                avatar: null,
+                firstName: user?.firstName || '',
+                lastName: user?.lastName || '',
+                phoneNumber: user?.phoneNumber || '',
+                dob: user?.dob || '',
+                gender: user?.gender || '',
+                address: user?.address || '',
+                position: user?.position?.id || '',
+                avatar: user?.avatar || '',
             });
         }
-    },[user, error]);
+    }, [user, error]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: name === 'dob' ? new Date(value).toISOString().split('T')[0] : value,
+        });
+    };
 
-        if (name === 'dob') {
-            const formattedDate = new Date(value).toISOString().split('T')[0];
+    const handlePositionChange = (event) => {
+        const position = event.target.value;
             setFormData({
                 ...formData,
-                [name]: formattedDate,
+                position: position,
             });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value,
-            });
-        }
     };
 
     const handleFileChange = (e) => {
@@ -90,30 +97,30 @@ const UpdateInfor = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        const isValid = validateForm();
-        if (!isValid) {
-            return ;
-        }
-    
+        if (!validateForm()) return;
+
         const formDataU = new FormData();
-        formDataU.append('firstName', formData.firstName);
-        formDataU.append('lastName', formData.lastName);
-        formDataU.append('dob', formData.dob);
-        formDataU.append('address', formData.address);
-        formDataU.append('phoneNumber', formData.phoneNumber);
-        formDataU.append('gender', formData.gender);
-    
-        if (formData.avatar) {
-            formDataU.append('avatar', formData.avatar);
-        }
-    
+        Object.keys(formData).forEach((key) => {
+            if (formData[key]) formDataU.append(key, formData[key]);
+        });
+
         try {
             await dispatch(updateInformation(formDataU)).unwrap();
             dispatch(fetchUserInformation());
         } catch (error) {
+            console.error('Error updating information:', error);
         }
     };
+
+    useEffect(() => {
+        if (isEmployer) {
+            dispatch(fetchPostions())
+                .then((data) => {
+                    setAvailablePositions(data.payload);
+                })
+                .catch((err) => console.error('Error fetching positions:', err));
+        }
+    }, [isEmployer, dispatch]);
 
     return (
         <div className="ui-container">
@@ -123,9 +130,12 @@ const UpdateInfor = () => {
                     <span className="ui-required">*</span> Các thông tin bắt buộc
                 </p>
                 <form onSubmit={handleSubmit}>
-                <div className="ui-form-group">
+                    <div className="ui-form-group">
                         <label>
-                            Họ <span className="ui-required" style={{ color: 'red' }}>*</span>
+                            Họ{' '}
+                            <span className="ui-required" style={{ color: 'red' }}>
+                                *
+                            </span>
                         </label>
                         <input
                             type="text"
@@ -139,7 +149,10 @@ const UpdateInfor = () => {
 
                     <div className="ui-form-group">
                         <label>
-                            Tên <span className="ui-required" style={{ color: 'red' }}>*</span>
+                            Tên{' '}
+                            <span className="ui-required" style={{ color: 'red' }}>
+                                *
+                            </span>
                         </label>
                         <input
                             type="text"
@@ -153,7 +166,10 @@ const UpdateInfor = () => {
 
                     <div className="ui-form-group">
                         <label>
-                            Số điện thoại <span className="ui-required" style={{ color: 'red' }}>*</span>
+                            Số điện thoại{' '}
+                            <span className="ui-required" style={{ color: 'red' }}>
+                                *
+                            </span>
                         </label>
                         <input
                             type="tel"
@@ -167,7 +183,10 @@ const UpdateInfor = () => {
 
                     <div className="ui-form-group">
                         <label>
-                            Ngày Sinh <span className="ui-required" style={{ color: 'red' }}>*</span>
+                            Ngày Sinh{' '}
+                            <span className="ui-required" style={{ color: 'red' }}>
+                                *
+                            </span>
                         </label>
                         <input type="date" name="dob" value={formData.dob} onChange={handleChange} />
                         {errors.dob && <span className="error-message-ui">{errors.dob}</span>}
@@ -175,7 +194,10 @@ const UpdateInfor = () => {
 
                     <div className="ui-form-group">
                         <label>
-                            Giới Tính <span className="ui-required" style={{ color: 'red' }}>*</span>
+                            Giới Tính{' '}
+                            <span className="ui-required" style={{ color: 'red' }}>
+                                *
+                            </span>
                         </label>
                         <select className="ui-date" name="gender" value={formData.gender} onChange={handleChange}>
                             <option value="" disabled>
@@ -189,7 +211,10 @@ const UpdateInfor = () => {
 
                     <div className="ui-form-group">
                         <label>
-                            Địa chỉ <span className="ui-required" style={{ color: 'red' }}>*</span>
+                            Địa chỉ{' '}
+                            <span className="ui-required" style={{ color: 'red' }}>
+                                *
+                            </span>
                         </label>
                         <input
                             type="text"
@@ -200,13 +225,36 @@ const UpdateInfor = () => {
                         />
                         {errors.address && <span className="error-message-ui">{errors.address}</span>}
                     </div>
+
+                    {isEmployer && (
+                        <div className="ui-form-group">
+                            <label>
+                                Vị trí{' '}
+                                <span className="ui-required" style={{ color: 'red' }}>
+                                    *
+                                </span>
+                            </label>
+                            <select className="ui-date" name="position" value={formData.position || ''} onChange={handlePositionChange}>
+                                <option value="">
+                                    Chọn vị trí
+                                </option>
+                                {availablePositions?.map((pos) => (
+                                    <option key={pos.id} value={pos.id}>
+                                        {pos.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.position && <span className="error-message-ui">{errors.position}</span>}
+                        </div>
+                    )}
+
                     <div className="ui-form-group">
                         <label>Ảnh đại diện</label>
                         <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} />
                     </div>
 
                     <div className="ui-btn">
-                        <button onClick={handleSubmit} className="ui-submit-btn">
+                        <button type="submit" className="ui-submit-btn">
                             Lưu
                         </button>
                     </div>

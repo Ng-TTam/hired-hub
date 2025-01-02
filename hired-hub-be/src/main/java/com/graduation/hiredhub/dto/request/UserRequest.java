@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.dto.request;
 
+import com.graduation.hiredhub.dto.reqResp.PositionCategoryDTO;
 import com.graduation.hiredhub.entity.enumeration.Gender;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -36,6 +37,8 @@ public class UserRequest {
 
     @NotNull(message = "BLANK_GENDER")
     Gender gender;
+
+    Integer position;
 
     MultipartFile avatar;
 }

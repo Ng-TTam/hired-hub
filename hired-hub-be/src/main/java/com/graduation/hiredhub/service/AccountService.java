@@ -110,7 +110,6 @@ public class AccountService {
             accountRepository.save(account);
 
             Employer employer = userMapper.toEmployer(employerAccountCreationRequest.getUser());
-            employer.setPosition(employerAccountCreationRequest.getPosition());
             employer.setAccount(account);
             employerRepository.save(employer);
         } catch (DataIntegrityViolationException e) {

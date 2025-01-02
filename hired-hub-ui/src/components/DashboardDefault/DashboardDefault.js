@@ -37,7 +37,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >{statistics? statistics.posting_Count : 0}</h5>
+                                    >{statistics? statistics.postingCount : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >Tin tuyển dụng hiển thị</div>
                                 </div>
@@ -54,7 +54,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >{statistics? statistics.cv_Active : 0}</h5>
+                                    >{statistics? statistics.cvactive : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >CV tiếp nhận</div>
                                 </div>
@@ -73,7 +73,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >{statistics? statistics.cv_Pending : 0}</h5>
+                                    >{statistics? statistics.cvpending : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >CV ứng tuyển mới</div>
                                 </div>
@@ -90,7 +90,7 @@ const DashboardDefault = () =>{
                                 <div className="dd-l-text-info">
                                     <h5 className="num-posting"
                                         style={{fontSize:'16px', marginBottom:'7px'}}
-                                    >{statistics? statistics.cv_Deactive : 0}</h5>
+                                    >{statistics? statistics.cvdeactive : 0}</h5>
                                     <div style={{fontSize:'14px'}}
                                     >CV đã từ chối</div>
                                 </div>

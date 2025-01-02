@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.dto.response;
 
+import com.graduation.hiredhub.dto.reqResp.PositionCategoryDTO;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -12,5 +13,5 @@ import lombok.experimental.SuperBuilder;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployerResponse extends UserResponse {
     CompanyResponse company;
-    String position;
+    PositionCategoryDTO position;
 }

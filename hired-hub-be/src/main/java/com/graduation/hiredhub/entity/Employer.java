@@ -14,8 +14,9 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "employer")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Employer extends User {
-    @Column(length = 20)
-    String position;
+    @ManyToOne
+    @JoinColumn(name = "position_id")
+    PositionCategory position;
 
     @Column(length = 70)
     String companyName;

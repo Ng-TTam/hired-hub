@@ -17,9 +17,4 @@ public class EmployerAccountCreationRequest{
     @Size(max = 70, message = "INVALID_COMPANY_NAME")
             @NotBlank(message = "BLANK_COMPANY_NAME")
     String companyName;
-
-    @Size(max = 20, message = "INVALID_POSITION_EMPLOYER")
-             @NotBlank(message = "BLANK_POSITION_EMPLOYER")
-    String position;
-
 }

@@ -8,6 +8,7 @@ import com.graduation.hiredhub.dto.response.PageResponse;
 import com.graduation.hiredhub.dto.response.UserResponse;
 import com.graduation.hiredhub.entity.Company;
 import com.graduation.hiredhub.entity.Employer;
+import com.graduation.hiredhub.entity.PositionCategory;
 import com.graduation.hiredhub.entity.User;
 import com.graduation.hiredhub.entity.enumeration.Role;
 import com.graduation.hiredhub.entity.enumeration.Status;
@@ -16,6 +17,7 @@ import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.mapper.UserMapper;
 import com.graduation.hiredhub.repository.CompanyRepository;
 import com.graduation.hiredhub.repository.EmployerRepository;
+import com.graduation.hiredhub.repository.PositionCategoryRepository;
 import com.graduation.hiredhub.repository.UserRepository;
 import com.graduation.hiredhub.repository.specification.UserSpecifications;
 import com.graduation.hiredhub.service.util.PageUtils;
@@ -37,13 +39,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
-    private final CompanyRepository companyRepository;
     UserRepository userRepository;
+    CompanyRepository companyRepository;
+    EmployerRepository employerRepository;
+    PositionCategoryRepository positionCategoryRepository;
     UserMapper userMapper;
     MinioService minioService;
+    AccountService accountService;
 
     static final String FOLDER_UPLOAD_AVATAR = "avatars";
-    private final EmployerRepository employerRepository;
 
     /**
      * Update profile of user is verified (status = "ACTIVATE")
@@ -56,12 +60,25 @@ public class UserService {
     public UserResponse updateUserProfile(UserRequest userRequest) {
         User user = getUserInContext();
         if (user.getAccount().getStatus() == Status.DEACTIVATE)
-            throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFY);
+            throw new AppException(ErrorCode.USER_DEACTIVATE);
 
         userMapper.updateUser(user, userRequest);
 
         if (userRequest.getAvatar() != null)
             user.setAvatar(minioService.uploadFile(userRequest.getAvatar(), FOLDER_UPLOAD_AVATAR));
+
+        if (user.getAccount().getRole() == Role.EMPLOYER){
+            PositionCategory positionCategory = positionCategoryRepository.findById(userRequest.getPosition()).orElseThrow();
+            Employer employer = (Employer) user;
+            employer.setPosition(positionCategory);
+            try {
+                employerRepository.save(employer);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                throw new AppException(ErrorCode.INTERNAL_ERROR);
+            }
+            return userMapper.toEmployerResponse(employer);
+        }
 
         try {
             userRepository.save(user);
@@ -72,8 +89,12 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse getUser() {
-        return userMapper.toUserResponse(getUserInContext());
+    @PreAuthorize("hasRole('JOB_SEEKER') or hasRole('EMPLOYER')")
+    public Object getUser() {
+        User user = getUserInContext();
+        if(user.getAccount().getRole() == Role.JOB_SEEKER)
+            return userMapper.toUserResponse(user);
+        else return userMapper.toEmployerResponse(getEmployerByAccount());
     }
 
     /**
@@ -137,10 +158,13 @@ public class UserService {
     }
 
     public User getUserInContext() {
-        var context = SecurityContextHolder.getContext();
-        var accountId = context.getAuthentication().getName();
 
-        return userRepository.findByAccountId(accountId)
+        return userRepository.findByAccountId(accountService.getAccountInContext().getId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    public Employer getEmployerByAccount() {
+        return employerRepository.findByAccountId(accountService.getAccountInContext().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
