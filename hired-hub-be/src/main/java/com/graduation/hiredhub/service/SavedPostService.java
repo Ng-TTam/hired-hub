@@ -18,6 +18,9 @@ import com.graduation.hiredhub.service.util.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,6 +58,7 @@ public class SavedPostService {
         else savedPost = SavedPost.builder()
                 .jobSeeker(jobSeeker)
                 .posting(posting)
+                .savedAt(Instant.now())
                 .build();
 
         userPreferenceService.updatePreferences(jobSeeker, posting.getMainJob().getName(),

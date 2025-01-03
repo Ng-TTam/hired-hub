@@ -57,7 +57,7 @@ export const sendResetPassOtp = createAsyncThunk('account/send-reset-otp', async
 
 export const verifyResetPassOtp = createAsyncThunk(
     'account/verify-reset-otp',
-    async (email, otp, { rejectWithValue }) => {
+    async ({email, otp}, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${apiURL}verify-reset-otp?otp=${otp}`, { email });
             return response.data;
@@ -69,7 +69,7 @@ export const verifyResetPassOtp = createAsyncThunk(
 
 export const forgotPass = createAsyncThunk(
     'account/forgot-password',
-    async (key, newPassAccountData, { rejectWithValue }) => {
+    async ({key, newPassAccountData}, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${apiURL}forgot-password?key=${key}`, newPassAccountData);
             return response.data;
@@ -114,6 +114,10 @@ const accountSlice = createSlice({
         otpResendLoading: false,
         otpResendSuccess: false,
         otpResendError: null,
+        otpResetPassLoading: false,
+        otpResetPassSuccess: false,
+        otpResetPassError: null,
+        keyResetPass: null,
         resetPassLoading: false,
         resetPassSuccess: false,
         resetPassError: null,
@@ -136,6 +140,12 @@ const accountSlice = createSlice({
             state.resetPassLoading = false;
             state.resetPassSuccess = false;
             state.resetPassError = null;
+        },
+        clearOTPResetPassState: (state) => {
+            state.otpResetPassLoading = false;
+            state.otpResetPassSuccess = false;
+            state.otpResetPassError = null;
+            state.keyResetPass = null;
         },
     },
     extraReducers: (builder) => {
@@ -196,33 +206,34 @@ const accountSlice = createSlice({
             });
 
         // Send Reset Password OTP
-        builder
-            .addCase(sendResetPassOtp.pending, (state) => {
-                state.resetPassLoading = true;
-                state.resetPassError = null;
-            })
-            .addCase(sendResetPassOtp.fulfilled, (state) => {
-                state.resetPassLoading = false;
-                state.resetPassSuccess = true;
-            })
-            .addCase(sendResetPassOtp.rejected, (state, action) => {
-                state.resetPassLoading = false;
-                state.resetPassError = action.payload;
-            });
+        // builder
+        //     .addCase(sendResetPassOtp.pending, (state) => {
+        //         state.otpResetPassLoading = true;
+        //         state.otpResetPassError = null;
+        //     })
+        //     .addCase(sendResetPassOtp.fulfilled, (state) => {
+        //         state.otpResetPassLoading = false;
+        //         state.otpResetPassSuccess = true;
+        //     })
+        //     .addCase(sendResetPassOtp.rejected, (state, action) => {
+        //         state.otpResetPassLoading = false;
+        //         state.otpResetPassError = action.payload;
+        //     });
 
         // Verify Reset Password OTP
         builder
             .addCase(verifyResetPassOtp.pending, (state) => {
-                state.resetPassLoading = true;
-                state.resetPassError = null;
+                state.otpResetPassLoading = true;
+                state.otpResetPassError = null;
             })
-            .addCase(verifyResetPassOtp.fulfilled, (state) => {
-                state.resetPassLoading = false;
-                state.resetPassSuccess = true;
+            .addCase(verifyResetPassOtp.fulfilled, (state, action) => {
+                state.otpResetPassLoading = false;
+                state.keyResetPass = action.payload;
+                state.otpResetPassSuccess = true;
             })
             .addCase(verifyResetPassOtp.rejected, (state, action) => {
-                state.resetPassLoading = false;
-                state.resetPassError = action.payload;
+                state.otpResetPassLoading = false;
+                state.otpResetPassError = action.payload;
             });
 
         // Forgot Password
@@ -251,5 +262,5 @@ const accountSlice = createSlice({
     },
 });
 
-export const { clearAccountState, resetOtpState, clearResetPassState } = accountSlice.actions;
+export const { clearAccountState, resetOtpState, clearResetPassState, clearOTPResetPassState } = accountSlice.actions;
 export default accountSlice.reducer;
