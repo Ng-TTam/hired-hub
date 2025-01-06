@@ -4,7 +4,6 @@ import register from '../../assets/images/register.png';
 import { Building, Building2Icon, Loader, Lock, MailIcon, PhoneIcon, User2, WarehouseIcon } from 'lucide-react';
 import { clearRegisterState, registerEmployer } from '../../redux/employerSilce';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { fetchProvinces } from '../../redux/provinceSlice';
 import images from '../../assets/images';
 
@@ -19,7 +18,6 @@ const EmployerRegister = () => {
     const [isTermsChecked, setIsTermsChecked] = useState(false);
     const dispatch = useDispatch();
     const { loading, error, success } = useSelector((state) => state.employer);
-    const navigate = useNavigate();
 
     const urlSignIn = 'http://localhost:3000/login';
 
@@ -138,9 +136,10 @@ const EmployerRegister = () => {
 
         return () => {
             dispatch(clearRegisterState());
-            if (success) navigate('/business/dashboard');
+            if (success) 
+                window.location.href = '/business/dashboard';
         };
-    }, [dispatch, success, navigate]);
+    }, [dispatch, success]);
 
     return (
         <div className="register-container">
@@ -189,8 +188,6 @@ const EmployerRegister = () => {
                                     className="toggle-password"
                                     onClick={() => setShowPassword(!showPassword)}
                                 >
-                                    {/* {showPassword && <Eye size={20}/>}
-                                    {!showPassword && <EyeOffIcon size={20}/>} */}
                                 </button>
                             </div>
                             <p className={`error-message ${errors.password ? 'show' : ''}`}>{errors.password}</p>
@@ -216,8 +213,6 @@ const EmployerRegister = () => {
                                     className="toggle-password"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                 >
-                                    {/* {showConfirmPassword && <Eye size={20}/>}
-                                    {!showConfirmPassword && <EyeOffIcon size={20}/>} */}
                                 </button>
                             </div>
                             <p className={`error-message ${errors.confirmPassword ? 'show' : ''}`}>
