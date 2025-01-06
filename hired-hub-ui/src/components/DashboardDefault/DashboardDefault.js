@@ -14,7 +14,6 @@ import { fetchUserInformation } from "../../redux/userSlice";
 import Image from "../Image";
 
 const DashboardDefault = () =>{
-    const email = localStorage.getItem('email');
     const { user } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const {statistics} = useSelector((state) => state.statistics);
@@ -140,7 +139,7 @@ const DashboardDefault = () =>{
                                 icon={faEnvelope}
                                 style={{ color: 'black', fontSize: '14px', marginRight: '10px' }}
                             />
-                            {email? email : "email@example.com"}
+                            {user?.account?.email}
                         </div>
                         <div className="dd-infor-sdt" style={{fontSize:'14px'}}>
                             <FontAwesomeIcon

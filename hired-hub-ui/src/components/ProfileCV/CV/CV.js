@@ -13,7 +13,6 @@ const CV = () => {
 
     const { cvId } = useParams();
 
-    const email = localStorage.getItem('email');
     const dispatch = useDispatch();
     const { user, loading, error } = useSelector(state => state.user);
     const {cv} = useSelector(state => state.cv)
@@ -74,7 +73,7 @@ const CV = () => {
                     {[
                         { icon: 'fa-calendar', placeholder: 'YYYY/MM/DD', value: user?.dob || 'YYYY/MM/DD' },
                         { icon: 'fa-phone', placeholder: '0123 456 789', value: user?.phoneNumber || '0123 456 789' },
-                        { icon: 'fa-envelope', placeholder: 'tencuaban@example.com', value: email || 'email@example.com' },
+                        { icon: 'fa-envelope', placeholder: 'tencuaban@example.com', value: user?.account?.email || 'email@example.com' },
                         { icon: 'fa-location-dot', placeholder: 'Quận A, thành phố Hà Nội', value: user?.address || 'Quận A, thành phố Hà Nội' }
                     ].map((item, index) => (
                         <div 

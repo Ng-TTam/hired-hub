@@ -6,21 +6,19 @@ const apiUrl = 'http://localhost:8888/api/v1';
 export const fetchStatisticsDashboard = createAsyncThunk(
     'statistics/fetchStatisticsDashboard', 
     async (_, { rejectWithValue }) => {
-        const token = localStorage.getItem('token'); // Lấy token từ localStorage
+        const token = localStorage.getItem('token'); 
         if (!token) {
             throw new Error('Token không tồn tại');
         }
         try {
             const response = await axios.get(`${apiUrl}/employer/applications/statistics`, {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Thêm Bearer token vào header
+                    Authorization: `Bearer ${token}`, 
                 },
             });
-            console.log("Error payload:", response.data);
             return response.data;
         } catch (error) {
-            console.log("Error payload:", error);
-            return rejectWithValue("con mẹ mày nhá");
+            return rejectWithValue(error.response.message || error.response.data);
         }
     }
 );

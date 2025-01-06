@@ -10,7 +10,6 @@ import EditorContent from '../../EditorContent/EditorContent';
 import { Button } from 'antd';
 
 const CreateCV = () => {
-    const email = localStorage.getItem('email');
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector(state => state.user.user);
@@ -149,7 +148,7 @@ const CreateCV = () => {
                                 {[
                                     { icon: 'fa-calendar', placeholder: 'YYYY/MM/DD', value: user?.dob || 'YYYY/MM/DD' },
                                     { icon: 'fa-phone', placeholder: '0123 456 789', value: user?.phoneNumber || '0123 456 789' },
-                                    { icon: 'fa-envelope', placeholder: 'tencuaban@example.com', value: email || 'tencuaban@example.com' },
+                                    { icon: 'fa-envelope', placeholder: 'tencuaban@example.com', value: user?.account?.email || 'tencuaban@example.com' },
                                     { icon: 'fa-location-dot', placeholder: 'Quận A, thành phố Hà Nội', value: user?.address || 'Quận A, thành phố Hà Nội' }
                                 ].map((item, index) => (
                                     <div 

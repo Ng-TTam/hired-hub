@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import Image from '../../Image'
 
 const ProfileJobSeeker = () =>  {
-    const email = localStorage.getItem('email');
     const user = useSelector((state) => state.user.user);
 
     return(
@@ -24,7 +23,7 @@ const ProfileJobSeeker = () =>  {
                 <div className="text-welcome">Chào bạn trở lại,</div>
                 <h4 className="profile-fullname">{user? `${user.firstName} ${user.lastName}` : "Nguyễn Văn A"}</h4>
                 <div className="account-type vip">
-                    <span>{email? email : "email@example.com"}</span>
+                    <span>{user?.account?.email}</span>
                     
                 </div>
                 <span style={{marginTop: "8px"}}>{user? user.phoneNumber : "091283647"}</span>
