@@ -12,7 +12,7 @@ import { fetchUserInformation } from '../../redux/userSlice';
 const LoginForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isLogin, error, success, loading } = useSelector((state) => state.authentication);
+    const { isLogin, error, success, loading, isDeactivate } = useSelector((state) => state.authentication);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -40,6 +40,10 @@ const LoginForm = () => {
             }
         }
     }, [dispatch, isLogin, error, success]);
+
+    useEffect(() => {
+        setErroDeactivate(isDeactivate);
+    }, [isDeactivate]);
 
     const handleSubmit = (e) => {
         setErroDeactivate(false);
@@ -91,7 +95,7 @@ const LoginForm = () => {
                         required
                     />
                 </div>
-                {error && <p className="error-message show">Tài khoản hoặc mật khẩu không đúng.</p>}
+                {error && !errorDeactivate && <p className="error-message show">Tài khoản hoặc mật khẩu không đúng.</p>}
                 {errorDeactivate && <p className="error-message show">Tài khoản đã bị vô hiệu hóa.</p>}
 
                 <div className="flex-row">
