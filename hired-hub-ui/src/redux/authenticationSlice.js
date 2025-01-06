@@ -26,6 +26,7 @@ export const authenticationSlice = createSlice({
         isLogin: false,
         loading: false,
         success: false,
+        isDeactivate: false,
         error: null,
     },
     reducers: {
@@ -41,6 +42,7 @@ export const authenticationSlice = createSlice({
                 state.isLogin = false;
                 state.loading = true;
                 state.success = false;
+                state.isDeactivate = false;
                 state.error = null;
             })
             .addCase(loginThunk.fulfilled, (state, action) => {
@@ -57,6 +59,7 @@ export const authenticationSlice = createSlice({
                 state.isLogin = false;
                 state.loading = false;
                 state.success = false;
+                state.isDeactivate = action.payload.data.code === 'ACCOUNT_666';
                 state.error = action.payload.data.message;
             })
             .addCase(logoutThunk.fulfilled, (state, action) => {
