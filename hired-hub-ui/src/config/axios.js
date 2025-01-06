@@ -13,17 +13,6 @@ const instance = axios.create({
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, token = null) => {
-    failedQueue.forEach((prom) => {
-        if (error) {
-            prom.reject(error);
-        } else {
-            prom.resolve(token);
-        }
-    });
-    failedQueue = [];
-};
-
 instance.interceptors.request.use(
     (config) => {
         const accessToken = localStorage.getItem('token');
@@ -49,7 +38,12 @@ instance.interceptors.response.use(
                         originalRequest.headers.Authorization = `Bearer ${token}`;
                         return instance(originalRequest);
                     })
-                    .catch((err) => Promise.reject(err));
+                    .catch((err) => {
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.replace('/login');
+                        return Promise.reject(err);
+                    });
             }
 
             originalRequest._retry = true;
@@ -70,20 +64,38 @@ instance.interceptors.response.use(
                     return instance(originalRequest);
                 } catch (refreshError) {
                     processQueue(refreshError, null);
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('refresh-token');
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.replace('/login');
                     return Promise.reject(refreshError);
                 } finally {
                     isRefreshing = false;
                 }
             } else {
-                localStorage.removeItem('token');
-                localStorage.removeItem('refresh-token');
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.replace('/login');
             }
+        }
+        if (error.response && error.response.status !== 401) {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('/login');
         }
 
         return Promise.reject(error);
     },
 );
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
 
 export default instance;

@@ -45,6 +45,7 @@ public class AccountService {
     AuthenticationService authenticationService;
     UserMapper userMapper;
     PostingRepository postingRepository;
+    BlacklistService blacklistService;
 
     private static final String SIGNUP_OTP = "SIGNUP"; //type of otp
     private static final String RESET_OTP = "RESET";
@@ -258,8 +259,13 @@ public class AccountService {
                 postingRepository.saveAll(postings);
             }
         }
-        
+
         account.setStatus(accountStatusRequest.getStatus());
         accountRepository.save(account);
+
+        blacklistService.removeAccountFromBlacklist(account.getId());
+        if (account.getStatus().equals(Status.DEACTIVATE)) {
+            blacklistService.blacklistAccount(account.getId());
+        }
     }
 }

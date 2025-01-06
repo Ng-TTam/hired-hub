@@ -1,5 +1,6 @@
 package com.graduation.hiredhub.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -25,11 +27,14 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
     private static final String[] PUBLIC_POST_ENDPOINTS = {"/auth/**", "/account/sign-up",
             "/account/send-reset-otp", "/account/verify-reset-otp", "/account/forgot-password",
             "/account/employer/sign-up",
     };
+
+    private final BlacklistFilter blacklistFilter;
 
     @Value("${jwt.secret}")
     protected String jwtSecret;
@@ -58,6 +63,9 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));// entry point to authentication
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
+
+        httpSecurity.addFilterAfter(blacklistFilter, BearerTokenAuthenticationFilter.class);
+
         return httpSecurity.build();
     }
 

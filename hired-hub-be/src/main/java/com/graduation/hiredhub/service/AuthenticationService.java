@@ -8,6 +8,7 @@ import com.graduation.hiredhub.dto.response.AuthenticationResponse;
 import com.graduation.hiredhub.dto.response.TokenResponse;
 import com.graduation.hiredhub.dto.response.VerifyTokenResponse;
 import com.graduation.hiredhub.entity.Account;
+import com.graduation.hiredhub.entity.enumeration.Status;
 import com.graduation.hiredhub.exception.AppException;
 import com.graduation.hiredhub.exception.ErrorCode;
 import com.graduation.hiredhub.repository.AccountRepository;
@@ -67,6 +68,10 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         Account account = accountRepository.findByEmail(authenticationRequest.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if (account.getStatus().equals(Status.DEACTIVATE)) {
+            throw new AppException(ErrorCode.ACCOUNT_NOT_AVAILABLE);
+        }
 
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), account.getPassword());
         if (!authenticated)
@@ -168,7 +173,7 @@ public class AuthenticationService {
      * @param account to create token
      * @return access token and refresh
      */
-    public AuthenticationResponse createTokenBase(Account account){
+    public AuthenticationResponse createTokenBase(Account account) {
         String token = generateToken(account);
         String refreshToken = UUID.randomUUID().toString();
 
