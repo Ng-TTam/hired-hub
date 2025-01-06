@@ -66,7 +66,9 @@ const NavbarCMS = () => {
                             </Link>
                         </li>
                         <li>
-                            <KeySquare size={20} /> &nbsp;&nbsp;&nbsp; Đổi mật khẩu
+                            <Link to="/business/change-password">
+                                <KeySquare size={20} /> &nbsp;&nbsp;&nbsp; Đổi mật khẩu
+                            </Link>
                         </li>
                         <li>
                             <Link to="/logout">

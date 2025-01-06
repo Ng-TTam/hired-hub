@@ -16,7 +16,17 @@ const SavedPostingItem = ({ savedPosting }) => {
     const navigate = useNavigate();
 
     const formatdate = (date) => {
-        return format(parseISO(date), 'dd/MM/yyyy - HH:mm', { locale: vi });
+        if (!date) {
+            console.error("Invalid date:", date);
+            return "N/A";
+        }
+    
+        try {
+            return format(parseISO(date), 'dd/MM/yyyy - HH:mm', { locale: vi });
+        } catch (error) {
+            console.error("Error formatting date:", error);
+            return "Invalid Date";
+        }
     };
 
     const handSavePost = async () => {
@@ -57,12 +67,12 @@ const SavedPostingItem = ({ savedPosting }) => {
                     </div>
                 </div>
                 <div className="sp-comany-name" onClick={handCompany}>
-                    {savedPosting.posting.company.name}
+                    {savedPosting?.posting?.company?.name}
                 </div>
-                <div className="sp-time-save">{`Đã lưu: ${formatdate(savedPosting.savedAt)}`}</div>
+                <div className="sp-time-save">{`Đã lưu: ${formatdate(savedPosting?.savedAt)}`}</div>
                 <div className="sp-infor">
                     <div className="sp-infor-time">
-                        {`Cập nhật ${formatDistanceToNow(new Date(savedPosting.posting.updatedAt), {
+                        {`Cập nhật ${formatDistanceToNow(new Date(savedPosting?.posting?.updatedAt), {
                             locale: vi,
                         })} trước`}
                     </div>

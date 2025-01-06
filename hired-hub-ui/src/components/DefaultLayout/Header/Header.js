@@ -37,7 +37,7 @@ const MENU_ITEMS = [
     {
         icon: <FontAwesomeIcon icon={faLock} />,
         title: 'Đổi mật khẩu',
-        to: '/2',
+        to: '../../job-seeker/change-password',
     },
     {
         icon: <FontAwesomeIcon icon={faArrowRightFromBracket} />,

@@ -10,6 +10,7 @@ import Auth from '../pages/Home/Auth';
 import SignUp from '../pages/Home/SignUp';
 import VerifyOtp from '../pages/Home/VerifyOtp';
 import PageNotFound from '../pages/404';
+import AuthForgotPassword from '../pages/Home/AuthForgotPassword';
 
 const GuessRoutes = () => {
     return (
@@ -20,7 +21,7 @@ const GuessRoutes = () => {
             <Route path="/logout" element={<Logout />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/verify-otp" element={<VerifyOtp />} />
-            <Route path="/reset-password" element />
+            <Route path="/reset-password" element={<AuthForgotPassword/>} />
 
             <Route path="/business-sign-up" element={<EmployerRegister />} />
 
