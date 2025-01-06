@@ -11,7 +11,6 @@ export const registerEmployer = createAsyncThunk('employer/register', async (emp
         const response = await axios.post(apiURL, employerData);
         return response.data;
     } catch (error) {
-        // Trả về lỗi nếu có
         return rejectWithValue(error.response?.data || error.message);
     }
 });
@@ -62,9 +61,15 @@ const employerSlice = createSlice({
                 state.success = false;
             })
             .addCase(registerEmployer.fulfilled, (state, action) => {
+                localStorage.setItem('token', action.payload.data.token);
+                localStorage.setItem('refresh-token', action.payload.data.refreshToken);
+                localStorage.setItem('email', action.meta.arg.email);
+                localStorage.setItem('isLogin', true);
+                localStorage.setItem('role', 'EMPLOYER');
                 state.loading = false;
                 state.employerInfo = action.payload;
                 state.success = true;
+                state.error = null;
             })
             .addCase(registerEmployer.rejected, (state, action) => {
                 state.loading = false;
