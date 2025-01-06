@@ -32,6 +32,7 @@ import CompanyInfo from './CompanyInfo';
 import ContentBox from './ContentBox';
 import ContentIcon from './ContentIcon';
 import styles from './Posting.module.scss';
+import PageNotFound from '../../pages/404';
 
 const cx = classNames.bind(styles);
 
@@ -65,8 +66,10 @@ function Posting({ className }) {
 
     useEffect(() => {
         dispatch(fetchPosting(id));
-        dispatch(fetchApplicationInPosting(id));
-        dispatch(savePostingStatus(id));
+        if(isLogin){
+            dispatch(fetchApplicationInPosting(id));
+            dispatch(savePostingStatus(id));
+        }
         return () => {
             dispatch(resetApplication());
             dispatch(resetSavePost())
@@ -197,7 +200,7 @@ function Posting({ className }) {
     };
 
     if (!posting) {
-        return <div></div>;
+        return <PageNotFound/>;
     }
 
     return (

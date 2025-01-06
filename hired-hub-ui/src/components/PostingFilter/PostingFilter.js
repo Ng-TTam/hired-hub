@@ -54,7 +54,7 @@ function PostingFilter() {
         <>
             <div className={cx('wrapper')}>
                 <Filter onChangeRecommend={onSearch}/>
-                {localStorage.getItem('email') && (
+                {localStorage.getItem('isLogin') && (
                     <Button className={cx('recommend-button')} onClick={onRecommend} type={active ? 'primary' : ''}>
                         <CircleFadingArrowUpIcon size={20}/>
                         Đề xuất

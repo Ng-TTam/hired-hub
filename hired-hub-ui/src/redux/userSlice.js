@@ -1,20 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from '../config/axios';
-import { baseURL } from '../config/axios';
+import axiosPro, { baseURL } from '../config/axios';
 
 const apiUrl = `${baseURL}user`;
 
 export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation', async (_, { rejectWithValue }) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('Token không tồn tại');
-    }
     try {
-        const response = await axios.get(apiUrl, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.get(apiUrl);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response);
@@ -22,15 +13,11 @@ export const fetchUserInformation = createAsyncThunk('user/fetchUserInformation'
 });
 
 export const updateInformation = createAsyncThunk('user/updateInformation', async (infor, { rejectWithValue }) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('Token không tồn tại');
-    }
+
     try {
-        const response = await axios.post(`${apiUrl}/update-profile`, infor, {
+        const response = await axiosPro.post(`${apiUrl}/update-profile`, infor, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
@@ -43,7 +30,7 @@ export const fetchAllUsers = createAsyncThunk(
     'user/fetchAllUsers',
     async ({ criteria, pageable }, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${apiUrl}/all`, {
+            const response = await axiosPro.get(`${apiUrl}/all`, {
                 params: { ...criteria, ...pageable },
             });
             return response.data.data;
@@ -55,7 +42,7 @@ export const fetchAllUsers = createAsyncThunk(
 
 export const fetchUserById = createAsyncThunk('user/fetchUserById', async (id, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${apiUrl}/${id}`);
+        const response = await axiosPro.get(`${apiUrl}/${id}`);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data);

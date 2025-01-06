@@ -1,20 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
 import axiosPro, { baseURL } from '../config/axios';
 
 const apiURL = `${baseURL}saved-post`;
 
 export const fetchSavedPosts = createAsyncThunk("saved-post/fetchSavedPost", async(_,{rejectWithValue}) =>{
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('Token không tồn tại');
-    }
     try {
-        const response = await axios.get(`${apiURL}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.get(`${apiURL}`);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response);
@@ -22,16 +13,8 @@ export const fetchSavedPosts = createAsyncThunk("saved-post/fetchSavedPost", asy
 });
 
 export const savePostingStatus = createAsyncThunk("saved-post/status",async(postingId, { rejectWithValue }) =>{
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('Token không tồn tại');
-    }
     try {
-        const response = await axios.get(`${apiURL}/check-status/${postingId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.get(`${apiURL}/check-status/${postingId}`);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response);
@@ -39,16 +22,8 @@ export const savePostingStatus = createAsyncThunk("saved-post/status",async(post
 });
 
 export const savePosting = createAsyncThunk("saved-post/saved",async(postingId, { rejectWithValue }) =>{
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('Token không tồn tại');
-    }
     try {
-        const response = await axios.post(`${apiURL}`, postingId, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.post(`${apiURL}`, postingId);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response);
@@ -56,16 +31,8 @@ export const savePosting = createAsyncThunk("saved-post/saved",async(postingId, 
 });
 
 export const unsavePosting = createAsyncThunk("saved-post/unsaved",async(postingId, { rejectWithValue }) =>{
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('Token không tồn tại');
-    }
     try {
-        const response = await axios.post(`${apiURL}/unsaved-post`, postingId, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.post(`${apiURL}/unsaved-post`, postingId);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response);

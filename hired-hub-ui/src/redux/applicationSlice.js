@@ -1,19 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosPro, { baseURL } from '../config/axios';
 
 const apiUrl = 'http://localhost:8888/api/v1';
 
 export const fetchApplications = createAsyncThunk('applications/fetchApplications', async (_, { rejectWithValue }) => {
     try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('Token không tồn tại');
-        }
-        const response = await axios.get(`${apiUrl}/employer/applications`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.get(`${apiUrl}/employer/applications`);
         return response.data.data;
     } catch (error) {
         return rejectWithValue(error.response?.data);
@@ -22,15 +14,7 @@ export const fetchApplications = createAsyncThunk('applications/fetchApplication
 
 export const fetchApplicationsJobSeeker = createAsyncThunk('applications/fetchApplicationsJobSeeker', async (_, { rejectWithValue }) => {
     try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('Token không tồn tại');
-        }
-        const response = await axios.get(`${apiUrl}/jobSeeker/applications`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.get(`${apiUrl}/jobSeeker/applications`);
         return response.data.data;
     } catch (error) {
         return rejectWithValue(error.response?.data);
@@ -41,15 +25,7 @@ export const fetchApplicationInPosting = createAsyncThunk(
     'applications/fetchApplicationByPosing',
     async (postingId, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token không tồn tại');
-            }
-            const response = await axios.get(`${apiUrl}/applications/posting/${postingId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosPro.get(`${apiUrl}/applications/posting/${postingId}`);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data);
@@ -61,15 +37,7 @@ export const fetchApplication = createAsyncThunk(
     'applications/fetchApplication',
     async (applicationId, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token không tồn tại');
-            }
-            const response = await axios.get(`${apiUrl}/applications/${applicationId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosPro.get(`${apiUrl}/applications/${applicationId}`);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data);
@@ -81,20 +49,10 @@ export const createApplication = createAsyncThunk(
     'applications/createApplication',
     async ({ postingId, cvId, message }, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token không tồn tại');
-            }
             console.log(postingId, cvId, message);
-            const response = await axios.post(
+            const response = await axiosPro.post(
                 `${apiUrl}/applications/${postingId}/${cvId}`,
-                { message },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
-            );
+                { message });
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.message);
@@ -106,15 +64,7 @@ export const updateApplication = createAsyncThunk(
     'applications/updateApplication',
     async ({ cvId, updatedCV }, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token không tồn tại');
-            }
-            const response = await axios.put(`${apiUrl}/${cvId}`, updatedCV, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosPro.put(`${apiUrl}/${cvId}`, updatedCV);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data);
@@ -126,16 +76,8 @@ export const setApplicationStatus = createAsyncThunk(
     'applications/setStatus', 
     async({applicationId, applicationStatus}, {rejectWithValue}) =>{
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token không tồn tại');
-            }
             console.log("ddmmm", applicationId);
-            const response = await axios.put(`${apiUrl}/applications/${applicationId}`, applicationStatus,{
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosPro.put(`${apiUrl}/applications/${applicationId}`, applicationStatus);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data);
@@ -147,15 +89,7 @@ export const deleteApplication = createAsyncThunk(
     'applications/deleteApplication',
     async (applicationId, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('Token không tồn tại');
-            }
-            const response = await axios.delete(`${apiUrl}/applications/${applicationId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosPro.delete(`${apiUrl}/applications/${applicationId}`);
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data);

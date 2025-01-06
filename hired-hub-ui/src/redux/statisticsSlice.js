@@ -1,21 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from '../config/axios';
+import axiosPro, { baseURL } from '../config/axios';
 
 const apiUrl = 'http://localhost:8888/api/v1';
 
 export const fetchStatisticsDashboard = createAsyncThunk(
     'statistics/fetchStatisticsDashboard', 
     async (_, { rejectWithValue }) => {
-        const token = localStorage.getItem('token'); 
-        if (!token) {
-            throw new Error('Token không tồn tại');
-        }
         try {
-            const response = await axios.get(`${apiUrl}/employer/applications/statistics`, {
-                headers: {
-                    Authorization: `Bearer ${token}`, 
-                },
-            });
+            const response = await axiosPro.get(`${apiUrl}/employer/applications/statistics`);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.message || error.response.data);

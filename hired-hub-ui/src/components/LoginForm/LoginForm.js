@@ -1,13 +1,15 @@
 import { jwtDecode } from 'jwt-decode';
-import { LoaderCircleIcon } from 'lucide-react';
+import {LoaderCircleIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import images from '../../assets/images';
 import gLogo from '../../assets/images/google.png';
 import { loginThunk, logout, logoutThunk } from '../../redux/authenticationSlice';
 import './LoginForm.scss';
 import { fetchUserInformation } from '../../redux/userSlice';
+import { Card, Modal } from 'antd';
+import Button from '../Button';
 
 const LoginForm = () => {
     const dispatch = useDispatch();
@@ -18,6 +20,16 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const urlSignUp = 'http://localhost:3000/sign-up';
     const [errorDeactivate, setErroDeactivate] = useState(false);
+
+    const [visible, setVisible] = React.useState(false);
+
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
 
     useEffect(() => {
         if (localStorage.getItem('isLogin')) {
@@ -109,10 +121,35 @@ const LoginForm = () => {
                 </button>
                 <p className="p">
                     Chưa có tài khoản?{' '}
-                    <a className="span" href={urlSignUp}>
+                    <a className="span" primary onClick={showModal}>
                         Đăng ký
                     </a>
                 </p>
+                <Modal open={visible} onCancel={handleCancel} footer={null} width={800}>
+                    <div style={{ textAlign: 'center' }}>
+                        <h1 style={{ color: '#00b14f' }}>Đăng ký tài khoản</h1>
+                        <h3 style={{ marginBottom: '0px' }}>Chào bạn,</h3>
+                        <span>Bạn hãy dành ra vài giây để xác nhận thông tin dưới đây nhé!</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: '0px' }}>
+                        <Link to="/business-sign-up">
+                            <Card className='section' style={{ border: 'none' }} hoverable>
+                                <img src={images.employer} alt="Người tuyển dụng" />
+                                <Button style={{ marginTop: 10, color: 'rgba(0, 0, 0, 0.88)' }}>
+                                    Tôi là nhà tuyển dụng
+                                </Button>
+                            </Card>
+                        </Link>
+                        <Link to="/sign-up">
+                            <Card className='section' style={{ border: 'none' }} hoverable>
+                                <img src={images.jobSeeker} alt="Người tìm việc" />
+                                <Button style={{ marginTop: 10, color: 'rgba(0, 0, 0, 0.88)' }}>
+                                    Tôi là người tìm việc
+                                </Button>
+                            </Card>
+                        </Link>
+                    </div>
+                </Modal>
                 {/* <p className="p line">Hoặc với</p> */}
 
                 {/* <div className="flex-row">

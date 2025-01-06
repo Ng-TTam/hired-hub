@@ -1,3 +1,4 @@
+import { Modal } from 'antd';
 import axios from 'axios';
 
 export const baseURL = 'http://localhost:8888/api/v1/';
@@ -28,6 +29,20 @@ instance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+
+        if (error?.response?.data?.code === "ACCOUNT_666") {
+            Modal.warning({
+                title: 'Tài khoản đã bị khóa',
+                content: 'Tài khoản của bạn đã bị khóa do vi phạm chính sách. Vui lòng liên hệ bộ phận hỗ trợ để biết thêm chi tiết.',
+                okText: 'Đã hiểu',
+                onOk() {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.replace('/login');
+                }
+            });
+            return Promise.reject(error);
+        }
 
         if (error.response.status === 401 && !originalRequest._retry) {
             if (isRefreshing) {
@@ -77,12 +92,6 @@ instance.interceptors.response.use(
                 window.location.replace('/login');
             }
         }
-        if (error.response && error.response.status !== 401) {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.replace('/login');
-        }
-
         return Promise.reject(error);
     },
 );

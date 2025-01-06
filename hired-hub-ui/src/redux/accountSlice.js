@@ -16,16 +16,9 @@ export const registerAccount = createAsyncThunk('account/sign-up', async (accoun
 
 export const verifyOtp = createAsyncThunk('account/verify-otp', async (otp, { rejectWithValue }) => {
     try {
-        const token = localStorage.getItem('token');
-        const response = await axios.post(
+        const response = await axiosPro.post(
             `${apiURL}verify-otp?otp=${otp}`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            },
-        );
+            {});
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response?.data || error.message);
@@ -33,13 +26,8 @@ export const verifyOtp = createAsyncThunk('account/verify-otp', async (otp, { re
 });
 
 export const resendOtp = createAsyncThunk('account/resend-otp', async (token, { rejectWithValue }) => {
-    token = localStorage.getItem('token');
     try {
-        const response = await axios.get(`${apiURL}resend-otp`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosPro.get(`${apiURL}resend-otp`);
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response?.data || error.message);
