@@ -1,6 +1,6 @@
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { fetchNotifications } from '../redux/notificationSlice';
+import { addNotification } from '../redux/notificationSlice';
 import store from '../redux/store';
 
 const SOCKET_URL = 'http://localhost:8888/api/v1/web-socket';
@@ -19,12 +19,14 @@ export const connectWebSocket = (userId) => {
 
             stompClient.subscribe(`/topic/notifications/${userId}`, (message) => {
                 console.log('Public Notification:', message);
-                store.dispatch(fetchNotifications());
+                const notification = JSON.parse(message.body);
+                store.dispatch(addNotification(notification));
             });
 
             stompClient.subscribe('/user/topic/notifications', (message) => {
                 console.log('User Notification:', message);
-                store.dispatch(fetchNotifications());
+                const notification = JSON.parse(message.body);
+                store.dispatch(addNotification(notification));
             });
         },
         onStompError: (frame) => {
