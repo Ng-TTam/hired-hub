@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Dropdown, Menu, Button, Modal } from 'antd'; // Import Ant Design components
+import { Dropdown, Menu, Button, Modal, notification } from 'antd'; // Import Ant Design components
 import { fetchApplications, resetApplication, setApplicationStatus } from '../../redux/applicationSlice';
 import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
@@ -60,6 +60,10 @@ const ManageCandidate = () => {
                     const applicationStatus = { applicationStatus: 'APPROVED' };
                     await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
                     dispatch(fetchApplications());
+                    notification.success({
+                        message: 'Thành công',
+                        description: 'Đã lưu thông tin cập nhật',
+                    });
                 };
                 handAppro(applicationId);
             },
@@ -77,6 +81,10 @@ const ManageCandidate = () => {
                     const applicationStatus = { applicationStatus: 'REJECTED' };
                     await dispatch(setApplicationStatus({ applicationId, applicationStatus })).unwrap();
                     dispatch(fetchApplications());
+                    notification.success({
+                        message: 'Thành công',
+                        description: 'Đã lưu thông tin cập nhật',
+                    });
                 };
                 handReject(applicationId);
             },

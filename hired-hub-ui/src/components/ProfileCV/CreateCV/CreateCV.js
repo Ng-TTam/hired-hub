@@ -7,7 +7,7 @@ import { createCV, fetchCVs } from '../../../redux/cvSlice';
 import './CreateCV.scss';
 import Image from '../../Image';
 import EditorContent from '../../EditorContent/EditorContent';
-import { Button } from 'antd';
+import { Button, notification } from 'antd';
 
 const CreateCV = () => {
     const navigate = useNavigate();
@@ -90,11 +90,18 @@ const CreateCV = () => {
             try {
                 await dispatch(createCV(newCV)).unwrap().then(() => {
                     dispatch(fetchCVs()); 
+                    notification.success({
+                        message: 'Đã Lưu',
+                        description: 'Tạo CV thành công!',
+                    });
                     navigate(`../cv-management`);
                 });
             } catch (error) {
                 console.error("Lỗi khi tạo CV:", error);
-                alert("Vui lòng nhập đầy đủ thông tin CV.");
+                notification.error({
+                    message: 'Thất bại',
+                    description: 'Có lỗi khi tạo CV',
+                });
             }   
         }
     };

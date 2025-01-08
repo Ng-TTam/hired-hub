@@ -7,6 +7,7 @@ import { fetchCV, updateCV } from '../../../redux/cvSlice';
 import '../CreateCV/CreateCV.scss'
 import Image from '../../Image';
 import EditorContent from '../../EditorContent/EditorContent';
+import { notification } from 'antd';
 
 const EditCV = () => {
     const { cvId } = useParams();
@@ -84,9 +85,15 @@ const EditCV = () => {
         try {
             await dispatch(updateCV({ cvId, updatedCV })).unwrap();
             navigate(`../cv-management`);
+            notification.success({
+                message: 'Đã cập nhật',
+                description: 'CV đã được cập nhật',
+            });
         } catch (error) {
-            console.error("Lỗi khi xóa CV:", error);
-            alert("Vui lòng nhập đầy đủ thông tin CV.");
+            notification.success({
+                message: 'Thất bại',
+                description: 'Không thể cập nhật CV',
+            });
         }
     };
 

@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import '@fortawesome/free-solid-svg-icons';
-import { Modal } from 'antd';
+import { Modal, notification } from 'antd';
 import { ExperienceRequire, GenderRequire, JobTypes } from '../../config/constants';
 import { fetchApplicationInPosting, resetApplication } from '../../redux/applicationSlice';
 import { setCriteria } from '../../redux/filterSlice';
@@ -161,9 +161,12 @@ function Posting({ className }) {
         setShowCreateApplication(false);
         setShowApplication(false);
         setIsModalOpen(false);
-        dispatch(fetchApplicationInPosting(id));
-        if (reload) {
-            window.location.reload();
+        if(reload){
+            dispatch(fetchApplicationInPosting(id));
+            notification.success({
+                message: 'Thành công',
+                description: 'Ứng tuyển thành công',
+            });
         }
     };
     const handApplicationAgain = (reload) => {
@@ -181,10 +184,18 @@ function Posting({ className }) {
             const saved = { postId: id };
             if (savedStatus) {
                 await dispatch(unsavePosting(saved)).unwrap();
-                window.location.reload();
+                dispatch(savePostingStatus(id));
+                notification.success({
+                    message: 'Thành công',
+                    description: 'Đã bỏ lưu bài tuyển dụng',
+                });
             } else {
                 await dispatch(savePosting(saved)).unwrap();
-                window.location.reload();
+                dispatch(savePostingStatus(id));
+                notification.success({
+                    message: 'Thành công',
+                    description: 'Đã lưu bài tuyển dụng',
+                });
             }
         } else {
             Modal.confirm({
