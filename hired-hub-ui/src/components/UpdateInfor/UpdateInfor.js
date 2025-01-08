@@ -65,7 +65,7 @@ const UpdateInfor = () => {
                 gender: user?.gender || '',
                 address: user?.address || '',
                 position: user?.position?.id || '',
-                avatar: user?.avatar || '',
+                avatar: '',
             });
         }
     }, [user, error]);

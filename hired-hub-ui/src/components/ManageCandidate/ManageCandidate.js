@@ -91,19 +91,19 @@ const ManageCandidate = () => {
 
     const pendingMenu = (applicationId) => (
         <Menu>
-            <Menu.Item onClick={() => handApproved(applicationId)}>Approve</Menu.Item>
-            <Menu.Item onClick={() => handRejected(applicationId)}>Reject</Menu.Item>
+            <Menu.Item style={{color: '#28a745'}} onClick={() => handApproved(applicationId)}>Chấp nhận</Menu.Item>
+            <Menu.Item style={{color: 'red'}} onClick={() => handRejected(applicationId)}>Từ chối</Menu.Item>
         </Menu>
     );
     const rejectMenu = (applicationId) => (
         <Menu>
-            <Menu.Item onClick={() => handApproved(applicationId)}>Approve</Menu.Item>
+            <Menu.Item style={{color: '#28a745'}} onClick={() => handApproved(applicationId)}>Chấp nhận</Menu.Item>
             {/* <Menu.Item onClick={() => handPending(applicationId)}>Pending</Menu.Item> */}
         </Menu>
     );
     const approveMenu = (applicationId) => (
         <Menu>
-            <Menu.Item onClick={() => handRejected(applicationId)}>Reject</Menu.Item>
+            <Menu.Item style={{color: 'red'}} onClick={() => handRejected(applicationId)}>Từ chối</Menu.Item>
             {/* <Menu.Item onClick={() => handPending(applicationId)}>Pending</Menu.Item> */}
         </Menu>
     );
@@ -278,19 +278,19 @@ const ManageCandidate = () => {
                                         {application?.status === 'PENDING' ? (
                                             <Dropdown overlay={pendingMenu(application?.id)} trigger={['hover']}>
                                                 <Button className="status-button" style={{ width: '99.4px' }}>
-                                                    {application?.status || 'None'}
+                                                    {'Chưa phản hồi'}
                                                 </Button>
                                             </Dropdown>
                                         ) : application?.status === 'APPROVED' ? (
                                             <Dropdown overlay={approveMenu(application?.id)} trigger={['hover']}>
                                                 <Button className="status-button active" style={{ width: '99.4px' }}>
-                                                    {application?.status || 'None'}
+                                                    {'Đã chấp nhận'}
                                                 </Button>
                                             </Dropdown>
                                         ) : (
                                             <Dropdown overlay={rejectMenu(application?.id)} trigger={['hover']}>
                                                 <Button className="status-button deactive" style={{ width: '99.4px' }}>
-                                                    {application?.status || 'None'}
+                                                    {'Đã từ chối'}
                                                 </Button>
                                             </Dropdown>
                                         )}
