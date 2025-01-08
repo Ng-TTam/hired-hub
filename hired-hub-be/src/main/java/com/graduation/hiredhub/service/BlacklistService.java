@@ -17,13 +17,13 @@ public class BlacklistService {
     StringRedisTemplate stringRedisTemplate;
 
     @NonFinal
-    @Value("${jwt.expiration}")
-    protected int jwtExpiration;
+    @Value("${jwt.refreshable}")
+    protected int jwtRefreshable;
 
     private static final String BLACKLIST_PREFIX = "BLACKLIST_";
 
     public void blacklistAccount(String accountId) {
-        stringRedisTemplate.opsForValue().set(BLACKLIST_PREFIX + accountId, "true", jwtExpiration, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(BLACKLIST_PREFIX + accountId, "true", jwtRefreshable, TimeUnit.DAYS);
     }
 
     public void removeAccountFromBlacklist(String accountId) {
