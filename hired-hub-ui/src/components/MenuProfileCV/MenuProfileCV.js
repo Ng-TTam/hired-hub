@@ -6,6 +6,8 @@ import Menu from '../Menu/Menu';
 import './MenuProfileCV.scss'; 
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
+import { faFile, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const MenuProfileCV = () => {
     const isLogin = localStorage.getItem('isLogin');
@@ -27,10 +29,12 @@ const MenuProfileCV = () => {
     };
     const MENU_ITEMS = [
         {
+            icon: <FontAwesomeIcon icon={faFile} />,
             title: 'Tạo CV',
             to: isLogin ? '../../job-seeker/cv-create': '',
         },
         {
+            icon: <FontAwesomeIcon icon={faFolder} />,
             title: 'Quản lý CV',
             to: isLogin ?  '../../job-seeker/cv-management': '',
         },
